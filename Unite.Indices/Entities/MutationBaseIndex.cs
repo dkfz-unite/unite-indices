@@ -3,7 +3,7 @@
     public class MutationBaseIndex
     {
         public int Id { get; set; }
-        public string ReferenceId { get; set; }
+        public string Name { get; set; }
         public string Code { get; set; }
         public string Chromosome { get; set; }
         public string Contig { get; set; }
