@@ -1,4 +1,4 @@
-﻿namespace Unite.Indices.Entities
+﻿namespace Unite.Indices.Entities.Basic.Donors
 {
     public class WorkPackageIndex
     {

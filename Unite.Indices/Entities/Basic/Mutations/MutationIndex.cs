@@ -1,6 +1,6 @@
-﻿namespace Unite.Indices.Entities
+﻿namespace Unite.Indices.Entities.Basic.Mutations
 {
-    public class MutationBaseIndex
+    public class MutationIndex
     {
         public int Id { get; set; }
         public string Name { get; set; }

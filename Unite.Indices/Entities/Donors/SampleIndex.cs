@@ -1,7 +1,12 @@
 ﻿namespace Unite.Indices.Entities.Donors
 {
-    public class SampleIndex : SampleBaseIndex
+    public class SampleIndex : Basic.Mutations.SampleIndex
     {
-        public MutationIndex[] Mutations { get; set; }
+        // public CellLineIndex CellLine { get; set; };
+        // public XenograftIndex Xenograft { get; set; };
+
+        public Basic.FileIndex File { get; set; }
+        public Basic.Mutations.AnalysisIndex Analysis { get; set; }
+        public Basic.Mutations.SampleIndex[] MatchedSamples { get; set; }
     }
 }

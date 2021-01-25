@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <ReleaseVersion>1.0.1</ReleaseVersion>
-    <Version>1.0.1</Version>
+    <ReleaseVersion>1.0.2</ReleaseVersion>
+    <Version>1.0.2</Version>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>
@@ -12,10 +12,12 @@
 
   <ItemGroup>
     <Folder Include="Entities\" />
-    <Folder Include="Entities\Cells\" />
     <Folder Include="Entities\Donors\" />
     <Folder Include="Entities\Mutations\" />
     <Folder Include="Services\" />
+    <Folder Include="Entities\Basic\" />
+    <Folder Include="Entities\Basic\Donors\" />
+    <Folder Include="Entities\Basic\Mutations\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NEST" Version="7.10.1" />

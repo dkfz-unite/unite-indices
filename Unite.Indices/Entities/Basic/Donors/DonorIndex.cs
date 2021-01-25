@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Unite.Indices.Entities
+namespace Unite.Indices.Entities.Basic.Donors
 {
-    public class DonorBaseIndex
+    public class DonorIndex
     {
         public string Id { get; set; }
         public string Diagnosis { get; set; }
