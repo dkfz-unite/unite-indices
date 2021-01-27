@@ -7,7 +7,7 @@ namespace Unite.Indices.Entities.Basic.Mutations
         public int Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
         public FileIndex File { get; set; }
     }
