@@ -2,6 +2,6 @@
 {
     public class MutationIndex : Basic.Mutations.MutationIndex
     {
-        public Basic.Mutations.AnalysedSampleIndex[] Samples { get; set; }
+        public AnalysedSampleIndex[] Samples { get; set; }
     }
 }
