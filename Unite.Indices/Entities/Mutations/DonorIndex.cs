@@ -2,6 +2,6 @@
 {
     public class DonorIndex : Basic.Donors.DonorIndex
     {
-        public SampleIndex[] Samples { get; set; }
+        public Basic.Mutations.AnalysedSampleIndex[] Samples { get; set; }
     }
 }
