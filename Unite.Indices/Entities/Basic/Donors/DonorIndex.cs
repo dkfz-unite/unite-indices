@@ -1,4 +1,5 @@
 ﻿using System;
+using Unite.Indices.Entities.Basic.Epigenetics;
 
 namespace Unite.Indices.Entities.Basic.Donors
 {
@@ -12,6 +13,7 @@ namespace Unite.Indices.Entities.Basic.Donors
         public bool? MtaProtected { get; set; }
 
         public ClinicalDataIndex ClinicalData { get; set; }
+        public EpigeneticsDataIndex EpigeneticsData { get; set; }
         public TreatmentIndex[] Treatments { get; set; }
         public WorkPackageIndex[] WorkPackages { get; set; }
         public StudyIndex[] Studies { get; set; }
