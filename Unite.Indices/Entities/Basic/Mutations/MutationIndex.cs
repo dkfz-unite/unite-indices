@@ -10,6 +10,8 @@
         public string SequenceType { get; set; }
         public int Position { get; set; }
         public string Type { get; set; }
+        public string Ref { get; set; }
+        public string Alt { get; set; }
 
         public GeneIndex Gene { get; set; }
     }
