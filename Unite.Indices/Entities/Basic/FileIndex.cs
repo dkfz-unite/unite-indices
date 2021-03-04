@@ -11,3 +11,4 @@ namespace Unite.Indices.Entities.Basic
         public DateTime? Updated { get; set; }
     }
 }
+
