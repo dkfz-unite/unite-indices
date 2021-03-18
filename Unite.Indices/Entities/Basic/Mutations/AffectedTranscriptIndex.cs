@@ -8,6 +8,6 @@
 
         public GeneIndex Gene { get; set; }
         public TranscriptIndex Transcript { get; set; }
-        public ConsequenceIndex Consequence { get; set; }
+        public ConsequenceIndex[] Consequences { get; set; }
     }
 }
