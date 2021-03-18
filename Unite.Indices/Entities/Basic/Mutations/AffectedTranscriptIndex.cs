@@ -1,7 +1,8 @@
 ﻿namespace Unite.Indices.Entities.Basic.Mutations
 {
-    public class TranscriptConsequenceIndex
+    public class AffectedTranscriptIndex
     {
+        public int Id { get; set; }
         public string AminoAcidChange { get; set; }
         public string CodonChange { get; set; }
 
