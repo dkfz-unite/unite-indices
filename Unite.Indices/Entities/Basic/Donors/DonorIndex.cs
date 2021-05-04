@@ -5,7 +5,7 @@ namespace Unite.Indices.Entities.Basic.Donors
 {
     public class DonorIndex
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public bool? MtaProtected { get; set; }
 
