@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <ReleaseVersion>1.3.4</ReleaseVersion>
-    <Version>1.3.4</Version>
+    <ReleaseVersion>1.4.0</ReleaseVersion>
+    <Version>1.4.0</Version>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>
@@ -18,7 +18,9 @@
     <Folder Include="Entities\Basic\" />
     <Folder Include="Entities\Basic\Donors\" />
     <Folder Include="Entities\Basic\Mutations\" />
-    <Folder Include="Entities\Basic\Epigenetics\" />
+    <Folder Include="Entities\Basic\Molecular\" />
+    <Folder Include="Entities\Basic\Clinical\" />
+    <Folder Include="Entities\Basic\Samples\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NEST" Version="7.10.0" />

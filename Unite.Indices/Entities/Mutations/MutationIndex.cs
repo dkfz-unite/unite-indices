@@ -4,6 +4,8 @@
     {
         public DonorIndex[] Donors { get; set; }
 
+        public SampleIndex[] Samples { get; set; }
+
         /// <summary>
         /// Number of affected donors
         /// </summary>

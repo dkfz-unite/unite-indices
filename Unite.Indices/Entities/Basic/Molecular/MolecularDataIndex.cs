@@ -1,6 +1,6 @@
-﻿namespace Unite.Indices.Entities.Basic.Epigenetics
+﻿namespace Unite.Indices.Entities.Basic.Molecular
 {
-    public class EpigeneticsDataIndex
+    public class MolecularDataIndex
     {
         public string GeneExpressionSubtype { get; set; }
         public string IdhStatus { get; set; }
