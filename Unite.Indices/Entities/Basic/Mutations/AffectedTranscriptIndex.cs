@@ -2,7 +2,7 @@
 {
     public class AffectedTranscriptIndex
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string AminoAcidChange { get; set; }
         public string CodonChange { get; set; }
 
