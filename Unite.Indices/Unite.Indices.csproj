@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <ReleaseVersion>1.4.3</ReleaseVersion>
-    <Version>1.4.3</Version>
+    <ReleaseVersion>1.5.0</ReleaseVersion>
+    <Version>1.5.0</Version>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>
@@ -20,7 +20,7 @@
     <Folder Include="Entities\Basic\Mutations\" />
     <Folder Include="Entities\Basic\Molecular\" />
     <Folder Include="Entities\Basic\Clinical\" />
-    <Folder Include="Entities\Basic\Samples\" />
+    <Folder Include="Entities\Basic\Specimens\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NEST" Version="7.10.0" />

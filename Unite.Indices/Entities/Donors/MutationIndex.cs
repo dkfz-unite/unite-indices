@@ -2,6 +2,6 @@
 {
     public class MutationIndex : Basic.Mutations.MutationIndex
     {
-        
+        public SpecimenIndex[] Specimens { get; set; }
     }
 }

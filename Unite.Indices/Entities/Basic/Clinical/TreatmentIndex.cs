@@ -5,7 +5,6 @@ namespace Unite.Indices.Entities.Basic.Clinical
     public class TreatmentIndex
     {
         public string Therapy { get; set; }
-
         public string Details { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }

@@ -1,11 +1,9 @@
 ﻿using System;
 
-namespace Unite.Indices.Entities.Basic.Samples
+namespace Unite.Indices.Entities.Basic.Specimens
 {
     public class CellLineIndex
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
         public string Type { get; set; }
         public string Species { get; set; }
