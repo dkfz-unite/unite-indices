@@ -4,7 +4,6 @@ namespace Unite.Indices.Entities.Basic.Specimens
 {
     public class CellLineIndex
     {
-        public string ReferenceId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public string Species { get; set; }
