@@ -5,7 +5,9 @@ namespace Unite.Indices.Entities.Basic.Specimens
     public class SpecimenIndex
     {
         public int Id { get; set; }
-        public int? ParentId { get; set; }
+
+        public SpecimenIndex Parent { get; set; }
+        public SpecimenIndex[] Children { get; set; }
         
         public TissueIndex Tissue { get; set; }
         public CellLineIndex CellLine { get; set; }

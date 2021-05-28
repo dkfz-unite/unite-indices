@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Unite.Indices.Entities.Basic.Specimens
 {
     public class TissueIndex
