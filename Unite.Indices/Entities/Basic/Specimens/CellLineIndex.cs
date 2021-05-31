@@ -6,10 +6,10 @@ namespace Unite.Indices.Entities.Basic.Specimens
     {
         public string ReferenceId { get; set; }
 
-        public string Name { get; set; }
         public string Type { get; set; }
         public string Species { get; set; }
 
+        public string Name { get; set; }
         public string DepositorName { get; set; }
         public string DepositorEstablishment { get; set; }
         public DateTime? EstablishmentDate { get; set; }
