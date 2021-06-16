@@ -6,8 +6,10 @@ namespace Unite.Indices.Entities.Basic.Specimens
     {
         public string ReferenceId { get; set; }
 
-        public string Type { get; set; }
         public string Species { get; set; }
+        public string Type { get; set; }
+        public string CultureType { get; set; }
+        public string PassageNumber { get; set; }
 
         public string Name { get; set; }
         public string DepositorName { get; set; }
