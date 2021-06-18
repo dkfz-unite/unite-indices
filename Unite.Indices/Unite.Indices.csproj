@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <ReleaseVersion>1.5.9</ReleaseVersion>
-    <Version>1.5.9</Version>
+    <ReleaseVersion>1.6.0</ReleaseVersion>
+    <Version>1.6.0</Version>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>
