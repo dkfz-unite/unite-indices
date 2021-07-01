@@ -10,5 +10,7 @@ namespace Unite.Indices.Entities.Basic.Specimens
         public string TumorType { get; set; }
         public string Source { get; set; }
         public DateTime? ExtractionDate { get; set; }
+
+        public MolecularDataIndex MolecularData { get; set; }
     }
 }

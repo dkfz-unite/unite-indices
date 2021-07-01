@@ -18,5 +18,7 @@ namespace Unite.Indices.Entities.Basic.Specimens
         public string PubMedLink { get; set; }
         public string AtccLink { get; set; }
         public string ExPasyLink { get; set; }
+
+        public MolecularDataIndex MolecularData { get; set; }
     }
 }

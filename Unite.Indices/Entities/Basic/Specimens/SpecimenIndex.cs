@@ -1,6 +1,4 @@
-﻿using Unite.Indices.Entities.Basic.Molecular;
-
-namespace Unite.Indices.Entities.Basic.Specimens
+﻿namespace Unite.Indices.Entities.Basic.Specimens
 {
     public class SpecimenIndex
     {
@@ -10,7 +8,5 @@ namespace Unite.Indices.Entities.Basic.Specimens
         public CellLineIndex CellLine { get; set; }
         public OrganoidIndex Organoid { get; set; }
         public XenograftIndex Xenograft { get; set; }
-
-        public MolecularDataIndex MolecularData { get; set; }
     }
 }

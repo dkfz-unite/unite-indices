@@ -8,6 +8,8 @@
         public bool? Tumorigenicity { get; set; }
         public string Medium { get; set; }
 
+        public MolecularDataIndex MolecularData { get; set; }
+
         public OrganoidInterventionIndex[] Interventions { get; set; }
     }
 }

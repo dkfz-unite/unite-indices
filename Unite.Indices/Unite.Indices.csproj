@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <ReleaseVersion>1.6.0</ReleaseVersion>
-    <Version>1.6.0</Version>
+    <ReleaseVersion>1.6.1</ReleaseVersion>
+    <Version>1.6.1</Version>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>
@@ -18,7 +18,6 @@
     <Folder Include="Entities\Basic\" />
     <Folder Include="Entities\Basic\Donors\" />
     <Folder Include="Entities\Basic\Mutations\" />
-    <Folder Include="Entities\Basic\Molecular\" />
     <Folder Include="Entities\Basic\Clinical\" />
     <Folder Include="Entities\Basic\Specimens\" />
     <Folder Include="Entities\Specimens\" />

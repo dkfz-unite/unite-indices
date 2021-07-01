@@ -1,4 +1,4 @@
-﻿namespace Unite.Indices.Entities.Basic.Molecular
+﻿namespace Unite.Indices.Entities.Basic.Specimens
 {
     public class MolecularDataIndex
     {
