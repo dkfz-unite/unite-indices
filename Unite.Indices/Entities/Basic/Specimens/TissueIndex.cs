@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Unite.Indices.Entities.Basic.Specimens
+﻿namespace Unite.Indices.Entities.Basic.Specimens
 {
     public class TissueIndex
     {
@@ -9,7 +7,7 @@ namespace Unite.Indices.Entities.Basic.Specimens
         public string Type { get; set; }
         public string TumorType { get; set; }
         public string Source { get; set; }
-        public DateTime? ExtractionDate { get; set; }
+        public int? ExtractionDay { get; set; }
 
         public MolecularDataIndex MolecularData { get; set; }
     }
