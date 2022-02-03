@@ -1,6 +1,6 @@
-﻿namespace Unite.Indices.Entities.Basic.Mutations
+﻿namespace Unite.Indices.Entities.Basic.Genome
 {
-    public class TranscriptIndex
+    public class GeneIndex
     {
         public int Id { get; set; }
 
@@ -12,8 +12,5 @@
         public bool? Strand { get; set; }
 
         public string EnsemblId { get; set; }
-
-        public GeneIndex Gene { get; set; }
-        public ProteinIndex Protein { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Unite.Indices.Entities.Basic.Clinical
+﻿namespace Unite.Indices.Entities.Basic.Donors.Clinical
 {
     public class ClinicalDataIndex
     {

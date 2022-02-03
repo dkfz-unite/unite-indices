@@ -2,7 +2,13 @@
 {
     public class DonorIndex : Basic.Donors.DonorIndex
     {
-        public MutationIndex[] Mutations { get; set; }
+        public ImageIndex[] Images { get; set; }
+        public SpecimenIndex[] Specimens { get; set; }
+
+        /// <summary>
+        /// Number of donor images
+        /// </summary>
+        public int NumberOfImages { get; set; }
 
         /// <summary>
         /// Number of donor specimens
@@ -15,7 +21,7 @@
         public int NumberOfMutations { get; set; }
 
         /// <summary>
-        /// Number of expressed genes
+        /// Number of mutated genes
         /// </summary>
         public int NumberOfGenes { get; set; }
     }

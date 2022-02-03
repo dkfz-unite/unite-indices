@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Genes
 {
-    public class GeneIndex : Basic.Mutations.GeneIndex
+    public class GeneIndex : Basic.Genome.GeneIndex
     {
         public MutationIndex[] Mutations { get; set; }
 
