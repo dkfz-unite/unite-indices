@@ -7,7 +7,6 @@
         public string Type { get; set; }
         public string TumorType { get; set; }
         public string Source { get; set; }
-        public int? ExtractionDay { get; set; }
 
         public MolecularDataIndex MolecularData { get; set; }
     }

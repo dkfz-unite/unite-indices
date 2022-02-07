@@ -3,6 +3,7 @@
     public class SpecimenIndex
     {
         public int Id { get; set; }
+        public int? CreationDay { get; set; }
         
         public TissueIndex Tissue { get; set; }
         public CellLineIndex CellLine { get; set; }
