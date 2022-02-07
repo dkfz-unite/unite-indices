@@ -6,7 +6,6 @@
 
         public string Code { get; set; }
         public string Chromosome { get; set; }
-        public string SequenceType { get; set; }
         public int Start { get; set; }
         public int End { get; set; }
         public string Type { get; set; }
