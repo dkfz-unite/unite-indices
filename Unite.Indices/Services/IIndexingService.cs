@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Unite.Indices.Services
 {
     public interface IIndexingService<T>
     {
-        void IndexOne(T index);
-        void IndexMany(IEnumerable<T> indices);
-        void UpdateMapping();
+        Task IndexOne(T index);
+        Task IndexMany(IEnumerable<T> indices);
+        Task UpdateMapping();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Nest;
 using Unite.Indices.Services.Configuration.Options;
 
@@ -30,7 +31,7 @@ namespace Unite.Indices.Services
             _client = new ElasticClient(settings);
         }
 
-        public virtual async void IndexOne(T index)
+        public virtual async Task IndexOne(T index)
         {
             var response = await _client.UpdateAsync<T>(index, update => update
                 .Doc(index)
@@ -43,7 +44,7 @@ namespace Unite.Indices.Services
             }
         }
 
-        public virtual async void IndexMany(IEnumerable<T> indices)
+        public virtual async Task IndexMany(IEnumerable<T> indices)
         {
             var response = await _client.BulkAsync(bulk => bulk
                 .UpdateMany(indices, (update, index) => update
@@ -58,7 +59,7 @@ namespace Unite.Indices.Services
             }
         }
 
-        public virtual async void UpdateMapping()
+        public virtual async Task UpdateMapping()
         {
             var response = await _client.MapAsync<T>(mapping => mapping
                 .AutoMap()
