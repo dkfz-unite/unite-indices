@@ -57,5 +57,18 @@ namespace Unite.Indices.Services
                 throw response.OriginalException;
             }
         }
+
+        public virtual async void UpdateMapping()
+        {
+            var response = await _client.MapAsync<T>(mapping => mapping
+                .AutoMap()
+                .AllowNoIndices()
+            );
+
+            if (!response.IsValid)
+            {
+                throw response.OriginalException;
+            }
+        }
     }
 }
