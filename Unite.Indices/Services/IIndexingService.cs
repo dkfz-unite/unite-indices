@@ -6,5 +6,6 @@ namespace Unite.Indices.Services
     {
         void IndexOne(T index);
         void IndexMany(IEnumerable<T> indices);
+        void UpdateMapping();
     }
 }
