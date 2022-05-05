@@ -61,33 +61,31 @@ namespace Unite.Indices.Services
 
         public virtual async Task UpdateMapping()
         {
-            var client = (ElasticClient)_client;
+            var existsResponse = await _client.Indices.ExistsAsync(DefaultIndex);
 
-            var existsResponse = await client.Indices.ExistsAsync(DefaultIndex);
-
-            if (!existsResponse.IsValid)
+            if (existsResponse.OriginalException != null)
             {
                 throw existsResponse.OriginalException;
             }
 
             if (existsResponse.Exists)
             {
-                var updateMappingResponse = await client.Indices.PutMappingAsync<T>(mapping =>
+                var updateMappingResponse = await _client.Indices.PutMappingAsync<T>(mapping =>
                     mapping.AutoMap()
                 );
 
-                if (!updateMappingResponse.IsValid)
+                if (updateMappingResponse.OriginalException != null)
                 {
                     throw updateMappingResponse.OriginalException;
                 }
             }
             else
             {
-                var createIndexResponse = await client.Indices.CreateAsync(DefaultIndex, request =>
+                var createIndexResponse = await _client.Indices.CreateAsync(DefaultIndex, request =>
                     request.Map<T>(mapping => mapping.AutoMap())
                 );
 
-                if (!createIndexResponse.IsValid)
+                if (createIndexResponse.OriginalException != null)
                 {
                     throw createIndexResponse.OriginalException;
                 }
