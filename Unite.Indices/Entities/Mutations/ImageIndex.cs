@@ -1,6 +1,5 @@
-﻿namespace Unite.Indices.Entities.Mutations
+﻿namespace Unite.Indices.Entities.Mutations;
+
+public class ImageIndex : Basic.Images.ImageIndex
 {
-    public class ImageIndex : Basic.Images.ImageIndex
-    {
-    }
 }

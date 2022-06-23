@@ -1,6 +1,5 @@
-﻿namespace Unite.Indices.Entities.Genes
+﻿namespace Unite.Indices.Entities.Genes;
+
+public class ImageIndex : Basic.Images.ImageIndex
 {
-    public class ImageIndex : Basic.Images.ImageIndex
-    {
-    }
 }

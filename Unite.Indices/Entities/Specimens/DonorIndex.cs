@@ -1,7 +1,6 @@
-﻿namespace Unite.Indices.Entities.Specimens
+﻿namespace Unite.Indices.Entities.Specimens;
+
+public class DonorIndex : Basic.Donors.DonorIndex
 {
-    public class DonorIndex : Basic.Donors.DonorIndex
-    {
-        public ImageIndex[] Images { get; set; }
-    }
+    public ImageIndex[] Images { get; set; }
 }

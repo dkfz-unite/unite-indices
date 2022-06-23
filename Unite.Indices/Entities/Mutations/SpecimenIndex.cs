@@ -1,6 +1,6 @@
-﻿namespace Unite.Indices.Entities.Mutations
+﻿
+namespace Unite.Indices.Entities.Mutations;
+
+public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
-    public class SpecimenIndex : Basic.Specimens.SpecimenIndex
-    {
-    }
 }

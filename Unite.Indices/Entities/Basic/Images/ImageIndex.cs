@@ -1,11 +1,10 @@
-﻿namespace Unite.Indices.Entities.Basic.Images
+﻿namespace Unite.Indices.Entities.Basic.Images;
+
+public class ImageIndex
 {
-    public class ImageIndex
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public int? ScanningDay { get; set; }
+    public int? ScanningDay { get; set; }
 
-        public MriImageIndex MriImage { get; set; }
-    }
+    public MriImageIndex MriImage { get; set; }
 }

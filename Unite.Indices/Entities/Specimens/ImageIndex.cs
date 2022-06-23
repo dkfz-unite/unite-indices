@@ -1,6 +1,5 @@
-﻿namespace Unite.Indices.Entities.Specimens
+﻿namespace Unite.Indices.Entities.Specimens;
+
+public class ImageIndex : Basic.Images.ImageIndex
 {
-    public class ImageIndex : Basic.Images.ImageIndex
-    {
-    }
 }

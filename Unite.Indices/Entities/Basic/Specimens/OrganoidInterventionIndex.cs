@@ -1,11 +1,10 @@
-﻿namespace Unite.Indices.Entities.Basic.Specimens
+﻿namespace Unite.Indices.Entities.Basic.Specimens;
+
+public class OrganoidInterventionIndex
 {
-    public class OrganoidInterventionIndex
-    {
-        public string Type { get; set; }
-        public string Details { get; set; }
-        public int? StartDay { get; set; }
-        public int? DurationDays { get; set; }
-        public string Results { get; set; }
-    }
+    public string Type { get; set; }
+    public string Details { get; set; }
+    public int? StartDay { get; set; }
+    public int? DurationDays { get; set; }
+    public string Results { get; set; }
 }

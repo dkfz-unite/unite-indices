@@ -1,7 +1,6 @@
-﻿namespace Unite.Indices.Entities.Images
+﻿namespace Unite.Indices.Entities.Images;
+
+public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
-    public class SpecimenIndex : Basic.Specimens.SpecimenIndex
-    {
-        public MutationIndex[] Mutations { get; set; }
-    }
+    public MutationIndex[] Mutations { get; set; }
 }

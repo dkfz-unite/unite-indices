@@ -1,14 +1,13 @@
-﻿namespace Unite.Indices.Entities.Basic.Genome
+﻿namespace Unite.Indices.Entities.Basic.Genome;
+
+public class ProteinIndex
 {
-    public class ProteinIndex
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Symbol { get; set; }
-        public int? Start { get; set; }
-        public int? End { get; set; }
-        public int? Length { get; set; }
+    public string Symbol { get; set; }
+    public int? Start { get; set; }
+    public int? End { get; set; }
+    public int? Length { get; set; }
 
-        public string EnsemblId { get; set; }
-    }
+    public string EnsemblId { get; set; }
 }

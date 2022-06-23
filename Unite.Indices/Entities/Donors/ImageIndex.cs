@@ -1,6 +1,5 @@
-﻿namespace Unite.Indices.Entities.Donors
+﻿namespace Unite.Indices.Entities.Donors;
+
+public class ImageIndex : Basic.Images.ImageIndex
 {
-    public class ImageIndex : Basic.Images.ImageIndex
-    {
-    }
 }

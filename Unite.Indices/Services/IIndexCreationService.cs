@@ -1,8 +1,6 @@
-﻿namespace Unite.Indices.Services
+﻿namespace Unite.Indices.Services;
+
+public interface IIndexCreationService<T> where T : class
 {
-    public interface IIndexCreationService<T>
-        where T : class
-    {
-        T CreateIndex(object key);
-    }
+    T CreateIndex(object key);
 }

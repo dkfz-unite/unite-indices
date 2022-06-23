@@ -1,9 +1,8 @@
-﻿namespace Unite.Indices.Services.Configuration.Options
+﻿namespace Unite.Indices.Services.Configuration.Options;
+
+public interface IElasticOptions
 {
-    public interface IElasticOptions
-    {
-        string Host { get; }
-        string User { get; }
-        string Password { get; }
-    }
+    string Host { get; }
+    string User { get; }
+    string Password { get; }
 }

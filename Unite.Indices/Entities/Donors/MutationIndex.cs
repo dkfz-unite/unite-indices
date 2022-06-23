@@ -1,6 +1,5 @@
-﻿namespace Unite.Indices.Entities.Donors
+﻿namespace Unite.Indices.Entities.Donors;
+
+public class MutationIndex : Basic.Genome.Mutations.MutationIndex
 {
-    public class MutationIndex : Basic.Genome.Mutations.MutationIndex
-    {
-    }
 }
