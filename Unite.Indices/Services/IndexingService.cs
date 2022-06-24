@@ -20,6 +20,7 @@ public abstract class IndexingService<T> : IIndexingService<T>
         var settings = new ConnectionSettings(host)
             .DisableAutomaticProxyDetection()
             .BasicAuthentication(options.User, options.Password)
+            .EnableApiVersioningHeader()
             .DefaultMappingFor<T>(map => map
                 .IndexName(DefaultIndex)
                 .IdProperty(IdProperty)
