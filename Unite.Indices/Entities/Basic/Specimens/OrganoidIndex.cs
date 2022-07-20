@@ -10,5 +10,6 @@ public class OrganoidIndex
 
     public MolecularDataIndex MolecularData { get; set; }
 
+    public DrugScreeningIndex[] DrugScreenings { get; set; }
     public OrganoidInterventionIndex[] Interventions { get; set; }
 }

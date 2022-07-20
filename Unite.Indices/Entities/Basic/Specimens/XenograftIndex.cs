@@ -16,5 +16,6 @@ public class XenograftIndex
 
     public MolecularDataIndex MolecularData { get; set; }
 
+    public DrugScreeningIndex[] DrugScreenings { get; set; }
     public XenograftInterventionIndex[] Interventions { get; set; }
 }

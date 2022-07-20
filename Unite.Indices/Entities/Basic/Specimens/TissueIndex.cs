@@ -9,4 +9,6 @@ public class TissueIndex
     public string Source { get; set; }
 
     public MolecularDataIndex MolecularData { get; set; }
+
+    public DrugScreeningIndex[] DrugScreenings { get; set; }
 }
