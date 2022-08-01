@@ -11,5 +11,4 @@ public class DrugScreeningIndex
     public double? AbsIC25 { get; set; }
     public double? AbsIC50 { get; set; }
     public double? AbsIC75 { get; set; }
-    public double[] Inhibition { get; set; }
 }
