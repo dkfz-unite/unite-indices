@@ -18,4 +18,10 @@ public class SpecimenIndex : Basic.Specimens.SpecimenIndex
     /// Number of expressed genes
     /// </summary>
     public int NumberOfGenes { get; set; }
+
+
+    /// <summary>
+    /// Number of drugs tested
+    /// </summary>
+    public int NumberOfDrugs { get; set; }
 }
