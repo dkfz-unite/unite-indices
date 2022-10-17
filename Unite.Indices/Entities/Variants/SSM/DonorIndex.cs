@@ -1,4 +1,4 @@
-﻿namespace Unite.Indices.Entities.Mutations;
+﻿namespace Unite.Indices.Entities.Variants.SSM;
 
 public class DonorIndex : Basic.Donors.DonorIndex
 {

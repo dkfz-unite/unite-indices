@@ -1,4 +1,4 @@
-﻿namespace Unite.Indices.Entities.Basic.Genome.Mutations;
+﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
 public class ConsequenceIndex
 {

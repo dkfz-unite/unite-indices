@@ -10,6 +10,6 @@ public class DonorIndex
 
     public ClinicalDataIndex ClinicalData { get; set; }
     public TreatmentIndex[] Treatments { get; set; }
-    public WorkPackageIndex[] WorkPackages { get; set; }
+    public ProjectIndex[] Projects { get; set; }
     public StudyIndex[] Studies { get; set; }
 }

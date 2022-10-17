@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Basic.Genome;
 
-public class TranscriptIndex
+public class TranscriptIndex : FeatureIndex
 {
     public int Id { get; set; }
 
@@ -13,6 +13,5 @@ public class TranscriptIndex
 
     public string EnsemblId { get; set; }
 
-    public GeneIndex Gene { get; set; }
     public ProteinIndex Protein { get; set; }
 }
