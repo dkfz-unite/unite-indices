@@ -1,7 +1,11 @@
-﻿namespace Unite.Indices.Entities.Basic.Genome.Variants.CNV;
+﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
-public class VariantIndex : Variants.VariantIndex
+public class CopyNumberVariantIndex
 {
+    public string Chromosome { get; set; }
+    public int Start { get; set; }
+    public int End { get; set; }
+
     public string SvType { get; set; }
     public string CnaType { get; set; }
     public bool? Loh { get; set; }
@@ -13,6 +17,4 @@ public class VariantIndex : Variants.VariantIndex
     public int? C2 { get; set; }
     public int? Tcn { get; set; }
     public double? DhMax { get; set; }
-
-    public AffectedTranscriptIndex[] AffectedTranscripts { get; set; }
 }

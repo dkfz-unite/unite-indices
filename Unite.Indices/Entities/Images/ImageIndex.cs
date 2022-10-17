@@ -2,14 +2,8 @@
 
 public class ImageIndex : Basic.Images.ImageIndex
 {
-    /// <summary>
-    /// Donor of the image
-    /// </summary>
     public DonorIndex Donor { get; set; }
 
-    /// <summary>
-    /// Image donor tissues
-    /// </summary>
     public SpecimenIndex[] Specimens { get; set; }
 
 
