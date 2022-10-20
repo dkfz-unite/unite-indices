@@ -2,7 +2,7 @@
 
 public class VariantIndex : Basic.Genome.Variants.VariantIndex
 {
-    public DonorIndex[] Donors { get; set; }
+    public SpecimenIndex[] Specimens { get; set; }
 
     /// <summary>
     /// Total number of donors affected by the variant
