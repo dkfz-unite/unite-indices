@@ -2,16 +2,40 @@
 
 public class VariantIndex
 {
-    public string Id => GetId();
+    private string _id;
+    private string _chromosome;
+    private int? _start;
+    private int? _end;
 
-    public string Chromosome => GetChromosome();
-    public int Start => GetStart();
-    public int End => GetEnd();
+
+    public string Id
+    {
+        get => _id ?? GetId();
+        set => _id = value;
+    }
+
+    public string Chromosome
+    {
+        get => _chromosome ?? GetChromosome();
+        set => _chromosome = value;
+    }
+
+    public int Start
+    {
+        get => _start ?? GetStart();
+        set => _start = value;
+    }
+
+    public int End
+    {
+        get => _end ?? GetEnd();
+        set => _end = value;
+    }
+
 
     public MutationIndex Mutation { get; set; }
     public CopyNumberVariantIndex CopyNumberVariant { get; set; }
     public StructuralVariantIndex StructuralVariant { get; set; }
-
     public AffectedFeatureIndex[] AffectedFeatures { get; set; }
 
 
