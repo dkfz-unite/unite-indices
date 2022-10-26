@@ -4,30 +4,46 @@ public class VariantIndex
 {
     public string Id => GetId();
 
+    public string Chromosome => GetChromosome();
+    public int Start => GetStart();
+    public int End => GetEnd();
+
     public MutationIndex Mutation { get; set; }
     public CopyNumberVariantIndex CopyNumberVariant { get; set; }
     public StructuralVariantIndex StructuralVariant { get; set; }
 
-    public AffectedTranscriptIndex[] AffectedTranscripts { get; set; }
+    public AffectedFeatureIndex[] AffectedFeatures { get; set; }
 
 
     private string GetId()
     {
-        if (Mutation != null)
-        {
-            return $"SSM{Mutation.Id}";
-        }
-        else if (CopyNumberVariant != null)
-        {
-            return $"CNV{CopyNumberVariant.Id}";
-        }
-        else if (StructuralVariant != null)
-        {
-            return $"SV{StructuralVariant.Id}";
-        }
-        else
-        {
-            throw new NotSupportedException("Variant type is not recognized");
-        }
+        return Mutation != null ? $"SSM{Mutation.Id}" :
+               CopyNumberVariant != null ? $"CNV{CopyNumberVariant.Id}" :
+               StructuralVariant != null ? $"SV{StructuralVariant.Id}" :
+               throw new NullReferenceException("Specific variant is not set");
+    }
+
+    private string GetChromosome()
+    {
+        return Mutation != null ? Mutation.Chromosome :
+               CopyNumberVariant != null ? CopyNumberVariant.Chromosome :
+               StructuralVariant != null ? StructuralVariant.Chromosome :
+               throw new NullReferenceException("Specific variant is not set");
+    }
+
+    private int GetStart()
+    {
+        return Mutation != null ? Mutation.Start :
+               CopyNumberVariant != null ? CopyNumberVariant.Start :
+               StructuralVariant != null ? StructuralVariant.Start :
+               throw new NullReferenceException("Specific variant is not set");
+    }
+
+    private int GetEnd()
+    {
+        return Mutation != null ? Mutation.End :
+               CopyNumberVariant != null ? CopyNumberVariant.End :
+               StructuralVariant != null ? StructuralVariant.End :
+               throw new NullReferenceException("Specific variant is not set");
     }
 }

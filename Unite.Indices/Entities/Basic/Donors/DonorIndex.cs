@@ -1,6 +1,4 @@
-﻿using Unite.Indices.Entities.Basic.Donors.Clinical;
-
-namespace Unite.Indices.Entities.Basic.Donors;
+﻿namespace Unite.Indices.Entities.Basic.Donors;
 
 public class DonorIndex
 {

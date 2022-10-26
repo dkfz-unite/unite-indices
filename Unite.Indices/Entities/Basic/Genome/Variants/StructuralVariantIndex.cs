@@ -15,5 +15,4 @@ public class StructuralVariantIndex
     public string Type { get; set; }
     public string Ref { get; set; }
     public string Alt { get; set; }
-
 }

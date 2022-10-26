@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<ReleaseVersion>3.3.3</ReleaseVersion>
-		<Version>3.3.3</Version>
+		<ReleaseVersion>3.3.4</ReleaseVersion>
+		<Version>3.3.4</Version>
 		<SynchReleaseVersion>false</SynchReleaseVersion>
 		<RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
 		<Authors>Valiantsin Ulasau (DKFZ)</Authors>
@@ -21,7 +21,6 @@
 		<Folder Include="Entities\Genes\" />
 		<Folder Include="Entities\Images\" />
 		<Folder Include="Entities\Basic\Images\" />
-		<Folder Include="Entities\Basic\Donors\Clinical\" />
 		<Folder Include="Entities\Basic\Genome\" />
 		<Folder Include="Entities\Basic\Genome\Variants\" />
 		<Folder Include="Entities\Variants\" />
@@ -33,7 +32,6 @@
 		<None Remove="Entities\Genes\" />
 		<None Remove="Entities\Images\" />
 		<None Remove="Entities\Basic\Images\" />
-		<None Remove="Entities\Basic\Donors\Clinical\" />
 		<None Remove="Entities\Basic\Genome\" />
 		<None Remove="Entities\Basic\Genome\Variants\" />
 		<None Remove="Entities\Variants\" />

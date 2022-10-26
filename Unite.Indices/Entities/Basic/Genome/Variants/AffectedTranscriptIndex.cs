@@ -1,7 +1,9 @@
 ﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
-public class AffectedTranscriptIndex : AffectedFeatureIndex<TranscriptIndex>
+public class AffectedTranscriptIndex
 {
+    public TranscriptIndex Feature { get; set; }
+
     public string AminoAcidChange { get; set; }
     public string CodonChange { get; set; }
 

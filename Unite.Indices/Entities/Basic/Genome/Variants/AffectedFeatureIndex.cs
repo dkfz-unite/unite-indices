@@ -1,10 +1,12 @@
 ﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
-public abstract class AffectedFeatureIndex<TFeatureIndex> where TFeatureIndex : FeatureIndex
+public class AffectedFeatureIndex
 {
-    public TFeatureIndex Feature { get; set; }
-
     public GeneIndex Gene { get; set; }
+
+    public AffectedTranscriptIndex Transcript { get; set; }
+    //public AffectedRegulatorIndex Regulator { get; set; }
+    //public AffectedMotifIndex Motif { get; set; }
 
     public ConsequenceIndex[] Consequences { get; set; }
 }

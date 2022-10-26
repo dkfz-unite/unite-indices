@@ -7,8 +7,4 @@ public class TissueIndex
     public string Type { get; set; }
     public string TumorType { get; set; }
     public string Source { get; set; }
-
-    public MolecularDataIndex MolecularData { get; set; }
-
-    public DrugScreeningIndex[] DrugScreenings { get; set; }
 }
