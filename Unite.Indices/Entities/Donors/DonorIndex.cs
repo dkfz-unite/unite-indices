@@ -2,38 +2,71 @@
 
 public class DonorIndex : Basic.Donors.DonorIndex
 {
+    private int? _numberOfImages;
+    private int? _numberOfSpecimens;
+    private int? _numberOfGenes;
+    private int? _numberOfMutations;
+    private int? _numberOfCopyNumberVariants;
+    private int? _numberOfStructuralVariants;
+
+
     public ImageIndex[] Images { get; set; }
     public SpecimenIndex[] Specimens { get; set; }
+
 
     /// <summary>
     /// Number of donor images
     /// </summary>
-    public int NumberOfImages => GetNumberOfImages();
+    public int NumberOfImages
+    {
+        get => _numberOfImages ?? GetNumberOfImages();
+        set => _numberOfImages = value;
+    }
 
     /// <summary>
     /// Number of donor specimens
     /// </summary>
-    public int NumberOfSpecimens => GetNumberOfSpecimens();
+    public int NumberOfSpecimens
+    {
+        get => _numberOfSpecimens ?? GetNumberOfSpecimens();
+        set => _numberOfSpecimens = value;
+    }
 
     /// <summary>
     /// Total number of genes affected by any variant across all specimens of the donor
     /// </summary>
-    public int NumberOfGenes => GetNumberOfGenes();
+    public int NumberOfGenes
+    {
+        get => _numberOfGenes ?? GetNumberOfGenes();
+        set => _numberOfGenes = value;
+    }
 
     /// <summary>
     /// Total number of donor mutations across all specimens
     /// </summary>
-    public int NumberOfMutations => GetNumberofMutations();
+    public int NumberOfMutations
+    {
+        get => _numberOfMutations ?? GetNumberofMutations();
+        set => _numberOfMutations = value;
+    }
 
     /// <summary>
     /// Total number of donor copy number variants across all specimens
     /// </summary>
-    public int NumberOfCopyNumberVariants => GetNumberOfCopyNumberVariants();
+    public int NumberOfCopyNumberVariants
+    {
+        get => _numberOfCopyNumberVariants ?? GetNumberOfCopyNumberVariants();
+        set => _numberOfCopyNumberVariants = value;
+    }
 
     /// <summary>
     /// Total number of donor structural variants across all specimens
     /// </summary>
-    public int NumberOfStructuralVariants => GetNumberOfStructuralVariants();
+    public int NumberOfStructuralVariants
+    {
+        get => _numberOfStructuralVariants ?? GetNumberOfStructuralVariants();
+        set => _numberOfStructuralVariants = value;
+    }
 
 
     private int GetNumberOfImages()
