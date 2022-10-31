@@ -82,6 +82,7 @@ public class DonorIndex : Basic.Donors.DonorIndex
     private int GetNumberOfGenes()
     {
         return Specimens?
+            .Where(specimen => specimen.Variants != null)
             .SelectMany(specimen => specimen.Variants)
             .Where(variant => variant.AffectedFeatures != null)
             .SelectMany(variant => variant.AffectedFeatures)
@@ -94,7 +95,8 @@ public class DonorIndex : Basic.Donors.DonorIndex
     private int GetNumberofMutations()
     {
         return Specimens?
-            .SelectMany(specimen => specimen.Variants)
+            .Where(specimen => specimen.Variants != null)
+            .SelectMany(specimen => specimen.Variants)?
             .Where(variant => variant.Mutation != null)
             .DistinctBy(variant => variant.Id)
             .Count() ?? 0;
@@ -103,6 +105,7 @@ public class DonorIndex : Basic.Donors.DonorIndex
     private int GetNumberOfCopyNumberVariants()
     {
         return Specimens?
+            .Where(specimen => specimen.Variants != null)
             .SelectMany(specimen => specimen.Variants)
             .Where(variant => variant.CopyNumberVariant != null)
             .DistinctBy(variant => variant.Id)
@@ -112,6 +115,7 @@ public class DonorIndex : Basic.Donors.DonorIndex
     private int GetNumberOfStructuralVariants()
     {
         return Specimens?
+            .Where(specimen => specimen.Variants != null)
             .SelectMany(specimen => specimen.Variants)
             .Where(variant => variant.StructuralVariant != null)
             .DistinctBy(variant => variant.Id)

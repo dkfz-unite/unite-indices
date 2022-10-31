@@ -53,6 +53,7 @@ public class ImageIndex : Basic.Images.ImageIndex
     private int GetnumberOfGenes()
     {
         return Specimens?
+            .Where(specimen => specimen.Variants != null)
             .SelectMany(specimen => specimen.Variants)
             .Where(variant => variant.AffectedFeatures != null)
             .SelectMany(variant => variant.AffectedFeatures)
@@ -65,6 +66,7 @@ public class ImageIndex : Basic.Images.ImageIndex
     private int GetNumberofMutations()
     {
         return Specimens?
+            .Where(specimen => specimen.Variants != null)
             .SelectMany(specimen => specimen.Variants)
             .Where(variant => variant.Mutation != null)
             .DistinctBy(variant => variant.Id)
@@ -74,6 +76,7 @@ public class ImageIndex : Basic.Images.ImageIndex
     private int GetNumberofCopyNumberVariants()
     {
         return Specimens?
+            .Where(specimen => specimen.Variants != null)
             .SelectMany(specimen => specimen.Variants)
             .Where(variant => variant.CopyNumberVariant != null)
             .DistinctBy(variant => variant.Id)
@@ -83,6 +86,7 @@ public class ImageIndex : Basic.Images.ImageIndex
     private int GetNumberOfStructuralVariants()
     {
         return Specimens?
+            .Where(specimen => specimen.Variants != null)
             .SelectMany(specimen => specimen.Variants)
             .Where(variant => variant.StructuralVariant != null)
             .DistinctBy(variant => variant.Id)
