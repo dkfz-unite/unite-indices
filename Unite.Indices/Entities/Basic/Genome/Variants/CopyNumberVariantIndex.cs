@@ -7,6 +7,7 @@ public class CopyNumberVariantIndex
     public string Chromosome { get; set; }
     public int Start { get; set; }
     public int End { get; set; }
+    public int Length { get; set; }
 
     public string SvType { get; set; }
     public string CnaType { get; set; }
@@ -18,5 +19,6 @@ public class CopyNumberVariantIndex
     public int? C1 { get; set; }
     public int? C2 { get; set; }
     public int? Tcn { get; set; }
+    public double? TcnRatio { get; set; }
     public double? DhMax { get; set; }
 }

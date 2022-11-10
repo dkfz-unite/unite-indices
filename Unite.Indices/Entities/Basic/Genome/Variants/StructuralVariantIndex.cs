@@ -12,6 +12,8 @@ public class StructuralVariantIndex
     public int OtherStart { get; set; }
     public int OtherEnd { get; set; }
 
+    public int Length { get; set; }
+
     public string Type { get; set; }
     public bool? Inverted { get; set; }
     public string FlankingSequenceFrom { get; set; }
