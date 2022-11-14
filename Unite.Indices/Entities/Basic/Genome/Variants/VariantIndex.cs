@@ -36,8 +36,7 @@ public class VariantIndex
     public MutationIndex Mutation { get; set; }
     public CopyNumberVariantIndex CopyNumberVariant { get; set; }
     public StructuralVariantIndex StructuralVariant { get; set; }
-    public AffectedFeatureIndex[] AffectedFeatures { get; set; } // Not Used by gene index
-    public ConsequenceIndex[] Consequences { get; set; } // Used by gene index
+    public AffectedFeatureIndex[] AffectedFeatures { get; set; }
 
     private string GetId()
     {
