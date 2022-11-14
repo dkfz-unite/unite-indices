@@ -90,19 +90,6 @@ public class GeneIndex : Basic.Genome.GeneIndex
         return Specimens?.Length ?? 0;
     }
 
-    private int GetNumberOfGenes()
-    {
-        return Specimens?
-            .Where(specimen => specimen.Variants != null)
-            .SelectMany(specimen => specimen.Variants)
-            .Where(variant => variant.AffectedFeatures != null)
-            .SelectMany(variant => variant.AffectedFeatures)
-            .Where(feature => feature.Gene != null)
-            .Select(feature => feature.Gene)
-            .DistinctBy(gene => gene.Id)
-            .Count() ?? 0;
-    }
-
     private int GetNumberOfMutations()
     {
         return Specimens?

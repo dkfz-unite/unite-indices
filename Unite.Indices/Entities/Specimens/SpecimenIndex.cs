@@ -56,7 +56,7 @@ public class SpecimenIndex : Basic.Specimens.SpecimenIndex
     /// <summary>
     /// Number of structural variants in the specimen
     /// </summary>
-    public int NumberStructuralVariants
+    public int NumberOfStructuralVariants
     {
         get => _numberOfStructuralVariants ?? GetNumberOfStructuralVariants();
         set => _numberOfStructuralVariants = value;

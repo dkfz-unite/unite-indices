@@ -1,4 +1,6 @@
-﻿namespace Unite.Indices.Entities.Variants;
+﻿using Unite.Indices.Entities.Basic.Genome.Variants;
+
+namespace Unite.Indices.Entities.Variants;
 
 public class VariantIndex : Basic.Genome.Variants.VariantIndex
 {
@@ -8,6 +10,7 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
 
 
     public SpecimenIndex[] Specimens { get; set; }
+    public AffectedFeatureIndex[] AffectedFeatures { get; set; }
 
 
     /// <summary>
