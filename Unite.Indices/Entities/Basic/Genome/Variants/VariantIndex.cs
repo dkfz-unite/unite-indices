@@ -6,6 +6,7 @@ public class VariantIndex
     private string _chromosome;
     private int? _start;
     private int? _end;
+    private int? _length;
 
 
     public string Id
@@ -30,6 +31,12 @@ public class VariantIndex
     {
         get => _end ?? GetEnd();
         set => _end = value;
+    }
+
+    public int? Length
+    {
+        get => _length ?? GetLength();
+        set => _length = value;
     }
 
 
@@ -67,6 +74,14 @@ public class VariantIndex
         return Mutation != null ? Mutation.End :
                CopyNumberVariant != null ? CopyNumberVariant.End :
                StructuralVariant != null ? StructuralVariant.End :
+               throw new NullReferenceException("Specific variant is not set");
+    }
+
+    private int? GetLength()
+    {
+        return Mutation != null ? Mutation.Length :
+               CopyNumberVariant != null ? CopyNumberVariant.Length :
+               StructuralVariant != null ? StructuralVariant.Length :
                throw new NullReferenceException("Specific variant is not set");
     }
 }
