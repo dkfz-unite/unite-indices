@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<ReleaseVersion>3.3.16</ReleaseVersion>
-		<Version>3.3.16</Version>
+		<ReleaseVersion>3.3.17</ReleaseVersion>
+		<Version>3.3.17</Version>
 		<SynchReleaseVersion>false</SynchReleaseVersion>
 		<RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
 		<Authors>Valiantsin Ulasau (DKFZ)</Authors>

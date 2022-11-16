@@ -43,7 +43,15 @@ public class VariantIndex
     public MutationIndex Mutation { get; set; }
     public CopyNumberVariantIndex CopyNumberVariant { get; set; }
     public StructuralVariantIndex StructuralVariant { get; set; }
-    public AffectedFeatureIndex[] AffectedFeatures { get; set; }
+
+
+    public AffectedFeatureIndex[] GetAffectedFeatures()
+    {
+        return Mutation != null ? Mutation.AffectedFeatures :
+               CopyNumberVariant != null ? CopyNumberVariant.AffectedFeatures :
+               StructuralVariant != null ? StructuralVariant.AffectedFeatures :
+               throw new NullReferenceException("Specific variant is not set");
+    }
 
     private string GetId()
     {

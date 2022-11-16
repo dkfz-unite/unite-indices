@@ -53,10 +53,10 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
 
     private int GetNumberOfGenes()
     {
-        return AffectedFeatures?
-            .Where(feature => feature.Gene != null)
-            .Select(feature => feature.Gene)
-            .DistinctBy(gene => gene.Id)
-            .Count() ?? 0;
+        return GetAffectedFeatures()?
+               .Where(feature => feature.Gene != null)
+               .Select(feature => feature.Gene)
+               .DistinctBy(gene => gene.Id)
+               .Count() ?? 0;
     }
 }

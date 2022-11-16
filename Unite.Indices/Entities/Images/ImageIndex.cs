@@ -55,8 +55,8 @@ public class ImageIndex : Basic.Images.ImageIndex
         return Specimens?
             .Where(specimen => specimen.Variants != null)
             .SelectMany(specimen => specimen.Variants)
-            .Where(variant => variant.AffectedFeatures != null)
-            .SelectMany(variant => variant.AffectedFeatures)
+            .Where(variant => variant.GetAffectedFeatures() != null)
+            .SelectMany(variant => variant.GetAffectedFeatures())
             .Where(feature => feature.Gene != null)
             .Select(feature => feature.Gene)
             .DistinctBy(gene => gene.Id)

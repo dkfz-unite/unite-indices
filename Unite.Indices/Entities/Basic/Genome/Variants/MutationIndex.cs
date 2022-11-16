@@ -12,4 +12,6 @@ public class MutationIndex
     public string Type { get; set; }
     public string Ref { get; set; }
     public string Alt { get; set; }
+
+    public AffectedFeatureIndex[] AffectedFeatures { get; set; }
 }
