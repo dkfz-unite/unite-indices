@@ -65,7 +65,7 @@ public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 
     private int GetNumberOfDrugs()
     {
-        return DrugScreenings?
+        return GetDrugScreenings()?
             .DistinctBy(screening => screening.Drug)
             .Count() ?? 0;
     }

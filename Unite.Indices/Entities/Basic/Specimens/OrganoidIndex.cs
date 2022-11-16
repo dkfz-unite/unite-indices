@@ -8,5 +8,7 @@ public class OrganoidIndex
     public bool? Tumorigenicity { get; set; }
     public string Medium { get; set; }
 
+    public MolecularDataIndex MolecularData { get; set; }
+    public DrugScreeningIndex[] DrugScreenings { get; set; }
     public OrganoidInterventionIndex[] Interventions { get; set; }
 }

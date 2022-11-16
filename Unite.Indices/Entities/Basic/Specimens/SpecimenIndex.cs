@@ -11,6 +11,13 @@ public class SpecimenIndex
     public OrganoidIndex Organoid { get; set; }
     public XenograftIndex Xenograft { get; set; }
 
-    public MolecularDataIndex MolecularData { get; set; }
-    public DrugScreeningIndex[] DrugScreenings { get; set; }
+
+    public DrugScreeningIndex[] GetDrugScreenings()
+    {
+        return Tissue != null ? null
+             : CellLine != null ? CellLine.DrugScreenings
+             : Organoid != null ? Organoid.DrugScreenings
+             : Xenograft != null ? Xenograft.DrugScreenings
+             : throw new NullReferenceException("Specific specimen type is not set");
+    }
 }

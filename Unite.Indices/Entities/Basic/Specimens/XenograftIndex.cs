@@ -14,5 +14,7 @@ public class XenograftIndex
     public int? SurvivalDaysFrom { get; set; }
     public int? SurvivalDaysTo { get; set; }
 
+    public MolecularDataIndex MolecularData { get; set; }
+    public DrugScreeningIndex[] DrugScreenings { get; set; }
     public XenograftInterventionIndex[] Interventions { get; set; }
 }
