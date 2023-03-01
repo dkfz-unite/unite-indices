@@ -51,7 +51,7 @@ public abstract class IndexingService<T> : IIndexingService<T>
             )
         );
 
-        if (!response.IsValid)
+        if (!response.IsValid || response.Errors)
         {
             throw response.OriginalException;
         }

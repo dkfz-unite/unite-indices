@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<ReleaseVersion>4.0.0</ReleaseVersion>
-		<Version>4.0.0</Version>
+		<ReleaseVersion>4.1.0</ReleaseVersion>
+		<Version>4.1.0</Version>
 		<SynchReleaseVersion>false</SynchReleaseVersion>
 		<RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
 		<Authors>Valiantsin Ulasau (DKFZ)</Authors>
@@ -24,6 +24,7 @@
 		<Folder Include="Entities\Basic\Genome\" />
 		<Folder Include="Entities\Basic\Genome\Variants\" />
 		<Folder Include="Entities\Variants\" />
+		<Folder Include="Entities\Basic\Genome\Transcriptomics\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="NEST" Version="7.17.5" />
@@ -35,5 +36,6 @@
 		<None Remove="Entities\Basic\Genome\" />
 		<None Remove="Entities\Basic\Genome\Variants\" />
 		<None Remove="Entities\Variants\" />
+		<None Remove="Entities\Basic\Genome\Transcriptomics\" />
 	</ItemGroup>
 </Project>
