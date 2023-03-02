@@ -14,6 +14,4 @@ public class GeneIndex
     public int? End { get; set; }
     public bool? Strand { get; set; }
     public int? ExonicLength { get; set; }
-
-    public GeneExpressionIndex Expression { get; set; }
 }
