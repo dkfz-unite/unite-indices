@@ -9,8 +9,7 @@ public class CopyNumberVariantIndex
     public int End { get; set; }
     public int Length { get; set; }
 
-    public string SvType { get; set; }
-    public string CnaType { get; set; }
+    public string Type { get; set; }
     public bool? Loh { get; set; }
     public bool? HomoDel { get; set; }
     public double? C1Mean { get; set; }
