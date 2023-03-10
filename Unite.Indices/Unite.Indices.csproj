@@ -2,38 +2,14 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ReleaseVersion>4.2.1</ReleaseVersion>
-    <Version>4.2.1</Version>
+    <ReleaseVersion>4.3.0</ReleaseVersion>
+    <Version>4.3.0</Version>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>
     <Description>Unite index models and services package.</Description>
   </PropertyGroup>
-  <!-- <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Entities\Donors\" />
-    <Folder Include="Services\" />
-    <Folder Include="Entities\Basic\" />
-    <Folder Include="Entities\Basic\Donors\" />
-    <Folder Include="Entities\Specimens\" />
-    <Folder Include="Entities\Genes\" />
-    <Folder Include="Entities\Images\" />
-    <Folder Include="Entities\Basic\Images\" />
-    <Folder Include="Entities\Basic\Genome\" />
-    <Folder Include="Entities\Basic\Genome\Variants\" />
-    <Folder Include="Entities\Variants\" />
-    <Folder Include="Entities\Basic\Genome\Transcriptomics\" />
-  </ItemGroup> -->
   <ItemGroup>
     <PackageReference Include="NEST" Version="7.17.5" />
   </ItemGroup>
-  <!-- <ItemGroup>
-		<None Remove="Entities\Genes\" />
-		<None Remove="Entities\Images\" />
-		<None Remove="Entities\Basic\Images\" />
-		<None Remove="Entities\Basic\Genome\" />
-		<None Remove="Entities\Basic\Genome\Variants\" />
-		<None Remove="Entities\Variants\" />
-		<None Remove="Entities\Basic\Genome\Transcriptomics\" />
-	</ItemGroup> -->
 </Project>
