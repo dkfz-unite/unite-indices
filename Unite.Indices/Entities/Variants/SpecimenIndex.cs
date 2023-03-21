@@ -2,7 +2,4 @@
 
 public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
-    public DonorIndex Donor { get; set; }
-
-    public ImageIndex[] Images { get; set; }
 }
