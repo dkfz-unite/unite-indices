@@ -1,6 +1,4 @@
-﻿using Unite.Indices.Entities.Basic.Genome.Transcriptomics;
-
-namespace Unite.Indices.Entities.Basic.Genome;
+﻿namespace Unite.Indices.Entities.Basic.Genome;
 
 public class GeneIndex
 {

@@ -3,52 +3,20 @@
 public class VariantIndex : Basic.Genome.Variants.VariantIndex
 {
     private int? _numberOfDonors;
-    private int? _numberOfSpecimens;
     private int? _numberOfGenes;
 
+    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(); set => _numberOfDonors = value; }
+    public int NumberOfGenes { get => _numberOfGenes ?? GetNumberOfGenes(); set => _numberOfGenes = value; }
 
-    public SpecimenIndex[] Specimens { get; set; }
-
-
-    /// <summary>
-    /// Total number of donors affected by the variant
-    /// </summary>
-    public int NumberOfDonors
-    {
-        get => _numberOfDonors ?? GetNumberOfDonors();
-        set => _numberOfDonors = value;
-    }
-
-    /// <summary>
-    /// Total number of specimens affected by the variant across all donors
-    /// </summary>
-    public int NumberOfSpecimens
-    {
-        get => _numberOfSpecimens ?? GetNumberofSpecimens();
-        set => _numberOfSpecimens = value;
-    }
-
-    /// <summary>
-    /// Total number of genes affected by the variant across all donors
-    /// </summary>
-    public int NumberOfGenes
-    {
-        get => _numberOfGenes ?? GetNumberOfGenes();
-        set => _numberOfGenes = value;
-    }
+    public SampleIndex[] Samples { get; set; }
 
 
     private int GetNumberOfDonors()
     {
-        return Specimens?
-            .Select(specimen => specimen.Donor)
+        return Samples?
+            .Select(sample => sample.Donor)
             .DistinctBy(donor => donor.Id)
             .Count() ?? 0;
-    }
-
-    private int GetNumberofSpecimens()
-    {
-        return Specimens?.Length ?? 0;
     }
 
     private int GetNumberOfGenes()

@@ -16,8 +16,6 @@ public class StructuralVariantIndex
 
     public string Type { get; set; }
     public bool? Inverted { get; set; }
-    public string FlankingSequenceFrom { get; set; }
-    public string FlankingSequenceTo { get; set; }
 
     public AffectedFeatureIndex[] AffectedFeatures { get; set; }
 }

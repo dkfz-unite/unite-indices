@@ -19,7 +19,6 @@ public class CopyNumberVariantIndex
     public int? C2 { get; set; }
     public int? Tcn { get; set; }
     public double? TcnRatio { get; set; }
-    public double? DhMax { get; set; }
 
     public AffectedFeatureIndex[] AffectedFeatures { get; set; }
 }
