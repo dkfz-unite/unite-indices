@@ -51,20 +51,21 @@ public abstract class IndexingService<T> : IIndexingService<T>
             )
         );
 
-        if (!response.IsValid || response.Errors)
-        {
-            throw response.OriginalException;
-        }
+        HandleResponseErrors(response);
+    }
+
+    public virtual async Task DeleteIndex()
+    {
+        var response = await _client.Indices.DeleteAsync(DefaultIndex);
+
+        HandleResponseErrors(response);
     }
 
     public virtual async Task UpdateMapping()
     {
         var existsResponse = await _client.Indices.ExistsAsync(DefaultIndex);
 
-        if (existsResponse.OriginalException != null)
-        {
-            throw existsResponse.OriginalException;
-        }
+        HandleResponseErrors(existsResponse);
 
         if (existsResponse.Exists)
         {
@@ -72,10 +73,7 @@ public abstract class IndexingService<T> : IIndexingService<T>
                 mapping.AutoMap()
             );
 
-            if (updateMappingResponse.OriginalException != null)
-            {
-                throw updateMappingResponse.OriginalException;
-            }
+            HandleResponseErrors(updateMappingResponse);
         }
         else
         {
@@ -83,10 +81,16 @@ public abstract class IndexingService<T> : IIndexingService<T>
                 request.Map<T>(mapping => mapping.AutoMap())
             );
 
-            if (createIndexResponse.OriginalException != null)
-            {
-                throw createIndexResponse.OriginalException;
-            }
+            HandleResponseErrors(createIndexResponse);
+        }
+    }
+
+
+    private void HandleResponseErrors(IResponse response)
+    {
+        if (!response.IsValid)
+        {
+            throw response.OriginalException ?? new Exception(response.DebugInformation);
         }
     }
 }
