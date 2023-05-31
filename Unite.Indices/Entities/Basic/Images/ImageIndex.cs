@@ -10,8 +10,6 @@ public class ImageIndex
     public int Id { get; set; }
     public string ReferenceId { get => _referenceId ?? GetImageReferenceId(); set => _referenceId = value; }
     public string Type { get => _type ?? GetImageType(); set => _type = value; }
-    public int DonorId { get; set; }
-    public string DonorReferenceId { get; set; }
     public int? ScanningDay { get; set; }
 
     public MriImageIndex MRI { get; set; }
