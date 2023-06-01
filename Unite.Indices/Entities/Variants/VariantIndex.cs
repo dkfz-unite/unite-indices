@@ -16,11 +16,42 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
 
 
     /// <summary>
-    /// Number of donors with with the variant in any sample.
-    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(); set => _numberOfDonors = value; }
+    /// Number of donors with the variant in any sample.
+    /// </summary>
+    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(Samples); set => _numberOfDonors = value; }
 
     /// <summary>
-    /// Number of genes with the variant in any sample.
+    /// Number of MRIs with the variant in any sample.
+    /// </summary>
+    public int NumberOfMRIs { get => _numberOfMRIs ?? GetNumberOfMRIs(Samples); set => _numberOfMRIs = value; }
+
+    /// <summary>
+    /// Number of CTs with the variant in any sample.
+    /// </summary>
+    public int NumberOfCTs { get => _numberOfCTs ?? GetNumberOfCTs(Samples); set => _numberOfCTs = value; }
+
+    /// <summary>
+    /// Number of tissues with the variant in any sample.
+    /// </summary>
+    public int NumberOfTissues { get => _numberOfTissues ?? GetNumberOfTissues(Samples); set => _numberOfTissues = value; }
+
+    /// <summary>
+    /// Number of cell lines with the variant in any sample.
+    /// </summary>
+    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfCells(Samples); set => _numberOfCells = value; }
+
+    /// <summary>
+    /// Number of organoids with the variant in any sample.
+    /// </summary>
+    public int NumberOfOrganoids { get => _numberOfOrganoids ?? GetNumberOfOrganoids(Samples); set => _numberOfOrganoids = value; }
+
+    /// <summary>
+    /// Number of xenografts with the variant in any sample.
+    /// </summary>
+    public int NumberOfXenografts { get => _numberOfXenografts ?? GetNumberOfXenografts(Samples); set => _numberOfXenografts = value; }
+
+    /// <summary>
+    /// Number of genes affected by the variant in any sample.
     /// </summary>
     public int NumberOfGenes { get => _numberOfGenes ?? GetNumberOfGenes(); set => _numberOfGenes = value; }
 
@@ -28,16 +59,16 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     public SampleIndex[] Samples { get; set; }
 
 
-    private int GetNumberOfDonors()
+    public static int GetNumberOfDonors(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .DistinctBy(sample => sample.Donor.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfMRIs()
+    public static int GetNumberOfMRIs(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Images?.Any() == true)
             .SelectMany(sample => sample.Images)
             .Where(image => image.Type == ImageTypes.MRI)
@@ -45,9 +76,9 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
             .Count() ?? 0;
     }
 
-    private int GetNumberOfCTs()
+    public static int GetNumberOfCTs(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Images?.Any() == true)
             .SelectMany(sample => sample.Images)
             .Where(image => image.Type == ImageTypes.CT)
@@ -55,33 +86,33 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
             .Count() ?? 0;
     }
 
-    private int GetNumberOfTissues()
+    public static int GetNumberOfTissues(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Tissue)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfCells()
+    public static int GetNumberOfCells(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Cell)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfOrganoids()
+    public static int GetNumberOfOrganoids(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Organoid)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfXenografts()
+    public static int GetNumberOfXenografts(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Xenograft)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;

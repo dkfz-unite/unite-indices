@@ -4,8 +4,6 @@ using Unite.Indices.Entities.Basic.Specimens.Constants;
 
 namespace Unite.Indices.Entities.Genes;
 
-public record ExpressionStats(double Min, double Max, double Avg, double Median);
-
 public class GeneIndex : Basic.Genome.GeneIndex
 {
     private int? _numberOfDonors;
@@ -19,91 +17,91 @@ public class GeneIndex : Basic.Genome.GeneIndex
     private int? _numberOfCNVs;
     private int? _numberOfSVs;
 
-    private ExpressionStats _reads;
-    private ExpressionStats _tpm;
-    private ExpressionStats _fpkm;
+    private GeneExpressionStatsIndex _reads;
+    private GeneExpressionStatsIndex _tpm;
+    private GeneExpressionStatsIndex _fpkm;
 
 
     /// <summary>
     /// Number of donors with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(); set => _numberOfDonors = value; }
+    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(Samples); set => _numberOfDonors = value; }
 
     /// <summary>
     /// Number of MRI images with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfMRIs { get => _numberOfMRIs ?? GetNumberOfMRIs(); set => _numberOfMRIs = value; }
+    public int NumberOfMRIs { get => _numberOfMRIs ?? GetNumberOfMRIs(Samples); set => _numberOfMRIs = value; }
 
     /// <summary>
     /// Number of CT images with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfCTs { get => _numberOfCTs ?? GetNumberOfCTs(); set => _numberOfCTs = value; }
+    public int NumberOfCTs { get => _numberOfCTs ?? GetNumberOfCTs(Samples); set => _numberOfCTs = value; }
 
     /// <summary>
     /// Number of tissues with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfTissues { get => _numberOfTissues ?? GetNumberOfTissues(); set => _numberOfTissues = value; }
+    public int NumberOfTissues { get => _numberOfTissues ?? GetNumberOfTissues(Samples); set => _numberOfTissues = value; }
 
     /// <summary>
     /// Number of cell lines with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfCells(); set => _numberOfCells = value; }
+    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfCells(Samples); set => _numberOfCells = value; }
 
     /// <summary>
     /// Number of organoids with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfOrganoids { get => _numberOfOrganoids ?? GetNumberOfOrganoids(); set => _numberOfOrganoids = value; }
+    public int NumberOfOrganoids { get => _numberOfOrganoids ?? GetNumberOfOrganoids(Samples); set => _numberOfOrganoids = value; }
 
     /// <summary>
     /// Number of xenografts with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfXenografts { get => _numberOfXenografts ?? GetNumberOfXenografts(); set => _numberOfXenografts = value; }
+    public int NumberOfXenografts { get => _numberOfXenografts ?? GetNumberOfXenografts(Samples); set => _numberOfXenografts = value; }
 
     /// <summary>
     /// Number of SSMs in this gene.
     /// </summary>
-    public int NumberOfSSMs { get => _numberOfSSMs ?? GetNumberOfSSMs(); set => _numberOfSSMs = value; }
+    public int NumberOfSSMs { get => _numberOfSSMs ?? GetNumberOfSSMs(Samples); set => _numberOfSSMs = value; }
 
     /// <summary>
     /// Number of CNVs in this gene.
     /// </summary>
-    public int NumberOfCNVs { get => _numberOfCNVs ?? GetNumberOfCNVs(); set => _numberOfCNVs = value; }
+    public int NumberOfCNVs { get => _numberOfCNVs ?? GetNumberOfCNVs(Samples); set => _numberOfCNVs = value; }
 
     /// <summary>
     /// Number of SVs in this gene.
     /// </summary>
-    public int NumberOfSVs { get => _numberOfSVs ?? GetNumberOfSVs(); set => _numberOfSVs = value; }
+    public int NumberOfSVs { get => _numberOfSVs ?? GetNumberOfSVs(Samples); set => _numberOfSVs = value; }
 
 
     /// <summary>
     /// Raw expression stats for this gene.
     /// </summary>
-    public ExpressionStats Reads { get => _reads ?? GetExpression(index => index.Reads); set => _reads = value; }
+    public GeneExpressionStatsIndex Reads { get => _reads ?? GetExpression(Samples, index => index.Reads); set => _reads = value; }
 
     /// <summary>
     /// TPM expression stats for this gene.
     /// </summary>
-    public ExpressionStats TPM { get => _reads ?? GetExpression(index => index.TPM); set => _reads = value; }
+    public GeneExpressionStatsIndex TPM { get => _reads ?? GetExpression(Samples, index => index.TPM); set => _reads = value; }
 
     /// <summary>
     /// FPKM expression stats for this gene.
     /// </summary>
-    public ExpressionStats FPKM { get => _reads ?? GetExpression(index => index.FPKM); set => _reads = value; }
+    public GeneExpressionStatsIndex FPKM { get => _reads ?? GetExpression(Samples, index => index.FPKM); set => _reads = value; }
 
 
     public SampleIndex[] Samples { get; set; }
 
 
-    private int GetNumberOfDonors()
+    public static int GetNumberOfDonors(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .DistinctBy(sample => sample.Donor.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfMRIs()
+    public static int GetNumberOfMRIs(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .Where(sample => sample.Images?.Any() == true)
             .SelectMany(sample => sample.Images)
@@ -112,9 +110,9 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    private int GetNumberOfCTs()
+    public static int GetNumberOfCTs(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .Where(sample => sample.Images?.Any() == true)
             .SelectMany(sample => sample.Images)
@@ -123,45 +121,45 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    private int GetNumberOfTissues()
+    public static int GetNumberOfTissues(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Tissue)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfCells()
+    public static int GetNumberOfCells(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Cell)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfOrganoids()
+    public static int GetNumberOfOrganoids(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Organoid)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfXenografts()
+    public static int GetNumberOfXenografts(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Xenograft)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;
     }
 
-    private int GetNumberOfSSMs()
+    public static int GetNumberOfSSMs(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .SelectMany(sample => sample.Variants)
             .Where(variant => variant.Type == VariantTypes.SSM)
@@ -169,9 +167,9 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    private int GetNumberOfCNVs()
+    public static int GetNumberOfCNVs(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .SelectMany(sample => sample.Variants)
             .Where(variant => variant.Type == VariantTypes.CNV)
@@ -179,9 +177,9 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    private int GetNumberOfSVs()
+    public static int GetNumberOfSVs(SampleIndex[] samples)
     {
-        return Samples?
+        return samples?
             .Where(sample => sample.Variants?.Any() == true)
             .SelectMany(sample => sample.Variants)
             .Where(variant => variant.Type == VariantTypes.SV)
@@ -189,9 +187,9 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    private ExpressionStats GetExpression(Func<GeneExpressionIndex, double> getter)
+    public static GeneExpressionStatsIndex GetExpression(SampleIndex[] samples, Func<GeneExpressionIndex, double> getter)
     {
-        var expressions = Samples?
+        var expressions = samples?
             .Where(sample => sample.Expression != null)
             .Select(sample => getter(sample.Expression))
             .OrderBy(expression => expression)
@@ -199,12 +197,14 @@ public class GeneIndex : Basic.Genome.GeneIndex
 
         if (expressions?.Any() == true)
         {
-            var min = Math.Round(expressions.First());
-            var max = Math.Round(expressions.Last());
-            var avg = Math.Round(expressions.Average());
-            var med = Math.Round(expressions[expressions.Length / 2]);
+            var index = new GeneExpressionStatsIndex();
 
-            return new(min, max, avg, med);
+            index.Min = Math.Round(expressions.First());
+            index.Max = Math.Round(expressions.Last());
+            index.Mean = Math.Round(expressions.Average());
+            index.Median = Math.Round(expressions[expressions.Length / 2]);
+
+            return index;
         }
         else
         {
