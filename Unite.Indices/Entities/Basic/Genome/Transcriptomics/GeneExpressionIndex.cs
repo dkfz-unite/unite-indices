@@ -3,6 +3,6 @@
 public class GeneExpressionIndex
 {
 	public int Reads { get; set; }
-	public double TPM { get; set; }
-	public double FPKM { get; set; }
+	public double Tpm { get; set; }
+	public double Fpkm { get; set; }
 }

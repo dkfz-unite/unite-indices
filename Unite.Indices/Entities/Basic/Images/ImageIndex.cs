@@ -12,18 +12,18 @@ public class ImageIndex
     public string Type { get => _type ?? GetImageType(); set => _type = value; }
     public int? ScanningDay { get; set; }
 
-    public MriImageIndex MRI { get; set; }
+    public MriImageIndex Mri { get; set; }
 
 
     private string GetImageReferenceId()
     {
-        return MRI != null ? $"{MRI.ReferenceId}" :
+        return Mri != null ? $"{Mri.ReferenceId}" :
                throw new NullReferenceException("Specific image is not set.");
     }
 
     private string GetImageType()
     {
-        return MRI != null ? ImageTypes.MRI :
+        return Mri != null ? ImageTypes.MRI :
                throw new NullReferenceException("Specific image is not set.");
     }
 }

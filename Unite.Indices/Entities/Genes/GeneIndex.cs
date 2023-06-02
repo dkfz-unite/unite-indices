@@ -7,15 +7,15 @@ namespace Unite.Indices.Entities.Genes;
 public class GeneIndex : Basic.Genome.GeneIndex
 {
     private int? _numberOfDonors;
-    private int? _numberOfMRIs;
-    private int? _numberOfCTs;
+    private int? _numberOfMris;
+    private int? _numberOfCts;
     private int? _numberOfTissues;
     private int? _numberOfCells;
     private int? _numberOfOrganoids;
     private int? _numberOfXenografts;
-    private int? _numberOfSSMs;
-    private int? _numberOfCNVs;
-    private int? _numberOfSVs;
+    private int? _numberOfSsms;
+    private int? _numberOfCnvs;
+    private int? _numberOfSvs;
 
     private GeneExpressionStatsIndex _reads;
     private GeneExpressionStatsIndex _tpm;
@@ -30,12 +30,12 @@ public class GeneIndex : Basic.Genome.GeneIndex
     /// <summary>
     /// Number of MRI images with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfMRIs { get => _numberOfMRIs ?? GetNumberOfMRIs(Samples); set => _numberOfMRIs = value; }
+    public int NumberOfMris { get => _numberOfMris ?? GetNumberOfMris(Samples); set => _numberOfMris = value; }
 
     /// <summary>
     /// Number of CT images with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfCTs { get => _numberOfCTs ?? GetNumberOfCTs(Samples); set => _numberOfCTs = value; }
+    public int NumberOfCts { get => _numberOfCts ?? GetNumberOfCts(Samples); set => _numberOfCts = value; }
 
     /// <summary>
     /// Number of tissues with at least one SSM, CNV or SV in this gene.
@@ -60,17 +60,17 @@ public class GeneIndex : Basic.Genome.GeneIndex
     /// <summary>
     /// Number of SSMs in this gene.
     /// </summary>
-    public int NumberOfSSMs { get => _numberOfSSMs ?? GetNumberOfSSMs(Samples); set => _numberOfSSMs = value; }
+    public int NumberOfSsms { get => _numberOfSsms ?? GetNumberOfSsms(Samples); set => _numberOfSsms = value; }
 
     /// <summary>
     /// Number of CNVs in this gene.
     /// </summary>
-    public int NumberOfCNVs { get => _numberOfCNVs ?? GetNumberOfCNVs(Samples); set => _numberOfCNVs = value; }
+    public int NumberOfCnvs { get => _numberOfCnvs ?? GetNumberOfCnvs(Samples); set => _numberOfCnvs = value; }
 
     /// <summary>
     /// Number of SVs in this gene.
     /// </summary>
-    public int NumberOfSVs { get => _numberOfSVs ?? GetNumberOfSVs(Samples); set => _numberOfSVs = value; }
+    public int NumberOfSvs { get => _numberOfSvs ?? GetNumberOfSvs(Samples); set => _numberOfSvs = value; }
 
 
     /// <summary>
@@ -81,12 +81,12 @@ public class GeneIndex : Basic.Genome.GeneIndex
     /// <summary>
     /// TPM expression stats for this gene.
     /// </summary>
-    public GeneExpressionStatsIndex TPM { get => _reads ?? GetExpression(Samples, index => index.TPM); set => _reads = value; }
+    public GeneExpressionStatsIndex Tpm { get => _tpm ?? GetExpression(Samples, index => index.Tpm); set => _tpm = value; }
 
     /// <summary>
     /// FPKM expression stats for this gene.
     /// </summary>
-    public GeneExpressionStatsIndex FPKM { get => _reads ?? GetExpression(Samples, index => index.FPKM); set => _reads = value; }
+    public GeneExpressionStatsIndex Fpkm { get => _fpkm ?? GetExpression(Samples, index => index.Fpkm); set => _fpkm = value; }
 
 
     public SampleIndex[] Samples { get; set; }
@@ -99,7 +99,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfMRIs(SampleIndex[] samples)
+    public static int GetNumberOfMris(SampleIndex[] samples)
     {
         return samples?
             .Where(sample => sample.Variants?.Any() == true)
@@ -110,7 +110,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfCTs(SampleIndex[] samples)
+    public static int GetNumberOfCts(SampleIndex[] samples)
     {
         return samples?
             .Where(sample => sample.Variants?.Any() == true)
@@ -157,7 +157,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfSSMs(SampleIndex[] samples)
+    public static int GetNumberOfSsms(SampleIndex[] samples)
     {
         return samples?
             .Where(sample => sample.Variants?.Any() == true)
@@ -167,7 +167,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfCNVs(SampleIndex[] samples)
+    public static int GetNumberOfCnvs(SampleIndex[] samples)
     {
         return samples?
             .Where(sample => sample.Variants?.Any() == true)
@@ -177,7 +177,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfSVs(SampleIndex[] samples)
+    public static int GetNumberOfSvs(SampleIndex[] samples)
     {
         return samples?
             .Where(sample => sample.Variants?.Any() == true)

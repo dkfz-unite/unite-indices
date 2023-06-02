@@ -6,8 +6,8 @@ namespace Unite.Indices.Entities.Variants;
 public class VariantIndex : Basic.Genome.Variants.VariantIndex
 {
     private int? _numberOfDonors;
-    private int? _numberOfMRIs;
-    private int? _numberOfCTs;
+    private int? _numberOfMris;
+    private int? _numberOfCts;
     private int? _numberOfTissues;
     private int? _numberOfCells;
     private int? _numberOfOrganoids;
@@ -23,12 +23,12 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     /// <summary>
     /// Number of MRIs with the variant in any sample.
     /// </summary>
-    public int NumberOfMRIs { get => _numberOfMRIs ?? GetNumberOfMRIs(Samples); set => _numberOfMRIs = value; }
+    public int NumberOfMris { get => _numberOfMris ?? GetNumberOfMris(Samples); set => _numberOfMris = value; }
 
     /// <summary>
     /// Number of CTs with the variant in any sample.
     /// </summary>
-    public int NumberOfCTs { get => _numberOfCTs ?? GetNumberOfCTs(Samples); set => _numberOfCTs = value; }
+    public int NumberOfCts { get => _numberOfCts ?? GetNumberOfCts(Samples); set => _numberOfCts = value; }
 
     /// <summary>
     /// Number of tissues with the variant in any sample.
@@ -66,7 +66,7 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfMRIs(SampleIndex[] samples)
+    public static int GetNumberOfMris(SampleIndex[] samples)
     {
         return samples?
             .Where(sample => sample.Images?.Any() == true)
@@ -76,7 +76,7 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfCTs(SampleIndex[] samples)
+    public static int GetNumberOfCts(SampleIndex[] samples)
     {
         return samples?
             .Where(sample => sample.Images?.Any() == true)

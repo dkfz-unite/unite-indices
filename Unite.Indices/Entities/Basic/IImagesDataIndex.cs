@@ -2,6 +2,6 @@ namespace Unite.Indices.Entities.Basic;
 
 public interface IImagesDataIndex
 {
-    bool MRIs { get; set; }
-    bool CTs { get; set; }
+    bool Mris { get; set; }
+    bool Cts { get; set; }
 }

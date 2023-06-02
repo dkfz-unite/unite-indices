@@ -10,17 +10,17 @@ public class ImageIndex : Basic.Images.ImageIndex
     /// <summary>
     /// Number of SSMs in all samples associated with the image.
     /// </summary>
-    public int NumberOfSSMs { get; set; }
+    public int NumberOfSsms { get; set; }
 
     /// <summary>
     /// Number of CNVs in all samples associated with the image.
     /// </summary>
-    public int NumberOfCNVs { get; set; }
+    public int NumberOfCnvs { get; set; }
 
     /// <summary>
     /// Number of SVs in all samples associated with the image.
     /// </summary>
-    public int NumberOfSVs { get; set; }
+    public int NumberOfSvs { get; set; }
 
 
     /// <summary>

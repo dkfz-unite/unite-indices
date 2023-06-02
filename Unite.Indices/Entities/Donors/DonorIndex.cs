@@ -10,17 +10,17 @@ public class DonorIndex : Basic.Donors.DonorIndex
     /// <summary>
     /// Number of SSMs in all samples of the donor.
     /// </summary>
-    public int NumberOfSSMs { get; set; }
+    public int NumberOfSsms { get; set; }
 
     /// <summary>
     /// Number of CNVs in all samples of the donor.
     /// </summary>
-    public int NumberOfCNVs { get; set; }
+    public int NumberOfCnvs { get; set; }
 
     /// <summary>
     /// Number of SVs in all samples of the donor.
     /// </summary>
-    public int NumberOfSVs { get; set; }
+    public int NumberOfSvs { get; set; }
 
 
     /// <summary>

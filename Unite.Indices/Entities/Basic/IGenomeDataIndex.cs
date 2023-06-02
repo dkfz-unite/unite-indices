@@ -2,9 +2,9 @@ namespace Unite.Indices.Entities.Basic;
 
 public interface IGenomeDataIndex
 {
-    bool SSMs { get; set; }
-    bool CNVs { get; set; }
-    bool SVs { get; set; }
+    bool Ssms { get; set; }
+    bool Cnvs { get; set; }
+    bool Svs { get; set; }
 
     bool GeneExp { get; set; }
     bool GeneExpSc { get; set; }
