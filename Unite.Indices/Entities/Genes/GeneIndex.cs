@@ -95,6 +95,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
     public static int GetNumberOfDonors(SampleIndex[] samples)
     {
         return samples?
+            .Where(sample => sample.Variants?.Any() == true)
             .DistinctBy(sample => sample.Donor.Id)
             .Count() ?? 0;
     }
