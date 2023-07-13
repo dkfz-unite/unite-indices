@@ -14,6 +14,8 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     private int? _numberOfXenografts;
     private int? _numberOfGenes;
 
+    private DataIndex _data;
+
 
     /// <summary>
     /// Number of donors with the variant in any sample.
@@ -54,6 +56,11 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     /// Number of genes affected by the variant in any sample.
     /// </summary>
     public int NumberOfGenes { get => _numberOfGenes ?? GetNumberOfGenes(); set => _numberOfGenes = value; }
+
+    /// <summary>
+    /// Available data.
+    /// </summary>
+    public DataIndex Data { get => _data ?? GetData(); set => _data = value; }
 
 
     public SampleIndex[] Samples { get; set; }
@@ -116,6 +123,37 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
             .Where(sample => sample.Specimen.Type == SpecimenTypes.Xenograft)
             .DistinctBy(sample => sample.Specimen.Id)
             .Count() ?? 0;
+    }
+
+    private DataIndex GetData()
+    {
+         var index = new DataIndex();
+
+        index.Donors = true;
+        index.Clinical = Samples.Any(sample => sample.Donor.ClinicalData != null);
+        index.Treatments = Samples.Any(sample => sample.Donor.Treatments?.Any() == true);
+        index.Mris = Samples.Any(sample => sample.Images.Any(image => image.Mri != null));
+        // index.Cts = Samples.Any(sample => sample.Images.Any(image => image.Ct != null));
+        index.Tissues = Samples.Any(sample => sample.Specimen.Tissue != null);
+        index.TissuesMolecular = Samples.Any(sample => sample.Specimen.Tissue?.MolecularData != null);
+        index.Cells = Samples.Any(sample => sample.Specimen.Cell != null);
+        index.CellsMolecular = Samples.Any(sample => sample.Specimen.Cell?.MolecularData != null);
+        index.CellsDrugs = Samples.Any(sample => sample.Specimen.Cell?.DrugScreenings?.Any() == true);
+        index.Organoids = Samples.Any(sample => sample.Specimen.Organoid != null);
+        index.OrganoidsMolecular = Samples.Any(sample => sample.Specimen.Organoid?.MolecularData != null);
+        index.OrganoidsDrugs = Samples.Any(sample => sample.Specimen.Organoid?.DrugScreenings?.Any() == true);
+        index.OrganoidsInterventions = Samples.Any(sample => sample.Specimen.Organoid?.Interventions?.Any() == true);
+        index.Xenografts = Samples.Any(sample => sample.Specimen.Xenograft != null);
+        index.XenograftsMolecular = Samples.Any(sample => sample.Specimen.Xenograft?.MolecularData != null);
+        index.XenograftsDrugs = Samples.Any(sample => sample.Specimen.Xenograft?.DrugScreenings?.Any() == true);
+        index.XenograftsInterventions = Samples.Any(sample => sample.Specimen.Xenograft?.Interventions?.Any() == true);
+        index.Ssms = Ssm != null; // Intersections can not be calculated here.
+        index.Cnvs = Cnv != null; // Intersections can not be calculated here.
+        index.Svs = Sv != null; // Intersections can not be calculated here.
+        index.GeneExp = null; // Can not be calculated here.
+        index.GeneExpSc = null; // Can not be calculated here.
+
+        return index;
     }
 
     private int GetNumberOfGenes()

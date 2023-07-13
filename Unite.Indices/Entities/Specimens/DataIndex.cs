@@ -3,6 +3,11 @@ namespace Unite.Indices.Entities.Specimens;
 public class DataIndex : Basic.IImagesDataIndex, Basic.IGenomeDataIndex
 {
     /// <summary>
+    /// Always true.
+    /// </summary>
+    public bool? Donors { get; set; } = true;
+
+    /// <summary>
     /// Whether the specimen donor has clinical data.
     /// </summary>
     public bool? Clinical { get; set; }
@@ -11,6 +16,26 @@ public class DataIndex : Basic.IImagesDataIndex, Basic.IGenomeDataIndex
     /// Whether the specimen donor has treatments data.
     /// </summary>
     public bool? Treatments { get; set; }
+
+    /// <summary>
+    /// Whether the specimen is tissue.
+    /// </summary>
+    public bool? Tissues { get; set; }
+
+    /// <summary>
+    /// Whether the specimen is cell line.
+    /// </summary>
+    public bool? Cells { get; set; }
+
+    /// <summary>
+    /// Whether the specimen is organoid.
+    /// </summary>
+    public bool? Organoids { get; set; }
+
+    /// <summary>
+    /// Whether the specimen is xenograft.
+    /// </summary>
+    public bool? Xenografts { get; set; }
 
     /// <summary>
     /// Whether the specimen has molecular data.
@@ -28,27 +53,27 @@ public class DataIndex : Basic.IImagesDataIndex, Basic.IGenomeDataIndex
     public bool? Interventions { get; set; }
 
     /// <summary>
-    /// Whether the tumor tissue donor has MRI images.
+    /// Whether the specimen is associated with any MRI image.
     /// </summary>
     public bool? Mris { get; set; }
 
     /// <summary>
-    /// Whether the tumor tissue donor or xenograft has CT images.
+    /// Whether the specimen is associated with any CT image.
     /// </summary>
     public bool? Cts { get; set; }
 
     /// <summary>
-    /// Whether any sample of the specimen has simple somatic mutations (SSM) data.
+    /// Whether any sample of the specimen has SSMs.
     /// </summary>
     public bool? Ssms { get; set; }
 
     /// <summary>
-    /// Whether any sample of the specimen has copy number variants (CNV) data.
+    /// Whether any sample of the specimen has CNVs.
     /// </summary>
     public bool? Cnvs { get; set; }
 
     /// <summary>
-    /// Whether any sample of the specimen has structural variants (SV) data.
+    /// Whether any sample of the specimen has SVs.
     /// </summary>
     public bool? Svs { get; set; }
 

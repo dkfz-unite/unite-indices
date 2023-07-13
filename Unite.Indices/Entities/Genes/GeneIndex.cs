@@ -21,6 +21,8 @@ public class GeneIndex : Basic.Genome.GeneIndex
     private GeneExpressionStatsIndex _tpm;
     private GeneExpressionStatsIndex _fpkm;
 
+    private DataIndex _data;
+
 
     /// <summary>
     /// Number of donors with at least one SSM, CNV or SV in this gene.
@@ -87,6 +89,11 @@ public class GeneIndex : Basic.Genome.GeneIndex
     /// FPKM expression stats for this gene.
     /// </summary>
     public GeneExpressionStatsIndex Fpkm { get => _fpkm ?? GetExpression(Samples, index => index.Fpkm); set => _fpkm = value; }
+
+    /// <summary>
+    /// Available data.
+    /// </summary>
+    public DataIndex Data { get => _data ?? GetData(); set => _data = value; }
 
 
     public SampleIndex[] Samples { get; set; }
@@ -211,5 +218,36 @@ public class GeneIndex : Basic.Genome.GeneIndex
         {
             return null;
         }
+    }
+
+    private DataIndex GetData()
+    {
+        var index = new DataIndex();
+
+        index.Donors = true;
+        index.Clinical = Samples.Any(sample => sample.Donor.ClinicalData != null);
+        index.Treatments = Samples.Any(sample => sample.Donor.Treatments?.Any() == true);
+        index.Mris = Samples.Any(sample => sample.Images.Any(image => image.Mri != null));
+        // index.Cts = Samples.Any(sample => sample.Images.Any(image => image.Ct != null));
+        index.Tissues = Samples.Any(sample => sample.Specimen.Tissue != null);
+        index.TissuesMolecular = Samples.Any(sample => sample.Specimen.Tissue?.MolecularData != null);
+        index.Cells = Samples.Any(sample => sample.Specimen.Cell != null);
+        index.CellsMolecular = Samples.Any(sample => sample.Specimen.Cell?.MolecularData != null);
+        index.CellsDrugs = Samples.Any(sample => sample.Specimen.Cell?.DrugScreenings?.Any() == true);
+        index.Organoids = Samples.Any(sample => sample.Specimen.Organoid != null);
+        index.OrganoidsMolecular = Samples.Any(sample => sample.Specimen.Organoid?.MolecularData != null);
+        index.OrganoidsDrugs = Samples.Any(sample => sample.Specimen.Organoid?.DrugScreenings?.Any() == true);
+        index.OrganoidsInterventions = Samples.Any(sample => sample.Specimen.Organoid?.Interventions?.Any() == true);
+        index.Xenografts = Samples.Any(sample => sample.Specimen.Xenograft != null);
+        index.XenograftsMolecular = Samples.Any(sample => sample.Specimen.Xenograft?.MolecularData != null);
+        index.XenograftsDrugs = Samples.Any(sample => sample.Specimen.Xenograft?.DrugScreenings?.Any() == true);
+        index.XenograftsInterventions = Samples.Any(sample => sample.Specimen.Xenograft?.Interventions?.Any() == true);
+        index.Ssms = Samples.Any(sample => sample.Variants.Any(variant => variant.Ssm != null));
+        index.Cnvs = Samples.Any(sample => sample.Variants.Any(variant => variant.Cnv != null));
+        index.Svs = Samples.Any(sample => sample.Variants.Any(variant => variant.Sv != null));
+        index.GeneExp = Samples.Any(sample => sample.Expression != null);
+        index.GeneExpSc = false;
+        
+        return index;
     }
 }
