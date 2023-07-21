@@ -227,8 +227,8 @@ public class GeneIndex : Basic.Genome.GeneIndex
         index.Donors = true;
         index.Clinical = Samples?.Any(sample => sample.Donor.ClinicalData != null);
         index.Treatments = Samples?.Any(sample => sample.Donor.Treatments?.Any() == true);
-        index.Mris = Samples?.Any(sample => sample.Images.Any(image => image.Mri != null));
-        // index.Cts = Samples?.Any(sample => sample.Images.Any(image => image.Ct != null));
+        index.Mris = Samples?.Any(sample => sample.Images?.Any(image => image.Mri != null) == true);
+        // index.Cts = Samples?.Any(sample => sample.Images?.Any(image => image.Ct != null));
         index.Tissues = Samples?.Any(sample => sample.Specimen.Tissue != null);
         index.TissuesMolecular = Samples?.Any(sample => sample.Specimen.Tissue?.MolecularData != null);
         index.Cells = Samples?.Any(sample => sample.Specimen.Cell != null);
