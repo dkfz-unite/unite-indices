@@ -1,6 +1,6 @@
-namespace Unite.Indices.Entities.Basic.Genome.Transcriptomics;
+namespace Unite.Indices.Entities.Basic.Genome.Expressions;
 
-public class GeneExpressionStatsIndex
+public class BulkExpressionStatsIndex
 {
     public double Min { get; set; }
     public double Max { get; set; }
