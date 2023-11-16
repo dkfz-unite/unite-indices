@@ -1,4 +1,4 @@
-namespace Unite.Indices.Entities.Basic.Genome.Analysis;
+namespace Unite.Indices.Entities.Basic.Analysis;
 
 public class SampleIndex
 {
