@@ -11,9 +11,9 @@ public class VariantIndex
     public string Id { get => _id ?? GetVariantId(); set => _id = value; }
     public string Type { get => _type ?? GetVariantType(); set => _type = value; }
 
-    public MutationIndex Ssm { get; set; }
-    public CopyNumberVariantIndex Cnv { get; set; }
-    public StructuralVariantIndex Sv { get; set; }
+    public SsmIndex Ssm { get; set; }
+    public CnvIndex Cnv { get; set; }
+    public SvIndex Sv { get; set; }
 
 
     public AffectedFeatureIndex[] GetAffectedFeatures()

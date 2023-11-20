@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
-public class StructuralVariantIndex
+public class SvIndex
 {
     public long Id { get; set; }
 
@@ -9,8 +9,8 @@ public class StructuralVariantIndex
     public int End { get; set; }
 
     public string OtherChromosome { get; set; }
-    public int OtherStart { get; set; }
-    public int OtherEnd { get; set; }
+    public int? OtherStart { get; set; }
+    public int? OtherEnd { get; set; }
 
     public int? Length { get; set; }
 

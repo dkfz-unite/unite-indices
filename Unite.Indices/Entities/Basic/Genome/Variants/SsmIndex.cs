@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
-public class MutationIndex
+public class SsmIndex
 {
     private string _change;
 

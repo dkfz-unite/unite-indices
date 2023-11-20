@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
-public class CopyNumberVariantIndex
+public class CnvIndex
 {
     public long Id { get; set; }
 
