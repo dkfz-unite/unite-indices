@@ -9,8 +9,8 @@ public class SvIndex
     public int End { get; set; }
 
     public string OtherChromosome { get; set; }
-    public int? OtherStart { get; set; }
-    public int? OtherEnd { get; set; }
+    public int OtherStart { get; set; }
+    public int OtherEnd { get; set; }
 
     public int? Length { get; set; }
 
