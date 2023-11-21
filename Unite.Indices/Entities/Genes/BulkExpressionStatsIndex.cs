@@ -1,5 +1,5 @@
 namespace Unite.Indices.Entities.Genes;
 
-public class BulkExpressionStatsIndex : Basic.Genome.Expressions.BulkExpressionStatsIndex
+public class BulkExpressionStatsIndex : Basic.Genome.Transcriptomics.BulkExpressionStatsIndex
 {
 }

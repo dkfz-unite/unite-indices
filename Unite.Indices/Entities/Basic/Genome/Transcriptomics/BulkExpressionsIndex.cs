@@ -1,4 +1,4 @@
-namespace Unite.Indices.Entities.Basic.Genome.Expressions;
+namespace Unite.Indices.Entities.Basic.Genome.Transcriptomics;
 
 public class BulkExpressionsIndex
 {
