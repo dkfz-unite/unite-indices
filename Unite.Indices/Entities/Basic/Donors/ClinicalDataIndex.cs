@@ -2,7 +2,7 @@
 
 public class ClinicalDataIndex
 {
-    public string Sex { get; set; }
+    public string Gender { get; set; }
     public int? Age { get; set; }
     public string Diagnosis { get; set; }
     public string PrimarySite { get; set; }
