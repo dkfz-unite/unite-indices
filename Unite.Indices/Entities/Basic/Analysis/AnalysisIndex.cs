@@ -2,7 +2,7 @@ namespace Unite.Indices.Entities.Basic.Analysis;
 
 public class AnalysisIndex
 {
-    public string Id { get; set; }
+    public int Id { get; set; }
     public string ReferenceId { get; set; }
     
     public string Type { get; set; }
