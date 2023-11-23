@@ -2,9 +2,21 @@
 
 public class SpecimenIndex
 {
+    /// <summary>
+    /// Specific specimen Id.
+    /// </summary>
     public int Id { get; set; }
+
+    /// <summary>
+    /// Specific specimen reference Id. Depends on specimen type. Should be set during indexing.
+    /// </summary>
     public string ReferenceId { get; set; }
+
+    /// <summary>
+    /// Type of the specimen. Should be set during indexing.
+    /// </summary>
     public string Type { get; set; }
+    
     public int? CreationDay { get; set; }
     
 

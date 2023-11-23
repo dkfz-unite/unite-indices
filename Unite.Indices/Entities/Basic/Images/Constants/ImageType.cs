@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Basic.Images.Constants;
 
-public static class ImageTypes
+internal class ImageType
 {
     public const string MRI = "MRI";
     public const string CT = "CT";

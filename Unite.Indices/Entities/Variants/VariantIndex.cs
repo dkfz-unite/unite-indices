@@ -20,37 +20,37 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     /// <summary>
     /// Number of donors with the variant in any sample.
     /// </summary>
-    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(Samples); set => _numberOfDonors = value; }
+    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(Specimens); set => _numberOfDonors = value; }
 
     /// <summary>
     /// Number of MRIs with the variant in any sample.
     /// </summary>
-    public int NumberOfMris { get => _numberOfMris ?? GetNumberOfImages(Samples, ImageTypes.MRI); set => _numberOfMris = value; }
+    public int NumberOfMris { get => _numberOfMris ?? GetNumberOfImages(Specimens, ImageType.MRI); set => _numberOfMris = value; }
 
     /// <summary>
     /// Number of CTs with the variant in any sample.
     /// </summary>
-    public int NumberOfCts { get => _numberOfCts ?? GetNumberOfImages(Samples, ImageTypes.CT); set => _numberOfCts = value; }
+    public int NumberOfCts { get => _numberOfCts ?? GetNumberOfImages(Specimens, ImageType.CT); set => _numberOfCts = value; }
 
     /// <summary>
     /// Number of tissues with the variant in any sample.
     /// </summary>
-    public int NumberOfTissues { get => _numberOfTissues ?? GetNumberOfSpecimens(Samples, SpecimenTypes.Tissue); set => _numberOfTissues = value; }
+    public int NumberOfTissues { get => _numberOfTissues ?? GetNumberOfSpecimens(Specimens, SpecimenType.Tissue); set => _numberOfTissues = value; }
 
     /// <summary>
     /// Number of cell lines with the variant in any sample.
     /// </summary>
-    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Samples, SpecimenTypes.Cell); set => _numberOfCells = value; }
+    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Specimens, SpecimenType.Cell); set => _numberOfCells = value; }
 
     /// <summary>
     /// Number of organoids with the variant in any sample.
     /// </summary>
-    public int NumberOfOrganoids { get => _numberOfOrganoids ?? GetNumberOfSpecimens(Samples, SpecimenTypes.Organoid); set => _numberOfOrganoids = value; }
+    public int NumberOfOrganoids { get => _numberOfOrganoids ?? GetNumberOfSpecimens(Specimens, SpecimenType.Organoid); set => _numberOfOrganoids = value; }
 
     /// <summary>
     /// Number of xenografts with the variant in any sample.
     /// </summary>
-    public int NumberOfXenografts { get => _numberOfXenografts ?? GetNumberOfSpecimens(Samples, SpecimenTypes.Xenograft); set => _numberOfXenografts = value; }
+    public int NumberOfXenografts { get => _numberOfXenografts ?? GetNumberOfSpecimens(Specimens, SpecimenType.Xenograft); set => _numberOfXenografts = value; }
 
     /// <summary>
     /// Number of genes affected by the variant in any sample.
@@ -63,31 +63,31 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     public DataIndex Data { get => _data ?? GetData(); set => _data = value; }
 
 
-    public SampleIndex[] Samples { get; set; }
+    public SpecimenIndex[] Specimens { get; set; }
 
 
-    public static int GetNumberOfDonors(SampleIndex[] samples)
+    public static int GetNumberOfDonors(SpecimenIndex[] specimens)
     {
-        return samples?
-            .DistinctBy(sample => sample.Donor.Id)
+        return specimens?
+            .DistinctBy(specimen => specimen.Donor.Id)
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfImages(SampleIndex[] samples, string type)
+    public static int GetNumberOfImages(SpecimenIndex[] specimens, string type)
     {
-        return samples?
-            .Where(sample => sample.Images?.Any() == true)
-            .SelectMany(sample => sample.Images)
-            .Where(image => image.Type == type)
+        return specimens?
+            .Where(specimen => specimen.Images?.Any() == true)
+            .SelectMany(specimen => specimen.Images)
+            .Where(specimen => specimen.Type == type)
             .DistinctBy(image => image.Id)
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfSpecimens(SampleIndex[] samples, string type)
+    public static int GetNumberOfSpecimens(SpecimenIndex[] specimens, string type)
     {
-        return samples?
-            .Where(sample => sample.Specimen.Type == type)
-            .DistinctBy(sample => sample.Specimen.Id)
+        return specimens?
+            .Where(specimen => specimen.Type == type)
+            .DistinctBy(sspecimenmple => sspecimenmple.Id)
             .Count() ?? 0;
     }
 
@@ -96,23 +96,23 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
         return new DataIndex
         {
             Donors = true,
-            Clinical = Samples.Any(sample => sample.Donor.ClinicalData != null),
-            Treatments = Samples.Any(sample => sample.Donor.Treatments?.Any() == true),
-            Mris = Samples.Any(sample => sample.Images.Any(image => image.Mri != null)),
-            // Cts = Samples.Any(sample => sample.Images.Any(image => image.Ct != null));
-            Tissues = Samples.Any(sample => sample.Specimen.Tissue != null),
-            TissuesMolecular = Samples.Any(sample => sample.Specimen.Tissue?.MolecularData != null),
-            Cells = Samples.Any(sample => sample.Specimen.Cell != null),
-            CellsMolecular = Samples.Any(sample => sample.Specimen.Cell?.MolecularData != null),
-            CellsDrugs = Samples.Any(sample => sample.Specimen.Cell?.DrugScreenings?.Any() == true),
-            Organoids = Samples.Any(sample => sample.Specimen.Organoid != null),
-            OrganoidsMolecular = Samples.Any(sample => sample.Specimen.Organoid?.MolecularData != null),
-            OrganoidsDrugs = Samples.Any(sample => sample.Specimen.Organoid?.DrugScreenings?.Any() == true),
-            OrganoidsInterventions = Samples.Any(sample => sample.Specimen.Organoid?.Interventions?.Any() == true),
-            Xenografts = Samples.Any(sample => sample.Specimen.Xenograft != null),
-            XenograftsMolecular = Samples.Any(sample => sample.Specimen.Xenograft?.MolecularData != null),
-            XenograftsDrugs = Samples.Any(sample => sample.Specimen.Xenograft?.DrugScreenings?.Any() == true),
-            XenograftsInterventions = Samples.Any(sample => sample.Specimen.Xenograft?.Interventions?.Any() == true),
+            Clinical = Specimens.Any(specimen => specimen.Donor.ClinicalData != null),
+            Treatments = Specimens.Any(specimen => specimen.Donor.Treatments?.Any() == true),
+            Mris = Specimens.Any(specimen => specimen.Images.Any(image => image.Mri != null)),
+            // Cts = Specimens.Any(specimen => specimen.Images.Any(image => image.Ct != null));
+            Tissues = Specimens.Any(specimen => specimen.Tissue != null),
+            TissuesMolecular = Specimens.Any(specimen => specimen.Tissue?.MolecularData != null),
+            Cells = Specimens.Any(specimen => specimen.Cell != null),
+            CellsMolecular = Specimens.Any(specimen => specimen.Cell?.MolecularData != null),
+            CellsDrugs = Specimens.Any(specimen => specimen.Cell?.DrugScreenings?.Any() == true),
+            Organoids = Specimens.Any(specimen => specimen.Organoid != null),
+            OrganoidsMolecular = Specimens.Any(specimen => specimen.Organoid?.MolecularData != null),
+            OrganoidsDrugs = Specimens.Any(specimen => specimen.Organoid?.DrugScreenings?.Any() == true),
+            OrganoidsInterventions = Specimens.Any(specimen => specimen.Organoid?.Interventions?.Any() == true),
+            Xenografts = Specimens.Any(specimen => specimen.Xenograft != null),
+            XenograftsMolecular = Specimens.Any(specimen => specimen.Xenograft?.MolecularData != null),
+            XenograftsDrugs = Specimens.Any(specimen => specimen.Xenograft?.DrugScreenings?.Any() == true),
+            XenograftsInterventions = Specimens.Any(specimen => specimen.Xenograft?.Interventions?.Any() == true),
             Ssms = Ssm != null, // Intersections can not be calculated here.
             Cnvs = Cnv != null, // Intersections can not be calculated here.
             Svs = Sv != null, // Intersections can not be calculated here.

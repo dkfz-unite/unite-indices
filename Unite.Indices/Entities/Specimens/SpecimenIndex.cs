@@ -31,6 +31,6 @@ public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 
     public SpecimenIndex Parent { get; set; }
     public DonorIndex Donor { get; set; }
+    public AnalysisIndex[] Analyses { get; set; }
     public ImageIndex[] Images { get; set; }
-    public SampleIndex[] Samples { get; set; }
 }

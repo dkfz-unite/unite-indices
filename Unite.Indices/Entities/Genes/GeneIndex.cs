@@ -27,68 +27,68 @@ public class GeneIndex : Basic.Genome.GeneIndex
     /// <summary>
     /// Number of donors with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(Samples); set => _numberOfDonors = value; }
+    public int NumberOfDonors { get => _numberOfDonors ?? GetNumberOfDonors(Specimens); set => _numberOfDonors = value; }
 
     /// <summary>
     /// Number of MRI images with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfMris { get => _numberOfMris ?? GetNumberOfImages(Samples, ImageTypes.MRI); set => _numberOfMris = value; }
+    public int NumberOfMris { get => _numberOfMris ?? GetNumberOfImages(Specimens, ImageType.MRI); set => _numberOfMris = value; }
 
     /// <summary>
     /// Number of CT images with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfCts { get => _numberOfCts ?? GetNumberOfImages(Samples, ImageTypes.CT); set => _numberOfCts = value; }
+    public int NumberOfCts { get => _numberOfCts ?? GetNumberOfImages(Specimens, ImageType.CT); set => _numberOfCts = value; }
 
     /// <summary>
     /// Number of tissues with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfTissues { get => _numberOfTissues ?? GetNumberOfSpecimens(Samples, SpecimenTypes.Tissue); set => _numberOfTissues = value; }
+    public int NumberOfTissues { get => _numberOfTissues ?? GetNumberOfSpecimens(Specimens, SpecimenType.Tissue); set => _numberOfTissues = value; }
 
     /// <summary>
     /// Number of cell lines with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Samples, SpecimenTypes.Cell); set => _numberOfCells = value; }
+    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Specimens, SpecimenType.Cell); set => _numberOfCells = value; }
 
     /// <summary>
     /// Number of organoids with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfOrganoids { get => _numberOfOrganoids ?? GetNumberOfSpecimens(Samples, SpecimenTypes.Organoid); set => _numberOfOrganoids = value; }
+    public int NumberOfOrganoids { get => _numberOfOrganoids ?? GetNumberOfSpecimens(Specimens, SpecimenType.Organoid); set => _numberOfOrganoids = value; }
 
     /// <summary>
     /// Number of xenografts with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfXenografts { get => _numberOfXenografts ?? GetNumberOfSpecimens(Samples, SpecimenTypes.Xenograft); set => _numberOfXenografts = value; }
+    public int NumberOfXenografts { get => _numberOfXenografts ?? GetNumberOfSpecimens(Specimens, SpecimenType.Xenograft); set => _numberOfXenografts = value; }
 
     /// <summary>
     /// Number of SSMs in this gene.
     /// </summary>
-    public int NumberOfSsms { get => _numberOfSsms ?? GetNumberOfVariants(Samples, VariantTypes.SSM); set => _numberOfSsms = value; }
+    public int NumberOfSsms { get => _numberOfSsms ?? GetNumberOfVariants(Specimens, VariantType.SSM); set => _numberOfSsms = value; }
 
     /// <summary>
     /// Number of CNVs in this gene.
     /// </summary>
-    public int NumberOfCnvs { get => _numberOfCnvs ?? GetNumberOfVariants(Samples, VariantTypes.CNV); set => _numberOfCnvs = value; }
+    public int NumberOfCnvs { get => _numberOfCnvs ?? GetNumberOfVariants(Specimens, VariantType.CNV); set => _numberOfCnvs = value; }
 
     /// <summary>
     /// Number of SVs in this gene.
     /// </summary>
-    public int NumberOfSvs { get => _numberOfSvs ?? GetNumberOfVariants(Samples, VariantTypes.SV); set => _numberOfSvs = value; }
+    public int NumberOfSvs { get => _numberOfSvs ?? GetNumberOfVariants(Specimens, VariantType.SV); set => _numberOfSvs = value; }
 
 
     /// <summary>
     /// Raw expression stats for this gene.
     /// </summary>
-    public BulkExpressionStatsIndex Reads { get => _reads ?? GetExpression(Samples, index => index.Reads); set => _reads = value; }
+    public BulkExpressionStatsIndex Reads { get => _reads ?? GetExpression(Specimens, index => index.Reads); set => _reads = value; }
 
     /// <summary>
     /// TPM expression stats for this gene.
     /// </summary>
-    public BulkExpressionStatsIndex Tpm { get => _tpm ?? GetExpression(Samples, index => index.Tpm); set => _tpm = value; }
+    public BulkExpressionStatsIndex Tpm { get => _tpm ?? GetExpression(Specimens, index => index.Tpm); set => _tpm = value; }
 
     /// <summary>
     /// FPKM expression stats for this gene.
     /// </summary>
-    public BulkExpressionStatsIndex Fpkm { get => _fpkm ?? GetExpression(Samples, index => index.Fpkm); set => _fpkm = value; }
+    public BulkExpressionStatsIndex Fpkm { get => _fpkm ?? GetExpression(Specimens, index => index.Fpkm); set => _fpkm = value; }
 
     /// <summary>
     /// Available data.
@@ -96,52 +96,52 @@ public class GeneIndex : Basic.Genome.GeneIndex
     public DataIndex Data { get => _data ?? GetData(); set => _data = value; }
 
 
-    public SampleIndex[] Samples { get; set; }
+    public SpecimenIndex[] Specimens { get; set; }
 
 
-    public static int GetNumberOfDonors(SampleIndex[] samples)
+    public static int GetNumberOfDonors(SpecimenIndex[] specimens)
     {
-        return samples?
-            .Where(sample => sample.Variants?.Any() == true)
-            .DistinctBy(sample => sample.Donor.Id)
+        return specimens?
+            .Where(specimens => specimens.Variants?.Any() == true)
+            .DistinctBy(specimens => specimens.Donor.Id)
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfImages(SampleIndex[] samples, string type)
+    public static int GetNumberOfImages(SpecimenIndex[] specimens, string type)
     {
-        return samples?
-            .Where(sample => sample.Variants?.Any() == true)
-            .Where(sample => sample.Images?.Any() == true)
-            .SelectMany(sample => sample.Images)
+        return specimens?
+            .Where(specimen => specimen.Variants?.Any() == true)
+            .Where(specimen => specimen.Images?.Any() == true)
+            .SelectMany(specimen => specimen.Images)
             .Where(image => image.Type == type)
             .DistinctBy(image => image.Id)
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfSpecimens(SampleIndex[] samples, string type)
+    public static int GetNumberOfSpecimens(SpecimenIndex[] specimens, string type)
     {
-        return samples?
-            .Where(sample => sample.Variants?.Any() == true)
-            .Where(sample => sample.Specimen.Type == type)
-            .DistinctBy(sample => sample.Specimen.Id)
+        return specimens?
+            .Where(specimen => specimen.Variants?.Any() == true)
+            .Where(specimen => specimen.Type == type)
+            .DistinctBy(specimen => specimen.Id)
             .Count() ?? 0;
     }
 
-    public static int GetNumberOfVariants(SampleIndex[] samples, string type)
+    public static int GetNumberOfVariants(SpecimenIndex[] specimens, string type)
     {
-        return samples?
-            .Where(sample => sample.Variants?.Any() == true)
-            .SelectMany(sample => sample.Variants)
+        return specimens?
+            .Where(specimen => specimen.Variants?.Any() == true)
+            .SelectMany(specimen => specimen.Variants)
             .Where(variant => variant.Type == type)
             .DistinctBy(variant => variant.Id)
             .Count() ?? 0;
     }
 
-    public static BulkExpressionStatsIndex GetExpression(SampleIndex[] samples, Func<BulkExpressionIndex, double> getter)
+    public static BulkExpressionStatsIndex GetExpression(SpecimenIndex[] specimens, Func<BulkExpressionIndex, double> getter)
     {
-        var expressions = samples?
-            .Where(sample => sample.Expression != null)
-            .Select(sample => getter(sample.Expression))
+        var expressions = specimens?
+            .Where(specimen => specimen.Expression != null)
+            .Select(specimen => getter(specimen.Expression))
             .OrderBy(expression => expression)
             .ToArray();
 
@@ -155,10 +155,8 @@ public class GeneIndex : Basic.Genome.GeneIndex
                 Median = Math.Round(expressions[expressions.Length / 2])
             };
         }
-        else
-        {
-            return null;
-        }
+        
+        return null;
     }
 
     private DataIndex GetData()
@@ -166,27 +164,27 @@ public class GeneIndex : Basic.Genome.GeneIndex
         return new DataIndex
         {
             Donors = true,
-            Clinical = Samples?.Any(sample => sample.Donor.ClinicalData != null),
-            Treatments = Samples?.Any(sample => sample.Donor.Treatments?.Any() == true),
-            Mris = Samples?.Any(sample => sample.Images?.Any(image => image.Mri != null) == true),
-            // Cts = Samples?.Any(sample => sample.Images?.Any(image => image.Ct != null));
-            Tissues = Samples?.Any(sample => sample.Specimen.Tissue != null),
-            TissuesMolecular = Samples?.Any(sample => sample.Specimen.Tissue?.MolecularData != null),
-            Cells = Samples?.Any(sample => sample.Specimen.Cell != null),
-            CellsMolecular = Samples.Any(sample => sample.Specimen.Cell?.MolecularData != null),
-            CellsDrugs = Samples?.Any(sample => sample.Specimen.Cell?.DrugScreenings?.Any() == true),
-            Organoids = Samples?.Any(sample => sample.Specimen.Organoid != null),
-            OrganoidsMolecular = Samples?.Any(sample => sample.Specimen.Organoid?.MolecularData != null),
-            OrganoidsDrugs = Samples?.Any(sample => sample.Specimen.Organoid?.DrugScreenings?.Any() == true),
-            OrganoidsInterventions = Samples?.Any(sample => sample.Specimen.Organoid?.Interventions?.Any() == true),
-            Xenografts = Samples?.Any(sample => sample.Specimen.Xenograft != null),
-            XenograftsMolecular = Samples?.Any(sample => sample.Specimen.Xenograft?.MolecularData != null),
-            XenograftsDrugs = Samples?.Any(sample => sample.Specimen.Xenograft?.DrugScreenings?.Any() == true),
-            XenograftsInterventions = Samples?.Any(sample => sample.Specimen.Xenograft?.Interventions?.Any() == true),
-            Ssms = Samples?.Any(sample => sample.Variants?.Any(variant => variant.Ssm != null) == true),
-            Cnvs = Samples?.Any(sample => sample.Variants?.Any(variant => variant.Cnv != null) == true),
-            Svs = Samples?.Any(sample => sample.Variants?.Any(variant => variant.Sv != null) == true),
-            GeneExp = Samples?.Any(sample => sample.Expression != null),
+            Clinical = Specimens?.Any(specimen => specimen.Donor.ClinicalData != null),
+            Treatments = Specimens?.Any(specimen => specimen.Donor.Treatments?.Any() == true),
+            Mris = Specimens?.Any(specimen => specimen.Images?.Any(image => image.Mri != null) == true),
+            // Cts = Specimens?.Any(specimen => specimen.Images?.Any(image => image.Ct != null) == true),
+            Tissues = Specimens?.Any(specimen => specimen.Tissue != null),
+            TissuesMolecular = Specimens?.Any(specimen => specimen.Tissue?.MolecularData != null),
+            Cells = Specimens?.Any(specimen => specimen.Cell != null),
+            CellsMolecular = Specimens.Any(specimen => specimen.Cell?.MolecularData != null),
+            CellsDrugs = Specimens?.Any(specimen => specimen.Cell?.DrugScreenings?.Any() == true),
+            Organoids = Specimens?.Any(specimen => specimen.Organoid != null),
+            OrganoidsMolecular = Specimens?.Any(specimen => specimen.Organoid?.MolecularData != null),
+            OrganoidsDrugs = Specimens?.Any(specimen => specimen.Organoid?.DrugScreenings?.Any() == true),
+            OrganoidsInterventions = Specimens?.Any(specimen => specimen.Organoid?.Interventions?.Any() == true),
+            Xenografts = Specimens?.Any(specimen => specimen.Xenograft != null),
+            XenograftsMolecular = Specimens?.Any(specimen => specimen.Xenograft?.MolecularData != null),
+            XenograftsDrugs = Specimens?.Any(specimen => specimen.Xenograft?.DrugScreenings?.Any() == true),
+            XenograftsInterventions = Specimens?.Any(specimen => specimen.Xenograft?.Interventions?.Any() == true),
+            Ssms = Specimens?.Any(specimen => specimen.Variants?.Any(variant => variant.Ssm != null) == true),
+            Cnvs = Specimens?.Any(specimen => specimen.Variants?.Any(variant => variant.Cnv != null) == true),
+            Svs = Specimens?.Any(specimen => specimen.Variants?.Any(variant => variant.Sv != null) == true),
+            GeneExp = Specimens?.Any(specimen => specimen.Expression != null),
             GeneExpSc = false
         };
     }

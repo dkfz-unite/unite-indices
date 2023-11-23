@@ -54,13 +54,6 @@ public abstract class IndexingService<T> : IIndexingService<T>
         HandleResponseErrors(response);
     }
 
-    public virtual async Task DeleteIndex()
-    {
-        var response = await _client.Indices.DeleteAsync(DefaultIndex);
-
-        HandleResponseErrors(response);
-    }
-
     public virtual async Task UpdateMapping()
     {
         var existsResponse = await _client.Indices.ExistsAsync(DefaultIndex);
@@ -83,6 +76,13 @@ public abstract class IndexingService<T> : IIndexingService<T>
 
             HandleResponseErrors(createIndexResponse);
         }
+    }
+
+    public virtual async Task DeleteIndex()
+    {
+        var response = await _client.Indices.DeleteAsync(DefaultIndex);
+
+        HandleResponseErrors(response);
     }
 
 

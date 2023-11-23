@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Basic.Specimens.Constants;
 
-public static class SpecimenTypes
+internal class SpecimenType
 {
     public const string Tissue = "Tissue";
     public const string Cell = "CellLine";

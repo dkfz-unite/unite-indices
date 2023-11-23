@@ -1,15 +1,16 @@
-﻿using Unite.Indices.Entities.Basic.Genome.Variants.Constants;
-
-namespace Unite.Indices.Entities.Basic.Genome.Variants;
+﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
 public class VariantIndex
 {
-    private string _id;
-    private string _type;
+    /// <summary>
+    /// Specific variant Id. Depends on variant type. Should be set during indexing.
+    /// </summary>
+    public string Id { get; set; }
 
-
-    public string Id { get => _id ?? GetVariantId(); set => _id = value; }
-    public string Type { get => _type ?? GetVariantType(); set => _type = value; }
+    /// <summary>
+    /// Type of the variant. Should be set during indexing.
+    /// </summary>
+    public string Type { get ; set; }
 
     public SsmIndex Ssm { get; set; }
     public CnvIndex Cnv { get; set; }
@@ -21,22 +22,6 @@ public class VariantIndex
         return Ssm != null ? Ssm.AffectedFeatures :
                Cnv != null ? Cnv.AffectedFeatures :
                Sv != null ? Sv.AffectedFeatures :
-               throw new NullReferenceException("Specific variant is not set.");
-    }
-
-    private string GetVariantId()
-    {
-        return Ssm != null ? $"{VariantTypes.SSM}{Ssm.Id}" :
-               Cnv != null ? $"{VariantTypes.CNV}{Cnv.Id}" :
-               Sv != null ? $"{VariantTypes.SV}{Sv.Id}" :
-               throw new NullReferenceException("Specific variant is not set.");
-    }
-
-    private string GetVariantType()
-    {
-        return Ssm != null ? VariantTypes.SSM :
-               Cnv != null ? VariantTypes.CNV :
-               Sv != null ? VariantTypes.SV :
                throw new NullReferenceException("Specific variant is not set.");
     }
 }
