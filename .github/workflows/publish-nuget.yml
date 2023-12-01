@@ -26,6 +26,9 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Pack
-      run: dotnet pack Unite.Indices/Unite.Indices.csproj --output nuget-packages --configuration Release
+      run: |
+        dotnet pack Unite.Indices/Unite.Indices.csproj --output nuget-packages --configuration Release
+        dotnet pack Unite.Indices.Context/Unite.Indices.Context.csproj --output nuget-packages --configuration Release
+        dotnet pack Unite.Indices.Search/Unite.Indices.Search.csproj --output nuget-packages --configuration Release
     - name: Push
       run: dotnet nuget push nuget-packages/*.nupkg -s "github" -k ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
