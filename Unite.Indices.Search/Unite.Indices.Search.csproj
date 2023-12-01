@@ -7,6 +7,12 @@
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>
-    <Description>Unite index models package.</Description>
+    <Description>Unite search service package.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Unite.Indices.Context\Unite.Indices.Context.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Unite.Essentials" Version="1.1.0" />
+  </ItemGroup>
 </Project>

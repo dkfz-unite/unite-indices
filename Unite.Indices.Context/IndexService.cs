@@ -1,19 +1,19 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Nest;
-using Unite.Indices.Services.Configuration.Options;
+using Unite.Indices.Context.Configuration.Options;
 
-namespace Unite.Indices.Services;
+namespace Unite.Indices.Context;
 
-public abstract class IndexingService<T> : IIndexingService<T>
+public abstract class IndexService<T> : IIndexService<T> 
     where T : class
 {
     protected readonly IElasticClient _client;
 
-    protected abstract string DefaultIndex { get; }
+    protected abstract string Collection { get; }    
+    protected abstract Expression<Func<T, object>> Identifier { get; }
 
-    protected abstract Expression<Func<T, object>> IdProperty { get; }
 
-    public IndexingService(IElasticOptions options)
+    public IndexService(IElasticOptions options)
     {
         var host = new Uri(options.Host);
 
@@ -22,31 +22,29 @@ public abstract class IndexingService<T> : IIndexingService<T>
             .BasicAuthentication(options.User, options.Password)
             .EnableApiVersioningHeader()
             .DefaultMappingFor<T>(map => map
-                .IndexName(DefaultIndex)
-                .IdProperty(IdProperty)
+                .IndexName(Collection)
+                .IdProperty(Identifier)
             );
 
         _client = new ElasticClient(settings);
     }
 
-    public virtual async Task IndexOne(T index)
+
+    public virtual async Task Add(T element)
     {
-        var response = await _client.UpdateAsync<T>(index, update => update
-            .Doc(index)
+        var response = await _client.UpdateAsync<T>(element, update => update
+            .Doc(element)
             .DocAsUpsert()
         );
 
-        if (!response.IsValid)
-        {
-            throw response.OriginalException;
-        }
+        HandleResponseErrors(response);
     }
 
-    public virtual async Task IndexMany(IEnumerable<T> indices)
+    public virtual async Task AddRange(IEnumerable<T> elements)
     {
         var response = await _client.BulkAsync(bulk => bulk
-            .UpdateMany(indices, (update, index) => update
-                .Doc(index)
+            .UpdateMany(elements, (update, element) => update
+                .Doc(element)
                 .DocAsUpsert()
             )
         );
@@ -54,9 +52,10 @@ public abstract class IndexingService<T> : IIndexingService<T>
         HandleResponseErrors(response);
     }
 
-    public virtual async Task UpdateMapping()
+
+    public virtual async Task UpdateIndex()
     {
-        var existsResponse = await _client.Indices.ExistsAsync(DefaultIndex);
+        var existsResponse = await _client.Indices.ExistsAsync(Collection);
 
         HandleResponseErrors(existsResponse);
 
@@ -70,7 +69,7 @@ public abstract class IndexingService<T> : IIndexingService<T>
         }
         else
         {
-            var createIndexResponse = await _client.Indices.CreateAsync(DefaultIndex, request =>
+            var createIndexResponse = await _client.Indices.CreateAsync(Collection, request =>
                 request.Map<T>(mapping => mapping.AutoMap())
             );
 
@@ -80,13 +79,13 @@ public abstract class IndexingService<T> : IIndexingService<T>
 
     public virtual async Task DeleteIndex()
     {
-        var response = await _client.Indices.DeleteAsync(DefaultIndex);
+        var response = await _client.Indices.DeleteAsync(Collection);
 
         HandleResponseErrors(response);
     }
 
 
-    private void HandleResponseErrors(IResponse response)
+    private static void HandleResponseErrors(IResponse response)
     {
         if (!response.IsValid)
         {

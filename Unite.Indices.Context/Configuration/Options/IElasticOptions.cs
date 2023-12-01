@@ -1,4 +1,4 @@
-﻿namespace Unite.Indices.Services.Configuration.Options;
+﻿namespace Unite.Indices.Context.Configuration.Options;
 
 public interface IElasticOptions
 {
