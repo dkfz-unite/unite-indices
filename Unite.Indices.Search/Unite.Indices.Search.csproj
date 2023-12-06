@@ -13,6 +13,6 @@
     <ProjectReference Include="..\Unite.Indices.Context\Unite.Indices.Context.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Unite.Essentials" Version="1.0.0" />
+    <PackageReference Include="Unite.Essentials" Version="1.2.0" />
   </ItemGroup>
 </Project>
