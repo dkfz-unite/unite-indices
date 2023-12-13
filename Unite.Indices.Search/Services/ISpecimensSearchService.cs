@@ -1,5 +1,4 @@
-﻿using Unite.Indices.Search.Engine.Enums;
-using Unite.Indices.Search.Engine.Queries;
+﻿using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
