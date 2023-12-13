@@ -16,9 +16,6 @@ public class SpecimenIndex
     /// Type of the specimen. Should be set during indexing.
     /// </summary>
     public string Type { get; set; }
-    
-    public int? CreationDay { get; set; }
-    
 
     public TissueIndex Tissue { get; set; }
     public CellLineIndex Cell { get; set; }
@@ -26,12 +23,28 @@ public class SpecimenIndex
     public XenograftIndex Xenograft { get; set; }
 
 
+    public MolecularDataIndex GetMolecularData()
+    {
+        return Tissue?.MolecularData ?? 
+               Cell?.MolecularData ?? 
+               Organoid?.MolecularData ??
+               Xenograft?.MolecularData;
+    }
+
     public DrugScreeningIndex[] GetDrugScreenings()
     {
-        return Tissue != null ? null : 
-               Cell != null ? Cell.DrugScreenings : 
-               Organoid != null ? Organoid.DrugScreenings : 
-               Xenograft != null ? Xenograft.DrugScreenings : 
-               throw new NullReferenceException("Specific specimen type is not set.");
+        return Cell?.DrugScreenings ??
+               Organoid?.DrugScreenings ??
+               Xenograft?.DrugScreenings;
+    }
+
+    public OrganoidInterventionIndex[] GetOrganoidInterventions()
+    {
+        return Organoid?.Interventions;
+    }
+
+    public XenograftInterventionIndex[] GetXenograftInterventions()
+    {
+        return Xenograft?.Interventions;
     }
 }

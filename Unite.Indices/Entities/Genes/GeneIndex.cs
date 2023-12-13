@@ -47,7 +47,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
     /// <summary>
     /// Number of cell lines with at least one SSM, CNV or SV in this gene.
     /// </summary>
-    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Specimens, SpecimenType.Cell); set => _numberOfCells = value; }
+    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Specimens, SpecimenType.CellLine); set => _numberOfCells = value; }
 
     /// <summary>
     /// Number of organoids with at least one SSM, CNV or SV in this gene.

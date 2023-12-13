@@ -1,9 +1,7 @@
 ﻿namespace Unite.Indices.Entities.Basic.Specimens;
 
-public class XenograftIndex
+public class XenograftIndex : SpecimenBaseIndex
 {
-    public string ReferenceId { get; set; }
-
     public string MouseStrain { get; set; }
     public int? GroupSize { get; set; }
     public string ImplantType { get; set; }
@@ -14,7 +12,5 @@ public class XenograftIndex
     public int? SurvivalDaysFrom { get; set; }
     public int? SurvivalDaysTo { get; set; }
 
-    public MolecularDataIndex MolecularData { get; set; }
-    public DrugScreeningIndex[] DrugScreenings { get; set; }
     public XenograftInterventionIndex[] Interventions { get; set; }
 }

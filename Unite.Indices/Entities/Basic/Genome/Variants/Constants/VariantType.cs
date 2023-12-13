@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Basic.Genome.Variants.Constants;
 
-internal class VariantType
+public class VariantType
 {
     public const string SSM = "SSM";
     public const string CNV = "CNV";

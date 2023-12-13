@@ -14,11 +14,9 @@ public class ImageIndex
     public string ReferenceId { get; set; }
 
     /// <summary>
-    /// Type of the image. Should be set during indexing.
+    /// Type of the image. Should be set during indexing (<see cref="Constants.ImageType"/>).
     /// </summary>
     public string Type { get; set; }
-
-    public int? CreationDay { get; set; }
 
 
     public MriImageIndex Mri { get; set; }

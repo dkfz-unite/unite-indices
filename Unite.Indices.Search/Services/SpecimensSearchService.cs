@@ -1,16 +1,15 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Search.Engine;
-using Unite.Indices.Search.Engine.Enums;
 using Unite.Indices.Search.Engine.Queries;
-using Unite.Indices.Search.Services.Context;
-using Unite.Indices.Search.Services.Criteria;
 using Unite.Indices.Search.Services.Filters;
-using Unite.Indices.Search.Services.Filters.Base;
+using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
+using Unite.Indices.Search.Services.Filters.Criteria;
 
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
 using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
 using VariantIndex = Unite.Indices.Entities.Variants.VariantIndex;
 using DataIndex = Unite.Indices.Entities.Specimens.DataIndex;
+
 
 namespace Unite.Indices.Search.Services;
 
@@ -32,29 +31,92 @@ public class SpecimensSearchService : AggregatingSearchService, ISpecimensSearch
     }
 
 
-    public SpecimenIndex Get(string key, SpecimenSearchContext searchContext = null)
+    public SpecimenIndex Get(string key)
     {
         var query = new GetQuery<SpecimenIndex>(key);
 
-        var result = _specimensIndexService.Get(query).Result;
-
-        return result;
+        return _specimensIndexService.Get(query).Result;
     }
 
-    public IDictionary<int, DataIndex> Stats(SearchCriteria searchCriteria = null, SpecimenSearchContext searchContext = null)
+    public SearchResult<SpecimenIndex> Search(SearchCriteria searchCriteria)
     {
-        var criteria = searchCriteria ?? new SearchCriteria();
-        var context = searchContext ?? new SpecimenSearchContext();
+        var criteria = searchCriteria;
+
+        int[] ids = null;
+
+        if(criteria.HasGeneFilters)
+            ids = AggregateFromGenes(index => index.Id, criteria);
+        else if(criteria.HasVariantFilters)
+            ids = AggregateFromVariants(index => index.Id, criteria);
+
+        if(ids != null)
+        {
+            if(ids.Length > 0)
+                criteria.Specimen = (criteria.Specimen ?? new SpecimenCriteria()) with { Id = ids };
+            else
+                return new SearchResult<SpecimenIndex>();
+        }
+
+        var filters = new SpecimenFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<SpecimenIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters)
+            .AddOrdering(specimen => specimen.NumberOfGenes)
+            .AddExclusion(specimen => specimen.Cell.DrugScreenings)
+            .AddExclusion(specimen => specimen.Organoid.DrugScreenings)
+            .AddExclusion(specimen => specimen.Xenograft.DrugScreenings)
+            .AddExclusion(specimen => specimen.Images);
+
+        return _specimensIndexService.Search(query).Result;
+    }
+
+    public SearchResult<GeneIndex> SearchGenes(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
+
+        var filters = new GeneFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<GeneIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters)
+            .AddOrdering(gene => gene.NumberOfDonors);
+
+        return _genesIndexService.Search(query).Result;
+    }
+
+    public SearchResult<VariantIndex> SearchVariants(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
+
+        var filters = new VariantFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<VariantIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters)
+            .AddOrdering(mutation => mutation.NumberOfDonors);
+
+        return _variantsIndexService.Search(query).Result;
+    }
+
+    public IDictionary<int, DataIndex> Stats(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
 
         var availableData = new Dictionary<int, DataIndex>();
 
         criteria = criteria with { From = 0, Size = 0 };
-        var lookupResult = Search(criteria, context);
+
+        var lookupResult = Search(criteria);
 
         for (var from = 0; from < lookupResult.Total; from += 499)
         {
             criteria = criteria with { From = from, Size = 499 };
-            var searchResult = Search(criteria, context);
+
+            var searchResult = Search(criteria);
 
             foreach (var index in searchResult.Rows)
             {
@@ -63,113 +125,5 @@ public class SpecimensSearchService : AggregatingSearchService, ISpecimensSearch
         }
 
         return availableData;
-    }
-
-    public SearchResult<SpecimenIndex> Search(SearchCriteria searchCriteria = null, SpecimenSearchContext searchContext = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        var context = searchContext ?? new SpecimenSearchContext();
-
-        var ids =  AggregateFromVariants(index => index.Specimens.First().Id, criteria)
-                ?? AggregateFromGenes(index => index.Specimens.First().Id, criteria)
-                ?? null;
-
-        if (ids?.Length == 0)
-        {
-            return new SearchResult<SpecimenIndex>();
-        }
-        else
-        {
-            if (ids != null)
-            {
-                criteria.Specimen = (criteria.Specimen ?? new SpecimenCriteria()) with { Id = ids };
-            }
-
-            var filters = GetFiltersCollection(criteria, context)
-                .All();
-
-            var query = new SearchQuery<SpecimenIndex>()
-                .AddPagination(criteria.From, criteria.Size)
-                .AddFullTextSearch(criteria.Term)
-                .AddFilters(filters)
-                .AddOrdering(specimen => specimen.NumberOfGenes)
-                .AddExclusion(specimen => specimen.Cell.DrugScreenings)
-                .AddExclusion(specimen => specimen.Organoid.DrugScreenings)
-                .AddExclusion(specimen => specimen.Xenograft.DrugScreenings)
-                .AddExclusion(specimen => specimen.Images);
-
-            var result = _specimensIndexService.Search(query).Result;
-
-            return result;
-        }
-    }
-
-    public SearchResult<GeneIndex> SearchGenes(int specimenId, SearchCriteria searchCriteria = null, SpecimenSearchContext searchContext = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        var context = searchContext ?? new SpecimenSearchContext();
-
-        criteria.Specimen = new SpecimenCriteria { Id = [specimenId] };
-
-        var criteriaFilters = new GeneIndexFiltersCollection(criteria)
-            .All();
-
-        var query = new SearchQuery<GeneIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(criteriaFilters)
-            .AddOrdering(gene => gene.NumberOfDonors);
-
-        var result = _genesIndexService.Search(query).Result;
-
-        return result;
-    }
-
-    public SearchResult<VariantIndex> SearchVariants(int specimenId, VariantType type, SearchCriteria searchCriteria = null, SpecimenSearchContext searchContext = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        var context = searchContext ?? new SpecimenSearchContext();
-
-        criteria.Specimen = new SpecimenCriteria { Id = [specimenId] };
-
-        var criteriaFilters = GetFiltersCollection(type, criteria)
-            .All();
-
-        var query = new SearchQuery<VariantIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(criteriaFilters)
-            .AddOrdering(mutation => mutation.NumberOfDonors);
-
-        var result = _variantsIndexService.Search(query).Result;
-
-        return result;
-    }
-
-
-    private static FiltersCollection<SpecimenIndex> GetFiltersCollection(SearchCriteria criteria, SpecimenSearchContext context)
-    {
-        return context.SpecimenType switch
-        {
-            SpecimenType.Tissue => new TissueIndexFiltersCollection(criteria),
-            SpecimenType.CellLine => new CellLineIndexFiltersCollection(criteria),
-            SpecimenType.Organoid => new OrganoidIndexFiltersCollection(criteria),
-            SpecimenType.Xenograft => new XenograftIndexFiltersCollection(criteria),
-            _ => new SpecimenIndexFiltersCollection(criteria)
-        };
-    }
-
-    private static FiltersCollection<VariantIndex> GetFiltersCollection(VariantType type, SearchCriteria criteria)
-    {
-        return type switch
-        {
-            VariantType.SSM => new SsmIndexFiltersCollection(criteria),
-            VariantType.CNV => new CnvIndexFiltersCollection(criteria),
-            VariantType.SV => new SvIndexFiltersCollection(criteria),
-            _ => new VariantFiltersCollection(criteria)
-        };
     }
 }

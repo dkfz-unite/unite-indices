@@ -1,12 +1,10 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
+using Unite.Indices.Entities.Variants;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
-using Unite.Indices.Search.Engine.Enums;
-using Unite.Indices.Search.Services.Context;
-using Unite.Indices.Search.Services.Criteria;
 using Unite.Indices.Search.Services.Filters;
-using Unite.Indices.Search.Services.Filters.Base;
-using Unite.Indices.Entities.Variants;
+using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
+using Unite.Indices.Search.Services.Filters.Criteria;
 
 using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
@@ -32,81 +30,40 @@ public class VariantsSearchService : AggregatingSearchService, IVariantsSearchSe
     }
 
     
-    public VariantIndex Get(string key, VariantSearchContext searchContext = null)
+    public VariantIndex Get(string key)
     {
         var query = new GetQuery<VariantIndex>(key)
             .AddExclusion(variant => variant.Specimens);
 
-        var result = _variantsIndexService.Get(query).Result;
-
-        return result;
+        return _variantsIndexService.Get(query).Result;
     }
 
-
-    public IDictionary<long, DataIndex> Stats(SearchCriteria searchCriteria = null, VariantSearchContext searchContext = null)
+    public SearchResult<VariantIndex> Search(SearchCriteria searchCriteria)
     {
-        var criteria = searchCriteria ?? new SearchCriteria();
-        var context = searchContext ?? new VariantSearchContext();
+        var criteria = searchCriteria;
 
-        var availableData = new Dictionary<long, DataIndex>();
-
-        criteria = criteria with { From = 0, Size = 0 };
-        var lookupResult = Search(criteria, context);
-
-        for (var from = 0; from < lookupResult.Total; from += 499)
-        {
-            criteria = criteria with { From = from, Size = 499 };
-            var searchResult = Search(criteria, context);
-
-            foreach (var index in searchResult.Rows)
-            {
-                // Bad code, add real Id to index
-                var id = index.Id.StartsWith("SSM") ? long.Parse(index.Id.Substring(3))
-                       : index.Id.StartsWith("CNV") ? long.Parse(index.Id.Substring(3))
-                       : index.Id.StartsWith("SV") ? long.Parse(index.Id.Substring(2))
-                       : throw new InvalidOperationException($"Unknown variant type: {index.Id}");
-
-                availableData.Add(id, index.Data);
-            }
-        }
-
-        return availableData;
-    }
-
-    public SearchResult<VariantIndex> Search(SearchCriteria searchCriteria = null, VariantSearchContext searchContext = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        var context = searchContext ?? new VariantSearchContext();
-
-        var criteriaFilters = GetFiltersCollection(criteria, context)
-            .All();
+        var filters = new VariantFiltersCollection(criteria).All();
 
         var query = new SearchQuery<VariantIndex>()
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
-            .AddFilters(criteriaFilters)
+            .AddFilters(filters)
             .AddOrdering(variant => variant.NumberOfDonors)
             .AddExclusion(variant => variant.Specimens);
 
-        var result = _variantsIndexService.Search(query).Result;
-
-        return result;
+        return _variantsIndexService.Search(query).Result;
     }
 
-    public SearchResult<DonorIndex> SearchDonors(string variantId, SearchCriteria searchCriteria = null, VariantSearchContext searchContext = null)
+    public SearchResult<DonorIndex> SearchDonors(SearchCriteria searchCriteria)
     {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        criteria.Ssm = new MutationCriteria { Id = new[] { variantId } };
+        var criteria = searchCriteria;
 
         // Should never be null or empty
         var ids = AggregateFromVariants(index => index.Specimens.First().Donor.Id, criteria);
 
         criteria.Donor = (criteria.Donor ?? new DonorCriteria()) with { Id = ids };
 
-        var filters = new DonorIndexFiltersCollection(criteria)
-            .All();
+        var filters = new DonorFiltersCollection(criteria).All();
 
         var query = new SearchQuery<DonorIndex>()
             .AddPagination(criteria.From, criteria.Size)
@@ -115,20 +72,31 @@ public class VariantsSearchService : AggregatingSearchService, IVariantsSearchSe
             .AddOrdering(donor => donor.NumberOfGenes)
             .AddExclusion(donor => donor.Specimens);
 
-        var result = _donorsIndexService.Search(query).Result;
-
-        return result;
+        return _donorsIndexService.Search(query).Result;
     }
 
-
-    private static FiltersCollection<VariantIndex> GetFiltersCollection(SearchCriteria criteria, VariantSearchContext context)
+    public IDictionary<string, DataIndex> Stats(SearchCriteria searchCriteria)
     {
-        return context.VariantType switch
+        var criteria = searchCriteria;
+
+        var availableData = new Dictionary<string, DataIndex>();
+
+        criteria = criteria with { From = 0, Size = 0 };
+
+        var lookupResult = Search(criteria);
+
+        for (var from = 0; from < lookupResult.Total; from += 499)
         {
-            VariantType.SSM => new SsmIndexFiltersCollection(criteria),
-            VariantType.CNV => new CnvIndexFiltersCollection(criteria),
-            VariantType.SV => new SvIndexFiltersCollection(criteria),
-            _ => new VariantFiltersCollection(criteria)
-        };
+            criteria = criteria with { From = from, Size = 499 };
+
+            var searchResult = Search(criteria);
+
+            foreach (var index in searchResult.Rows)
+            {
+                availableData.Add(index.Id, index.Data);
+            }
+        }
+
+        return availableData;
     }
 }

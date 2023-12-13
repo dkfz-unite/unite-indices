@@ -1,9 +1,7 @@
 ﻿namespace Unite.Indices.Entities.Basic.Images;
 
-public class MriImageIndex
+public class MriImageIndex : ImageBaseIndex
 {
-    public string ReferenceId { get; set; }
-
     public double? WholeTumor { get; set; }
     public double? ContrastEnhancing { get; set; }
     public double? NonContrastEnhancing { get; set; }

@@ -1,17 +1,14 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Search.Engine;
-using Unite.Indices.Search.Engine.Enums;
 using Unite.Indices.Search.Engine.Queries;
-using Unite.Indices.Search.Services.Context;
-using Unite.Indices.Search.Services.Criteria;
 using Unite.Indices.Search.Services.Filters;
-using Unite.Indices.Search.Services.Filters.Base;
+using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
+using Unite.Indices.Search.Services.Filters.Criteria;
 
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
 using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
 using VariantIndex = Unite.Indices.Entities.Variants.VariantIndex;
 using DataIndex = Unite.Indices.Entities.Images.DataIndex;
-
 
 namespace Unite.Indices.Search.Services;
 
@@ -33,7 +30,7 @@ public class ImagesSearchService : AggregatingSearchService, IImagesSearchServic
     }
 
 
-    public ImageIndex Get(string key, ImageSearchContext searchContext = null)
+    public ImageIndex Get(string key)
     {
         var query = new GetQuery<ImageIndex>(key)
             .AddExclusion(image => image.Donor)
@@ -42,25 +39,85 @@ public class ImagesSearchService : AggregatingSearchService, IImagesSearchServic
             .AddExclusion(image => image.Specimens.First().Organoid)
             .AddExclusion(image => image.Specimens.First().Xenograft);
 
-        var result = _imagesIndexService.Get(query).Result;
-
-        return result;
+        return _imagesIndexService.Get(query).Result;
     }
 
-    public IDictionary<int, DataIndex> Stats(SearchCriteria searchCriteria = null, ImageSearchContext searchContext = null)
+    public SearchResult<ImageIndex> Search(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
+
+        int[] ids = null;
+
+        if (criteria.HasGeneFilters)
+            ids = AggregateFromGenes(index => index.Specimens.First().Images.First().Id, criteria);
+        else if (criteria.HasVariantFilters)
+            ids = AggregateFromVariants(index => index.Specimens.First().Images.First().Id, criteria);
+
+        if (ids != null)
+        {
+            if (ids.Length > 0)
+                criteria.Image = (criteria.Image ?? new ImageCriteria()) with { Id = ids };
+            else
+                return new SearchResult<ImageIndex>();
+        }
+
+        var filters = new ImageFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<ImageIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters)
+            .AddOrdering(image => image.Id, true)
+            .AddExclusion(image => image.Specimens);
+
+        return _imagesIndexService.Search(query).Result;
+    }
+
+    public SearchResult<GeneIndex> SearchGenes(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
+
+        var filters = new GeneFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<GeneIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters)
+            .AddOrdering(gene => gene.NumberOfDonors);
+
+        return _genesIndexService.Search(query).Result;
+    }
+
+    public SearchResult<VariantIndex> SearchVariants(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
+
+        var filters = new VariantFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<VariantIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters)
+            .AddOrdering(mutation => mutation.NumberOfDonors);
+
+        return _variantsIndexService.Search(query).Result;
+    }
+
+    public IDictionary<int, DataIndex> Stats(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria ?? new SearchCriteria();
-        var context = searchContext ?? new ImageSearchContext();
 
         var availableData = new Dictionary<int, DataIndex>();
 
         criteria = criteria with { From = 0, Size = 0 };
-        var lookupResult = Search(criteria, context);
+
+        var lookupResult = Search(criteria);
 
         for (var from = 0; from < lookupResult.Total; from += 499)
         {
             criteria = criteria with { From = from, Size = 499 };
-            var searchResult = Search(criteria, context);
+
+            var searchResult = Search(criteria);
 
             foreach (var index in searchResult.Rows)
             {
@@ -69,108 +126,5 @@ public class ImagesSearchService : AggregatingSearchService, IImagesSearchServic
         }
 
         return availableData;
-    }
-
-    public SearchResult<ImageIndex> Search(SearchCriteria searchCriteria = null, ImageSearchContext searchContext = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        var context = searchContext ?? new ImageSearchContext();
-
-        var filters = GetFiltersCollection(criteria, context)
-            .All();
-
-        var ids = AggregateFromVariants(index => index.Specimens.First().Images.First().Id, criteria)
-               ?? AggregateFromGenes(index => index.Specimens.First().Images.First().Id, criteria)
-               ?? null;
-
-        if (ids?.Length == 0)
-        {
-            return new SearchResult<ImageIndex>();
-        }
-        else
-        {
-            if (ids != null)
-            {
-                criteria.Image = (criteria.Image ?? new ImageCriteria()) with { Id = ids };
-            }
-
-            var query = new SearchQuery<ImageIndex>()
-                .AddPagination(criteria.From, criteria.Size)
-                .AddFullTextSearch(criteria.Term)
-                .AddFilters(filters)
-                .AddOrdering(image => image.Id, true)
-                .AddExclusion(image => image.Specimens);
-
-            var result = _imagesIndexService.Search(query).Result;
-
-            return result;
-        }
-    }
-
-    public SearchResult<GeneIndex> SearchGenes(int specimenId, SearchCriteria searchCriteria = null, ImageSearchContext searchContext = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        var context = searchContext ?? new ImageSearchContext();
-
-        criteria.Specimen = new SpecimenCriteria { Id = [specimenId]};
-
-        var criteriaFilters = new GeneIndexFiltersCollection(criteria)
-            .All();
-
-        var query = new SearchQuery<GeneIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(criteriaFilters)
-            .AddOrdering(gene => gene.NumberOfDonors);
-
-        var result = _genesIndexService.Search(query).Result;
-
-        return result;
-    }
-
-    public SearchResult<VariantIndex> SearchVariants(int specimenId, VariantType type, SearchCriteria searchCriteria = null, ImageSearchContext searchContext = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        var context = searchContext ?? new ImageSearchContext();
-
-        criteria.Specimen = new SpecimenCriteria { Id = [specimenId]};
-
-        var criteriaFilters = GetFiltersCollection(type, criteria)
-            .All();
-
-        var query = new SearchQuery<VariantIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(criteriaFilters)
-            .AddOrdering(mutation => mutation.NumberOfDonors);
-
-        var result = _variantsIndexService.Search(query).Result;
-
-        return result;
-    }
-
-
-    private static FiltersCollection<ImageIndex> GetFiltersCollection(SearchCriteria criteria, ImageSearchContext context)
-    {
-        return context.ImageType switch
-        {
-            ImageType.MRI => new MriImageIndexFiltersCollection(criteria),
-            ImageType.CT => throw new NotImplementedException(),
-            _ => new ImageIndexFiltersCollection(criteria),
-        };
-    }
-
-    private static FiltersCollection<VariantIndex> GetFiltersCollection(VariantType type, SearchCriteria criteria)
-    {
-        return type switch
-        {
-            VariantType.SSM => new SsmIndexFiltersCollection(criteria),
-            VariantType.CNV => new CnvIndexFiltersCollection(criteria),
-            VariantType.SV => new SvIndexFiltersCollection(criteria),
-            _ => new VariantFiltersCollection(criteria)
-        };
     }
 }

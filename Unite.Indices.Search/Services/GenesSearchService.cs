@@ -1,11 +1,10 @@
-﻿using Unite.Indices.Search.Engine;
-using Unite.Indices.Search.Engine.Queries;
-using Unite.Indices.Search.Services.Criteria;
-using Unite.Indices.Search.Services.Filters;
-using Unite.Indices.Search.Services.Filters.Base;
+﻿using Unite.Indices.Entities.Genes;
 using Unite.Indices.Context.Configuration.Options;
-using Unite.Indices.Entities.Genes;
-using Unite.Indices.Search.Engine.Enums;
+using Unite.Indices.Search.Engine;
+using Unite.Indices.Search.Engine.Queries;
+using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
+using Unite.Indices.Search.Services.Filters.Criteria;
 
 using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
@@ -34,23 +33,75 @@ public class GenesSearchService : AggregatingSearchService, IGenesSearchService
         var query = new GetQuery<GeneIndex>(key)
             .AddExclusion(gene => gene.Specimens);
 
-        var result = _genesIndexService.Get(query).Result;
-
-        return result;
+        return _genesIndexService.Get(query).Result;
     }
 
-    public IDictionary<int, DataIndex> Stats(SearchCriteria searchCriteria = null)
+    public SearchResult<GeneIndex> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria ?? new SearchCriteria();
+
+        var filters = new GeneFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<GeneIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters)
+            .AddOrdering(gene => gene.NumberOfDonors)
+            .AddExclusion(gene => gene.Specimens);
+
+        return _genesIndexService.Search(query).Result;
+    }
+
+    public SearchResult<DonorIndex> SearchDonors(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
+
+        // Should never be null or empty
+        var ids = AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria);
+
+        criteria.Donor = (criteria.Donor ?? new DonorCriteria()) with { Id = ids };
+
+        var filters = new DonorFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<DonorIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFilters(filters)
+            .AddOrdering(donor => donor.NumberOfGenes);
+
+        return _donorsIndexService.Search(query).Result;
+    }
+
+    public SearchResult<VariantIndex> SearchVariants(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
+
+        var filters = new VariantFiltersCollection(criteria).All();
+
+        var query = new SearchQuery<VariantIndex>()
+            .AddPagination(criteria.From, criteria.Size)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters)
+            .AddOrdering(variant => variant.NumberOfDonors)
+            .AddExclusion(variant => variant.Specimens);
+
+        return _variantsIndexService.Search(query).Result;
+    }
+
+
+    public IDictionary<int, DataIndex> Stats(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria;
 
         var availableData = new Dictionary<int, DataIndex>();
 
         criteria = criteria with { From = 0, Size = 0 };
+
         var lookupResult = Search(criteria);
 
         for (var from = 0; from < lookupResult.Total; from += 499)
         {
             criteria = criteria with { From = from, Size = 499 };
+
             var searchResult = Search(criteria);
 
             foreach (var index in searchResult.Rows)
@@ -60,81 +111,5 @@ public class GenesSearchService : AggregatingSearchService, IGenesSearchService
         }
 
         return availableData;
-    }
-
-    public SearchResult<GeneIndex> Search(SearchCriteria searchCriteria = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        var criteriaFilters = new GeneIndexFiltersCollection(criteria)
-            .All();
-
-        var query = new SearchQuery<GeneIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(criteriaFilters)
-            .AddOrdering(gene => gene.NumberOfDonors)
-            .AddExclusion(gene => gene.Specimens);
-
-        var result = _genesIndexService.Search(query).Result;
-
-        return result;
-    }
-
-    public SearchResult<DonorIndex> SearchDonors(int geneId, SearchCriteria searchCriteria = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        criteria.Gene = new GeneCriteria() { Id = [geneId] };
-
-        // Should never be null or empty
-        var ids = AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria);
-
-        criteria.Donor = (criteria.Donor ?? new DonorCriteria()) with { Id = ids };
-
-        var filters = new DonorIndexFiltersCollection(criteria)
-            .All();
-
-        var query = new SearchQuery<DonorIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFilters(filters)
-            .AddOrdering(donor => donor.NumberOfGenes);
-
-        var result = _donorsIndexService.Search(query).Result;
-
-        return result;
-    }
-
-    public SearchResult<VariantIndex> SearchVariants(int geneId, VariantType type, SearchCriteria searchCriteria = null)
-    {
-        var criteria = searchCriteria ?? new SearchCriteria();
-
-        criteria.Gene = new GeneCriteria { Id = [geneId] };
-
-        var criteriaFilters = GetFiltersCollection(type, criteria)
-            .All();
-
-        var query = new SearchQuery<VariantIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(criteriaFilters)
-            .AddOrdering(mutation => mutation.NumberOfDonors)
-            .AddExclusion(mutation => mutation.Specimens);
-
-        var result = _variantsIndexService.Search(query).Result;
-
-        return result;
-    }
-
-
-    private static FiltersCollection<VariantIndex> GetFiltersCollection(VariantType type, SearchCriteria criteria)
-    {
-        return type switch
-        {
-            VariantType.SSM => new SsmIndexFiltersCollection(criteria),
-            VariantType.CNV => new CnvIndexFiltersCollection(criteria),
-            VariantType.SV => new SvIndexFiltersCollection(criteria),
-            _ => new VariantFiltersCollection(criteria)
-        };
     }
 }

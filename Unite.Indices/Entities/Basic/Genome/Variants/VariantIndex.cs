@@ -8,7 +8,7 @@ public class VariantIndex
     public string Id { get; set; }
 
     /// <summary>
-    /// Type of the variant. Should be set during indexing.
+    /// Type of the variant. Should be set during indexing (<see cref="Constants.VariantType"/>).
     /// </summary>
     public string Type { get ; set; }
 
@@ -19,9 +19,8 @@ public class VariantIndex
 
     public AffectedFeatureIndex[] GetAffectedFeatures()
     {
-        return Ssm != null ? Ssm.AffectedFeatures :
-               Cnv != null ? Cnv.AffectedFeatures :
-               Sv != null ? Sv.AffectedFeatures :
-               throw new NullReferenceException("Specific variant is not set.");
+        return Ssm?.AffectedFeatures ??
+               Cnv?.AffectedFeatures ??
+               Sv?.AffectedFeatures;
     }
 }

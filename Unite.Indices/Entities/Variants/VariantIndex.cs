@@ -40,7 +40,7 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     /// <summary>
     /// Number of cell lines with the variant in any sample.
     /// </summary>
-    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Specimens, SpecimenType.Cell); set => _numberOfCells = value; }
+    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Specimens, SpecimenType.CellLine); set => _numberOfCells = value; }
 
     /// <summary>
     /// Number of organoids with the variant in any sample.
@@ -87,7 +87,7 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     {
         return specimens?
             .Where(specimen => specimen.Type == type)
-            .DistinctBy(sspecimenmple => sspecimenmple.Id)
+            .DistinctBy(specimen => specimen.Id)
             .Count() ?? 0;
     }
 
@@ -98,8 +98,8 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
             Donors = true,
             Clinical = Specimens.Any(specimen => specimen.Donor.ClinicalData != null),
             Treatments = Specimens.Any(specimen => specimen.Donor.Treatments?.Any() == true),
-            Mris = Specimens.Any(specimen => specimen.Images.Any(image => image.Mri != null)),
-            // Cts = Specimens.Any(specimen => specimen.Images.Any(image => image.Ct != null));
+            Mris = Specimens.Any(specimen => specimen.Images?.Any(image => image.Mri != null) == true),
+            // Cts = Specimens.Any(specimen => specimen.Images?.Any(image => image.Ct != null) == true);
             Tissues = Specimens.Any(specimen => specimen.Tissue != null),
             TissuesMolecular = Specimens.Any(specimen => specimen.Tissue?.MolecularData != null),
             Cells = Specimens.Any(specimen => specimen.Cell != null),

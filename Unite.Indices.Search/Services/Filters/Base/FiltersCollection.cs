@@ -1,5 +1,5 @@
 ﻿using Unite.Indices.Search.Engine.Filters;
-using Unite.Indices.Search.Services.Criteria.Models;
+using Unite.Indices.Search.Services.Filters.Criteria.Models;
 
 namespace Unite.Indices.Search.Services.Filters.Base;
 
@@ -20,6 +20,21 @@ public abstract class FiltersCollection<T> where T : class
         _filters.AddRange(filters);
     }
 
+    public virtual void Remove(string filterName)
+    {
+        var filter = _filters.FirstOrDefault(f => f.Name == filterName);
+
+        if (filter != null)
+        {
+            _filters.Remove(filter);
+        }
+    }
+
+    public virtual bool Any()
+    {
+        return _filters.Any();
+    }
+
     public virtual IEnumerable<IFilter<T>> All()
     {
         return _filters;
@@ -31,27 +46,37 @@ public abstract class FiltersCollection<T> where T : class
     }
 
 
-    protected virtual bool IsNotEmpty(IEnumerable<string> values)
+    protected virtual bool IsNotEmpty(params string[] values)
     {
         return values?.Any(value => !string.IsNullOrWhiteSpace(value)) == true;
     }
 
-    protected virtual bool IsNotEmpty(IEnumerable<int> values)
+    protected virtual bool IsNotEmpty(params bool[] values)
     {
         return values?.Any() == true;
     }
 
-    protected virtual bool IsNotEmpty(IEnumerable<int?> values)
+    protected virtual bool IsNotEmpty(params bool?[] values)
     {
         return values?.Any(value => value.HasValue) == true;
     }
 
-    protected virtual bool IsNotEmpty(IEnumerable<double> values)
+    protected virtual bool IsNotEmpty(params int[] values)
     {
         return values?.Any() == true;
     }
 
-    protected virtual bool IsNotEmpty(IEnumerable<double?> values)
+    protected virtual bool IsNotEmpty(params int?[] values)
+    {
+        return values?.Any(value => value.HasValue) == true;
+    }
+
+    protected virtual bool IsNotEmpty(params double[] values)
+    {
+        return values?.Any() == true;
+    }
+
+    protected virtual bool IsNotEmpty(params double?[] values)
     {
         return values?.Any(value => value.HasValue) == true;
     }
@@ -64,10 +89,5 @@ public abstract class FiltersCollection<T> where T : class
     protected virtual bool IsNotEmpty(Range<double?> range)
     {
         return range?.From.HasValue == true || range?.To.HasValue == true;
-    }
-
-    protected virtual bool IsNotEmpty(bool? value)
-    {
-        return value.HasValue;
     }
 }

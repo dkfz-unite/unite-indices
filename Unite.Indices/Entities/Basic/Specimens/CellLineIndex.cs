@@ -1,9 +1,7 @@
 ﻿namespace Unite.Indices.Entities.Basic.Specimens;
 
-public class CellLineIndex
+public class CellLineIndex : SpecimenBaseIndex
 {
-    public string ReferenceId { get; set; }
-
     public string Species { get; set; }
     public string Type { get; set; }
     public string CultureType { get; set; }
@@ -16,7 +14,4 @@ public class CellLineIndex
     public string PubMedLink { get; set; }
     public string AtccLink { get; set; }
     public string ExPasyLink { get; set; }
-
-    public MolecularDataIndex MolecularData { get; set; }
-    public DrugScreeningIndex[] DrugScreenings { get; set; }
 }
