@@ -14,6 +14,11 @@ public class CnvFilters<T> : VariantBaseFilters<T, CnvIndex> where T : class
 
     public CnvFilters(CnvCriteria criteria, Expression<Func<T, CnvIndex>> path) : base(criteria, path)
     {
+        if (criteria == null)
+        {
+            return;
+        }
+        
         if (IsNotEmpty(criteria.Type))
         {
             Add(new EqualityFilter<T, object>(

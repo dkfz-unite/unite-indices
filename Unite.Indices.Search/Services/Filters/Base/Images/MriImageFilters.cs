@@ -13,6 +13,11 @@ public class MriImageFilters<T> : ImageBaseFilters<T, MriImageIndex> where T : c
 
     public MriImageFilters(in MriImageCriteria criteria, in Expression<Func<T, MriImageIndex>> path) : base(criteria, path)
     {
+        if (criteria == null)
+        {
+            return;
+        }
+
         if (IsNotEmpty(criteria.WholeTumor))
         {
             Add(new RangeFilter<T, double?>(

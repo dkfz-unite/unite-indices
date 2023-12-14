@@ -14,6 +14,11 @@ public class CellLineFilters<T> : SpecimenBaseFilters<T, CellLineIndex> where T 
 
     public CellLineFilters(CellLineCriteria criteria, Expression<Func<T, CellLineIndex>> path) : base(criteria, path)
     {
+        if (criteria == null)
+        {
+            return;
+        }
+        
         if (IsNotEmpty(criteria.Species))
         {
             Add(new EqualityFilter<T, object>(

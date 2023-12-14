@@ -15,6 +15,11 @@ public class TissueFilters<T> : SpecimenBaseFilters<T, TissueIndex> where T : cl
 
     public TissueFilters(TissueCriteria criteria, Expression<Func<T, TissueIndex>> path) : base(criteria, path)
     {
+        if (criteria == null)
+        {
+            return;
+        }
+        
         if (IsNotEmpty(criteria.Type))
         {
             Add(new EqualityFilter<T, object>(

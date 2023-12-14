@@ -14,6 +14,11 @@ public class XenograftFilters<T> : SpecimenBaseFilters<T, XenograftIndex> where 
 
     public XenograftFilters(XenograftCriteria criteria, Expression<Func<T, XenograftIndex>> path) : base(criteria, path)
     {
+        if (criteria == null)
+        {
+            return;
+        }
+        
         if (IsNotEmpty(criteria.MouseStrain))
         {
             Add(new SimilarityFilter<T, string>(

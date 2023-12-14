@@ -14,6 +14,11 @@ public class OrganoidFilters<T> : SpecimenBaseFilters<T, OrganoidIndex> where T 
 
     public OrganoidFilters(OrganoidCriteria criteria, Expression<Func<T, OrganoidIndex>> path) : base(criteria, path)
     {
+        if (criteria == null)
+        {
+            return;
+        }
+        
         if (IsNotEmpty(criteria.Medium))
         {
             Add(new SimilarityFilter<T, string>(

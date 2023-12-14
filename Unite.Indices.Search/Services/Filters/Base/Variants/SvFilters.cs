@@ -14,6 +14,11 @@ public class SvFilters<T> : VariantBaseFilters<T, SvIndex> where T : class
 
     public SvFilters(SvCriteria criteria, Expression<Func<T, SvIndex>> path) : base(criteria, path)
     {
+        if (criteria == null)
+        {
+            return;
+        }
+        
         if (IsNotEmpty(criteria.Position))
         {
             Remove(FilterNames.Position);
