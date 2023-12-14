@@ -13,7 +13,9 @@ public class DonorFiltersCollection : FiltersCollection<DonorIndex>
     {
         var donorFilters = new DonorFilters<DonorIndex>(criteria.Donor, donor => donor);
         var donorDataFilters = new DonorDataFilters<DonorIndex>(criteria.Donor, donor => donor.Data);
+        var imageFilters = new ImageFilters<DonorIndex>(criteria.Image, donor => donor.Images.First());
         var mriImageFilters = new MriImageFilters<DonorIndex>(criteria.Mri, donor => donor.Images.First().Mri);
+        var specimenFilters = new SpecimenFilters<DonorIndex>(criteria.Specimen, donor => donor.Specimens.First());
         var tissueFilters = new TissueFilters<DonorIndex>(criteria.Tissue, donor => donor.Specimens.First().Tissue);
         var cellLineFilters = new CellLineFilters<DonorIndex>(criteria.Cell, donor => donor.Specimens.First().Cell);
         var organoidFilters = new OrganoidFilters<DonorIndex>(criteria.Organoid, donor => donor.Specimens.First().Organoid);
@@ -21,7 +23,9 @@ public class DonorFiltersCollection : FiltersCollection<DonorIndex>
 
         Add(donorFilters.All());
         Add(donorDataFilters.All());
+        Add(imageFilters.All());
         Add(mriImageFilters.All());
+        Add(specimenFilters.All());
         Add(tissueFilters.All());
         Add(cellLineFilters.All());
         Add(organoidFilters.All());
