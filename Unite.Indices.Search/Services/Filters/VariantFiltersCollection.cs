@@ -1,4 +1,5 @@
-﻿using Unite.Indices.Entities.Variants;
+﻿using Unite.Indices.Entities.Basic.Genome.Variants.Constants;
+using Unite.Indices.Entities.Variants;
 using Unite.Indices.Search.Services.Filters.Base;
 using Unite.Indices.Search.Services.Filters.Base.Donors;
 using Unite.Indices.Search.Services.Filters.Base.Genes;
@@ -21,9 +22,6 @@ public class VariantFiltersCollection : FiltersCollection<VariantIndex>
         var cellLineFilters = new CellLineFilters<VariantIndex>(criteria.Cell, variant => variant.Specimens.First().Cell);
         var organoidFilters = new OrganoidFilters<VariantIndex>(criteria.Organoid, variant => variant.Specimens.First().Organoid);
         var xenograftFilters = new XenograftFilters<VariantIndex>(criteria.Xenograft, variant => variant.Specimens.First().Xenograft);
-        var ssmGeneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Ssm.AffectedFeatures.First().Gene);
-        var cnvGeneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Cnv.AffectedFeatures.First().Gene);
-        var svGeneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Sv.AffectedFeatures.First().Gene);
         var variantFilters = new VariantFilters<VariantIndex>(criteria.Variant, variant => variant);
         var ssmFilters = new SsmFilters<VariantIndex>(criteria.Ssm, variant => variant.Ssm);
         var cnvFilters = new CnvFilters<VariantIndex>(criteria.Cnv, variant => variant.Cnv);
@@ -37,12 +35,30 @@ public class VariantFiltersCollection : FiltersCollection<VariantIndex>
         Add(cellLineFilters.All());
         Add(organoidFilters.All());
         Add(xenograftFilters.All());
-        Add(ssmGeneFilters.All());
-        Add(cnvGeneFilters.All());
-        Add(svGeneFilters.All());
         Add(variantFilters.All());
         Add(ssmFilters.All());
         Add(cnvFilters.All());
         Add(svFilters.All());
+
+
+        // Magic. We apply gene filters based on the variant type, 
+        // because gene filters live in separate criteria, 
+        // but gene index for search is part of the specific variant type index.
+        // Only variants of specific type can be filtered by gene criteria.
+        if (criteria.Variant?.Type?.First() == VariantType.SSM)
+        {
+            var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Ssm.AffectedFeatures.First().Gene);
+            Add(geneFilters.All());
+        }
+        else if (criteria.Variant?.Type?.First() == VariantType.CNV)
+        {
+            var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Cnv.AffectedFeatures.First().Gene);
+            Add(geneFilters.All());
+        }
+        else if (criteria.Variant?.Type?.First() == VariantType.SV)
+        {
+            var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Sv.AffectedFeatures.First().Gene);
+            Add(geneFilters.All());
+        }
     }
 }
