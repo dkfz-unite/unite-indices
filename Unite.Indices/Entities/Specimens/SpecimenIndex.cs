@@ -3,6 +3,22 @@
 public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
     /// <summary>
+    /// Parent specimen Id.
+    /// </summary> 
+    public int? ParentId { get; set; }
+
+    /// <summary>
+    /// Parent specimen reference Id.
+    /// </summary> 
+    public string ParentReferenceId { get; set; }
+
+    /// <summary>
+    /// Parent specimen type.
+    /// </summary>
+    public string ParentType { get; set; }
+
+
+    /// <summary>
     /// Number of genes with at least one SSM, CNV or SV in all samples of the specimen.
     /// </summary>
     public int NumberOfGenes { get; set; }
