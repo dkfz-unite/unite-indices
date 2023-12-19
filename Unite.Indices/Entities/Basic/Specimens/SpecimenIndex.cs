@@ -8,14 +8,30 @@ public class SpecimenIndex
     public int Id { get; set; }
 
     /// <summary>
+    /// Parent specimen Id.
+    /// </summary> 
+    public int? ParentId { get; set; }
+
+    /// <summary>
     /// Specific specimen reference Id. Depends on specimen type. Should be set during indexing.
     /// </summary>
     public string ReferenceId { get; set; }
 
     /// <summary>
+    /// Parent specimen reference Id. Depends on specimen type. Should be set during indexing.
+    /// </summary> 
+    public string ParentReferenceId { get; set; }
+
+    /// <summary>
     /// Type of the specimen. Should be set during indexing.
     /// </summary>
     public string Type { get; set; }
+
+    /// <summary>
+    /// Type of the parent specimen. Should be set during indexing.
+    /// </summary>
+    public string ParentType { get; set; }
+     
 
     public TissueIndex Tissue { get; set; }
     public CellLineIndex Cell { get; set; }
