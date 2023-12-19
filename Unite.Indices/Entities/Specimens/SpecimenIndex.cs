@@ -3,6 +3,11 @@
 public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
     /// <summary>
+    /// Donor Id.
+    /// </summary> 
+    public int DonorId { get; set; }
+
+    /// <summary>
     /// Parent specimen Id.
     /// </summary> 
     public int? ParentId { get; set; }
