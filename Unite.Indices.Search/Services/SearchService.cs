@@ -26,15 +26,15 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     }
 
 
-    public abstract T Get(string key);
+    public abstract Task<T> Get(string key);
 
-    public abstract SearchResult<T> Search(SearchCriteria searchCriteria);
+    public abstract Task<SearchResult<T>> Search(SearchCriteria searchCriteria);
 
-    public virtual IReadOnlyDictionary<object, DataIndex> Stats(SearchCriteria searchCriteria)
+    public virtual async Task<IReadOnlyDictionary<object, DataIndex>> Stats(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria with { From = 0, Size = 0 };
 
-        var lookupResult = Search(criteria);
+        var lookupResult = await Search(criteria);
 
         var availableData = new Dictionary<object, DataIndex>();
 
@@ -42,7 +42,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         {
             criteria = criteria with { From = from, Size = 499 };
 
-            var searchResult = Search(criteria);
+            var searchResult = await Search(criteria);
 
             foreach (var index in searchResult.Rows)
             {
@@ -56,26 +56,26 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     protected abstract void AddToStats(ref Dictionary<object, DataIndex> stats, T index);
 
-    protected int[] AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<int[]> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria)
     {
         var filters = new GeneFiltersCollection(criteria);
 
-        var aggregation = AggregateFromGenes(property, criteria.Term, filters);
+        var aggregation = await AggregateFromGenes(property, criteria.Term, filters);
 
         return aggregation.Select(x => int.Parse(x.Key)).ToArrayOrNull();
     }
 
-    protected int[] AggregateFromVariants<TProp>(Expression<Func<VariantIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<int[]> AggregateFromVariants<TProp>(Expression<Func<VariantIndex, TProp>> property, SearchCriteria criteria)
     {
         var filters = new VariantFiltersCollection(criteria);
 
-        var aggregation = AggregateFromVariants(property, criteria.Term, filters);
+        var aggregation = await AggregateFromVariants(property, criteria.Term, filters);
 
         return aggregation.Select(x => int.Parse(x.Key)).ToArrayOrNull();
     }
 
 
-    private IDictionary<string, long> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, string term, GeneFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, string term, GeneFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
 
@@ -87,12 +87,12 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddExclusion(index => index.Specimens)
             .AddExclusion(index => index.Data);
 
-        var result = _genesIndexService.Search(query).Result;
+        var result = await _genesIndexService.Search(query);
 
         return result.Aggregations[aggregationName];
     }
 
-    private IDictionary<string, long> AggregateFromVariants<TProp>(Expression<Func<VariantIndex, TProp>> property, string term, VariantFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromVariants<TProp>(Expression<Func<VariantIndex, TProp>> property, string term, VariantFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
 
@@ -104,7 +104,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddExclusion(index => index.Specimens)
             .AddExclusion(index => index.Data);
 
-        var result = _variantsIndexService.Search(query).Result;
+        var result = await _variantsIndexService.Search(query);
 
         return result.Aggregations[aggregationName];
     }

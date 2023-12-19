@@ -13,15 +13,15 @@ public class GenesSearchService : SearchService<GeneIndex>
     }
 
 
-    public override GeneIndex Get(string key)
+    public override async Task<GeneIndex> Get(string key)
     {
         var query = new GetQuery<GeneIndex>(key)
             .AddExclusion(gene => gene.Specimens);
 
-        return _genesIndexService.Get(query).Result;
+        return await _genesIndexService.Get(query);
     }
 
-    public override SearchResult<GeneIndex> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<GeneIndex>> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria ?? new SearchCriteria();
 
@@ -32,9 +32,14 @@ public class GenesSearchService : SearchService<GeneIndex>
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
             .AddOrdering(gene => gene.NumberOfDonors)
-            .AddExclusion(gene => gene.Specimens);
+            .AddExclusion(gene => gene.Specimens.First().Donor)
+            .AddExclusion(gene => gene.Specimens.First().Images.First().Mri)
+            .AddExclusion(gene => gene.Specimens.First().Tissue)
+            .AddExclusion(gene => gene.Specimens.First().Cell)
+            .AddExclusion(gene => gene.Specimens.First().Organoid)
+            .AddExclusion(gene => gene.Specimens.First().Xenograft);
 
-        return _genesIndexService.Search(query).Result;
+        return await _genesIndexService.Search(query);
     }
 
 

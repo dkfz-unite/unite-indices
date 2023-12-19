@@ -19,27 +19,23 @@ public class DonorsSearchService : SearchService<DonorIndex>
     }
 
 
-    public override DonorIndex Get(string key)
+    public override async Task<DonorIndex> Get(string key)
     {
-        var query = new GetQuery<DonorIndex>(key)
-            .AddExclusion(donor => donor.Specimens.First().Tissue)
-            .AddExclusion(donor => donor.Specimens.First().Cell)
-            .AddExclusion(donor => donor.Specimens.First().Organoid)
-            .AddExclusion(donor => donor.Specimens.First().Xenograft);
+        var query = new GetQuery<DonorIndex>(key);
 
-        return _donorsIndexService.Get(query).Result;
+        return await _donorsIndexService.Get(query);
     }
 
-    public override SearchResult<DonorIndex> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<DonorIndex>> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria;
 
         int[] ids = null;
 
         if (criteria.HasGeneFilters)
-            ids = AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria);
+            ids = await AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria);
         else if (criteria.HasVariantFilters)
-            ids = AggregateFromVariants(index => index.Specimens.First().Donor.Id, criteria);
+            ids = await AggregateFromVariants(index => index.Specimens.First().Donor.Id, criteria);
 
         if (ids != null)
         {
@@ -56,10 +52,13 @@ public class DonorsSearchService : SearchService<DonorIndex>
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
             .AddOrdering(donor => donor.NumberOfGenes)
-            .AddExclusion(donor => donor.Specimens)
-            .AddExclusion(donor => donor.Images);
+            .AddExclusion(donor => donor.Images)
+            .AddExclusion(donor => donor.Specimens.First().Tissue)
+            .AddExclusion(donor => donor.Specimens.First().Cell)
+            .AddExclusion(donor => donor.Specimens.First().Organoid)
+            .AddExclusion(donor => donor.Specimens.First().Xenograft);
 
-        return _donorsIndexService.Search(query).Result;
+        return await _donorsIndexService.Search(query);
     }
 
     

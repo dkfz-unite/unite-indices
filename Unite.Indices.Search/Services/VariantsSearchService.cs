@@ -12,15 +12,15 @@ public class VariantsSearchService : SearchService<VariantIndex>
     {
     }
 
-    public override VariantIndex Get(string key)
+    public override async Task<VariantIndex> Get(string key)
     {
         var query = new GetQuery<VariantIndex>(key)
             .AddExclusion(variant => variant.Specimens);
 
-        return _variantsIndexService.Get(query).Result;
+        return await _variantsIndexService.Get(query);
     }
 
-    public override SearchResult<VariantIndex> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<VariantIndex>> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria;
 
@@ -31,9 +31,14 @@ public class VariantsSearchService : SearchService<VariantIndex>
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
             .AddOrdering(variant => variant.NumberOfDonors)
-            .AddExclusion(variant => variant.Specimens);
+            .AddExclusion(variant => variant.Specimens.First().Donor)
+            .AddExclusion(variant => variant.Specimens.First().Images.First().Mri)
+            .AddExclusion(variant => variant.Specimens.First().Tissue)
+            .AddExclusion(variant => variant.Specimens.First().Cell)
+            .AddExclusion(variant => variant.Specimens.First().Organoid)
+            .AddExclusion(variant => variant.Specimens.First().Xenograft);
 
-        return _variantsIndexService.Search(query).Result;
+        return await _variantsIndexService.Search(query);
     }
 
 

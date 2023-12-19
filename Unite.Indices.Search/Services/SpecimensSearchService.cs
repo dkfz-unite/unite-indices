@@ -19,23 +19,23 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
     }
 
 
-    public override SpecimenIndex Get(string key)
+    public override async Task<SpecimenIndex> Get(string key)
     {
         var query = new GetQuery<SpecimenIndex>(key);
 
-        return _specimensIndexService.Get(query).Result;
+        return await _specimensIndexService.Get(query);
     }
 
-    public override SearchResult<SpecimenIndex> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<SpecimenIndex>> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria;
 
         int[] ids = null;
 
         if(criteria.HasGeneFilters)
-            ids = AggregateFromGenes(index => index.Id, criteria);
+            ids = await AggregateFromGenes(index => index.Id, criteria);
         else if(criteria.HasVariantFilters)
-            ids = AggregateFromVariants(index => index.Id, criteria);
+            ids = await AggregateFromVariants(index => index.Id, criteria);
 
         if(ids != null)
         {
@@ -52,12 +52,14 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
             .AddOrdering(specimen => specimen.NumberOfGenes)
+            .AddExclusion(specimen => specimen.Images)
             .AddExclusion(specimen => specimen.Cell.DrugScreenings)
             .AddExclusion(specimen => specimen.Organoid.DrugScreenings)
+            .AddExclusion(specimen => specimen.Organoid.Interventions)
             .AddExclusion(specimen => specimen.Xenograft.DrugScreenings)
-            .AddExclusion(specimen => specimen.Images);
+            .AddExclusion(specimen => specimen.Xenograft.Interventions);
 
-        return _specimensIndexService.Search(query).Result;
+        return await _specimensIndexService.Search(query);
     }
 
 

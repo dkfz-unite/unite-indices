@@ -19,28 +19,23 @@ public class ImagesSearchService : SearchService<ImageIndex>
     }
 
 
-    public override ImageIndex Get(string key)
+    public override async Task<ImageIndex> Get(string key)
     {
-        var query = new GetQuery<ImageIndex>(key)
-            .AddExclusion(image => image.Donor)
-            .AddExclusion(image => image.Specimens.First().Tissue)
-            .AddExclusion(image => image.Specimens.First().Cell)
-            .AddExclusion(image => image.Specimens.First().Organoid)
-            .AddExclusion(image => image.Specimens.First().Xenograft);
+        var query = new GetQuery<ImageIndex>(key);
 
-        return _imagesIndexService.Get(query).Result;
+        return await _imagesIndexService.Get(query);
     }
 
-    public override SearchResult<ImageIndex> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<ImageIndex>> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria;
 
         int[] ids = null;
 
         if (criteria.HasGeneFilters)
-            ids = AggregateFromGenes(index => index.Specimens.First().Images.First().Id, criteria);
+            ids = await AggregateFromGenes(index => index.Specimens.First().Images.First().Id, criteria);
         else if (criteria.HasVariantFilters)
-            ids = AggregateFromVariants(index => index.Specimens.First().Images.First().Id, criteria);
+            ids = await AggregateFromVariants(index => index.Specimens.First().Images.First().Id, criteria);
 
         if (ids != null)
         {
@@ -56,10 +51,13 @@ public class ImagesSearchService : SearchService<ImageIndex>
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
-            .AddOrdering(image => image.Id, true)
-            .AddExclusion(image => image.Specimens);
+            .AddOrdering(image => image.NumberOfGenes)
+            .AddExclusion(image => image.Specimens.First().Tissue)
+            .AddExclusion(image => image.Specimens.First().Cell)
+            .AddExclusion(image => image.Specimens.First().Organoid)
+            .AddExclusion(image => image.Specimens.First().Xenograft);
 
-        return _imagesIndexService.Search(query).Result;
+        return await _imagesIndexService.Search(query);
     }
 
 
