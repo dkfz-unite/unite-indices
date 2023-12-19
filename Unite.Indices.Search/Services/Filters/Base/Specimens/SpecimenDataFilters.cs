@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
+using Unite.Indices.Entities;
 using Unite.Indices.Entities.Specimens;
 using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Constants;
@@ -16,15 +17,6 @@ public class SpecimenDataFilters<T> : FiltersCollection<T> where T : class
         if (criteria == null)
         {
             return;
-        }
-
-        if (IsNotEmpty(criteria.HasDrugs))
-        {
-            Add(new BooleanFilter<T>(
-                FilterNames.HasDrugs,
-                path.Join(data => data.Drugs),
-                criteria.HasDrugs
-            ));
         }
 
         if (IsNotEmpty(criteria.HasSsms))

@@ -102,7 +102,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
     public static int GetNumberOfDonors(SpecimenIndex[] specimens)
     {
         return specimens?
-            .Where(specimens => specimens.Variants?.Any() == true)
+            .Where(specimen => specimen.Variants?.Any() == true)
             .DistinctBy(specimens => specimens.Donor.Id)
             .Count() ?? 0;
     }

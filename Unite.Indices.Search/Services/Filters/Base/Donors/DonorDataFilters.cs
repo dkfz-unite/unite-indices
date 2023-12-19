@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
+using Unite.Indices.Entities;
 using Unite.Indices.Entities.Donors;
 using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Donors.Constants;

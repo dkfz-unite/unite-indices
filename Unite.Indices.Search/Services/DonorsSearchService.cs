@@ -1,43 +1,25 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
+using Unite.Indices.Entities.Donors;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
-using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
-using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
-using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
-using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
-using VariantIndex = Unite.Indices.Entities.Variants.VariantIndex;
-using DataIndex = Unite.Indices.Entities.Donors.DataIndex;
-
-
 namespace Unite.Indices.Search.Services;
 
-public class DonorsSearchService : AggregatingSearchService, IDonorsSearchService
+public class DonorsSearchService : SearchService<DonorIndex>
 {
     private readonly IIndexService<DonorIndex> _donorsIndexService;
-    private readonly IIndexService<ImageIndex> _imagesIndexService;
-    private readonly IIndexService<SpecimenIndex> _specimensIndexService;
-    private readonly IIndexService<GeneIndex> _genesIndexService;
-    private readonly IIndexService<VariantIndex> _variantsIndexService;
-
-    public override IIndexService<GeneIndex> GenesIndexService => _genesIndexService;
-    public override IIndexService<VariantIndex> VariantsIndexService => _variantsIndexService;
     
 
-    public DonorsSearchService(IElasticOptions options)
+    public DonorsSearchService(IElasticOptions options) : base(options)
     {
         _donorsIndexService = new DonorsIndexService(options);
-        _imagesIndexService = new ImagesIndexService(options);
-        _specimensIndexService = new SpecimensIndexService(options);
-        _genesIndexService = new GenesIndexService(options);
-        _variantsIndexService = new VariantsIndexService(options);
     }
 
 
-    public DonorIndex Get(string key)
+    public override DonorIndex Get(string key)
     {
         var query = new GetQuery<DonorIndex>(key)
             .AddExclusion(donor => donor.Specimens.First().Tissue)
@@ -48,7 +30,7 @@ public class DonorsSearchService : AggregatingSearchService, IDonorsSearchServic
         return _donorsIndexService.Get(query).Result;
     }
 
-    public SearchResult<DonorIndex> Search(SearchCriteria searchCriteria)
+    public override SearchResult<DonorIndex> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria;
 
@@ -80,85 +62,9 @@ public class DonorsSearchService : AggregatingSearchService, IDonorsSearchServic
         return _donorsIndexService.Search(query).Result;
     }
 
-    public SearchResult<ImageIndex> SearchImages(SearchCriteria searchCriteria = null)
+    
+    protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, DonorIndex index)
     {
-        var criteria = searchCriteria;
-
-        var filters = new ImageFiltersCollection(criteria).All();
-
-        var query = new SearchQuery<ImageIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(filters);
-
-        return _imagesIndexService.Search(query).Result;
-    }
-
-    public SearchResult<SpecimenIndex> SearchSpecimens(SearchCriteria searchCriteria)
-    {
-        var criteria = searchCriteria;
-
-        var filters = new SpecimenFiltersCollection(criteria).All();
-
-        var query = new SearchQuery<SpecimenIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(filters)
-            .AddOrdering(specimen => specimen.NumberOfGenes);
-
-        return _specimensIndexService.Search(query).Result;
-    }
-
-    public SearchResult<GeneIndex> SearchGenes(SearchCriteria searchCriteria)
-    {
-        var criteria = searchCriteria;
-
-        var filters = new GeneFiltersCollection(criteria).All();
-
-        var query = new SearchQuery<GeneIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(filters)
-            .AddOrdering(gene => gene.NumberOfDonors);
-
-        return _genesIndexService.Search(query).Result;
-    }
-
-    public SearchResult<VariantIndex> SearchVariants(SearchCriteria searchCriteria = null)
-    {
-        var criteria = searchCriteria;
-
-        var filters = new VariantFiltersCollection(criteria).All();
-
-        var query = new SearchQuery<VariantIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(filters)
-            .AddOrdering(mutation => mutation.NumberOfDonors);
-
-        return _variantsIndexService.Search(query).Result;
-    }
-
-    public IDictionary<int, DataIndex> Stats(SearchCriteria searchCriteria)
-    {
-        var criteria = searchCriteria with { From = 0, Size = 0 };
-
-        var lookupResult = Search(criteria);
-
-        var availableData = new Dictionary<int, DataIndex>();
-
-        for (var from = 0; from < lookupResult.Total; from += 499)
-        {
-            criteria = criteria with { From = from, Size = 499 };
-
-            var searchResult = Search(criteria);
-
-            foreach (var index in searchResult.Rows)
-            {
-                availableData.Add(index.Id, index.Data);
-            }
-        }
-
-        return availableData;
+        stats.Add(index.Id, index.Data);
     }
 }

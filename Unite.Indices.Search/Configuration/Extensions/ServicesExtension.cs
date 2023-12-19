@@ -19,11 +19,11 @@ public static class ServicesExtension
 
     public static IServiceCollection AddSearchServices(this IServiceCollection services)
     {
-        services.AddTransient<IDonorsSearchService, DonorsSearchService>();
-        services.AddTransient<IImagesSearchService, ImagesSearchService>();
-        services.AddTransient<ISpecimensSearchService, SpecimensSearchService>();
-        services.AddTransient<IGenesSearchService, GenesSearchService>();
-        services.AddTransient<IVariantsSearchService, VariantsSearchService>();
+        services.AddTransient<ISearchService<Entities.Donors.DonorIndex>, DonorsSearchService>();
+        services.AddTransient<ISearchService<Entities.Images.ImageIndex>, ImagesSearchService>();
+        services.AddTransient<ISearchService<Entities.Specimens.SpecimenIndex>, SpecimensSearchService>();
+        services.AddTransient<ISearchService<Entities.Genes.GeneIndex>, GenesSearchService>();
+        services.AddTransient<ISearchService<Entities.Variants.VariantIndex>, VariantsSearchService>();
 
         return services;
     }

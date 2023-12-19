@@ -1,5 +1,7 @@
 using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
+using Unite.Indices.Context.Configuration.Options;
+using Unite.Indices.Entities;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
@@ -10,13 +12,51 @@ using VariantIndex = Unite.Indices.Entities.Variants.VariantIndex;
 
 namespace Unite.Indices.Search.Services;
 
-public abstract class AggregatingSearchService
+
+public abstract class SearchService<T> : ISearchService<T> where T : class
 {
-    public abstract IIndexService<GeneIndex> GenesIndexService { get; }
-    public abstract IIndexService<VariantIndex> VariantsIndexService { get; }
+    protected readonly IIndexService<GeneIndex> _genesIndexService;
+    protected readonly IIndexService<VariantIndex> _variantsIndexService;
 
 
-    public int[] AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria)
+    protected SearchService(IElasticOptions options)
+    {
+        _genesIndexService = new GenesIndexService(options);
+        _variantsIndexService = new VariantsIndexService(options);
+    }
+
+
+    public abstract T Get(string key);
+
+    public abstract SearchResult<T> Search(SearchCriteria searchCriteria);
+
+    public virtual IReadOnlyDictionary<object, DataIndex> Stats(SearchCriteria searchCriteria)
+    {
+        var criteria = searchCriteria with { From = 0, Size = 0 };
+
+        var lookupResult = Search(criteria);
+
+        var availableData = new Dictionary<object, DataIndex>();
+
+        for (var from = 0; from < lookupResult.Total; from += 499)
+        {
+            criteria = criteria with { From = from, Size = 499 };
+
+            var searchResult = Search(criteria);
+
+            foreach (var index in searchResult.Rows)
+            {
+                AddToStats(ref availableData, index);
+            }
+        }
+
+        return availableData.AsReadOnly();
+    }
+
+
+    protected abstract void AddToStats(ref Dictionary<object, DataIndex> stats, T index);
+
+    protected int[] AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria)
     {
         var filters = new GeneFiltersCollection(criteria);
 
@@ -25,7 +65,7 @@ public abstract class AggregatingSearchService
         return aggregation.Select(x => int.Parse(x.Key)).ToArrayOrNull();
     }
 
-    public int[] AggregateFromVariants<TProp>(Expression<Func<VariantIndex, TProp>> property, SearchCriteria criteria)
+    protected int[] AggregateFromVariants<TProp>(Expression<Func<VariantIndex, TProp>> property, SearchCriteria criteria)
     {
         var filters = new VariantFiltersCollection(criteria);
 
@@ -47,7 +87,7 @@ public abstract class AggregatingSearchService
             .AddExclusion(index => index.Specimens)
             .AddExclusion(index => index.Data);
 
-        var result = GenesIndexService.Search(query).Result;
+        var result = _genesIndexService.Search(query).Result;
 
         return result.Aggregations[aggregationName];
     }
@@ -64,7 +104,7 @@ public abstract class AggregatingSearchService
             .AddExclusion(index => index.Specimens)
             .AddExclusion(index => index.Data);
 
-        var result = VariantsIndexService.Search(query).Result;
+        var result = _variantsIndexService.Search(query).Result;
 
         return result.Aggregations[aggregationName];
     }

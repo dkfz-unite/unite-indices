@@ -1,44 +1,32 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
+using Unite.Indices.Entities.Specimens;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
-using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
-using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
-using VariantIndex = Unite.Indices.Entities.Variants.VariantIndex;
-using DataIndex = Unite.Indices.Entities.Specimens.DataIndex;
-
-
 namespace Unite.Indices.Search.Services;
 
-public class SpecimensSearchService : AggregatingSearchService, ISpecimensSearchService
+public class SpecimensSearchService : SearchService<SpecimenIndex>
 {
     private readonly IIndexService<SpecimenIndex> _specimensIndexService;
-    private readonly IIndexService<GeneIndex> _genesIndexService;
-    private readonly IIndexService<VariantIndex> _variantsIndexService;
-
-    public override IIndexService<GeneIndex> GenesIndexService => _genesIndexService;
-    public override IIndexService<VariantIndex> VariantsIndexService => _variantsIndexService;
 
 
-    public SpecimensSearchService(IElasticOptions options)
+    public SpecimensSearchService(IElasticOptions options) : base(options)
     {
         _specimensIndexService = new SpecimensIndexService(options);
-        _genesIndexService = new GenesIndexService(options);
-        _variantsIndexService = new VariantsIndexService(options);
     }
 
 
-    public SpecimenIndex Get(string key)
+    public override SpecimenIndex Get(string key)
     {
         var query = new GetQuery<SpecimenIndex>(key);
 
         return _specimensIndexService.Get(query).Result;
     }
 
-    public SearchResult<SpecimenIndex> Search(SearchCriteria searchCriteria)
+    public override SearchResult<SpecimenIndex> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria;
 
@@ -72,58 +60,9 @@ public class SpecimensSearchService : AggregatingSearchService, ISpecimensSearch
         return _specimensIndexService.Search(query).Result;
     }
 
-    public SearchResult<GeneIndex> SearchGenes(SearchCriteria searchCriteria)
+
+    protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, SpecimenIndex index)
     {
-        var criteria = searchCriteria;
-
-        var filters = new GeneFiltersCollection(criteria).All();
-
-        var query = new SearchQuery<GeneIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(filters)
-            .AddOrdering(gene => gene.NumberOfDonors);
-
-        return _genesIndexService.Search(query).Result;
-    }
-
-    public SearchResult<VariantIndex> SearchVariants(SearchCriteria searchCriteria)
-    {
-        var criteria = searchCriteria;
-
-        var filters = new VariantFiltersCollection(criteria).All();
-
-        var query = new SearchQuery<VariantIndex>()
-            .AddPagination(criteria.From, criteria.Size)
-            .AddFullTextSearch(criteria.Term)
-            .AddFilters(filters)
-            .AddOrdering(mutation => mutation.NumberOfDonors);
-
-        return _variantsIndexService.Search(query).Result;
-    }
-
-    public IDictionary<int, DataIndex> Stats(SearchCriteria searchCriteria)
-    {
-        var criteria = searchCriteria;
-
-        var availableData = new Dictionary<int, DataIndex>();
-
-        criteria = criteria with { From = 0, Size = 0 };
-
-        var lookupResult = Search(criteria);
-
-        for (var from = 0; from < lookupResult.Total; from += 499)
-        {
-            criteria = criteria with { From = from, Size = 499 };
-
-            var searchResult = Search(criteria);
-
-            foreach (var index in searchResult.Rows)
-            {
-                availableData.Add(index.Id, index.Data);
-            }
-        }
-
-        return availableData;
+        stats.Add(index.Id, index.Data);
     }
 }
