@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ReleaseVersion>6.0.0</ReleaseVersion>
-    <Version>6.0.0</Version>
+    <ReleaseVersion>6.0.1</ReleaseVersion>
+    <Version>6.0.1</Version>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>
@@ -13,6 +13,6 @@
     <ProjectReference Include="..\Unite.Indices.Context\Unite.Indices.Context.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Unite.Essentials" Version="1.2.0" />
+    <PackageReference Include="Unite.Essentials" Version="1.3.0" />
   </ItemGroup>
 </Project>
