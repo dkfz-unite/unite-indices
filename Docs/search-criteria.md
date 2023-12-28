@@ -81,8 +81,8 @@ Depending on the index type, the following rules apply:
 - Donors Index - has **all** filters available.
 - Images Index - doesnt have `cell`, `organoid` and `xenograft` filters (images are currently associated only with tumor tissue specimens without parents).
 - Specimens Index - has **all** filters available.
-- Gene Index - has **all** filters available.
-- Variant Index - has **all** filters available.
+- Genes Index - has **all** filters available.
+- Variants Index - has **all** filters available.
 
 Filters of specific entry type conflict with other specific type filters of the same entry type.
 
