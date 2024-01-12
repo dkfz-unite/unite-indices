@@ -1,6 +1,12 @@
 # Unite Indices
+Index models, services and the search engine.
 
-This repository contains the following connected packages:
-- [Unite.Indices](https://github.com/dkfz-unite/unite-indices/pkgs/nuget/Unite.Indices) - contains all indices and related entities, the package is fully independent and stores only index structure.
-- [Unite.Indices.Context](https://github.com/dkfz-unite/unite-indices/pkgs/nuget/Unite.Indices.Context) - contains services related to Elasticsearch where entities from **Unite.Indices** are stored.
-- [Unite.Indices.Search](https://github.com/dkfz-unite/unite-indices/pkgs/nuget/Unite.Indices.Search) - contains search [engine](./Docs/search-engine.md) and related high-level services allowing to query indexed data based on cross referense filters [criteria](./Docs/search-criteria.md). Depends on **Unite.Indices.Context** as connection to Elasticsearch.
+Repository contains the following packages:
+- [Indices](https://github.com/dkfz-unite/unite-indices/pkgs/nuget/Unite.Indices) - index models of the domain
+    - Independent package, contains only index models
+- [Context](https://github.com/dkfz-unite/unite-indices/pkgs/nuget/Unite.Indices.Context) - index context and services
+    - Depends on `Indices` package
+    - Requires [Elasticsearch](https://github.com/dkfz-unite/unite-environment/tree/main/programs/elasticsearch) to map index models to index services
+- [Search](https://github.com/dkfz-unite/unite-indices/pkgs/nuget/Unite.Indices.Search) - search engine
+    - Depends on `Context` package
+    - Contains search [engine](./Docs/search-engine.md) and related high-level services allowing to query indexed data based on cross referense filters [criteria](./Docs/search-criteria.md).
