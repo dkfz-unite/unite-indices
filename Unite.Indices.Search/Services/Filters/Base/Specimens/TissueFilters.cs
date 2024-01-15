@@ -11,7 +11,10 @@ namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 public class TissueFilters<T> : SpecimenBaseFilters<T, TissueIndex> where T : class
 {
     protected override TissueFilterNames FilterNames => new();
+
+    protected override bool IncludeInterventions => false;
     protected override bool IncludeDrugScreenings => false;
+    
 
     public TissueFilters(TissueCriteria criteria, Expression<Func<T, TissueIndex>> path) : base(criteria, path)
     {

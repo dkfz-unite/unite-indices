@@ -14,6 +14,8 @@ public abstract record SpecimenBaseCriteria
     public string[] MethylationSubtype { get; set; }
     public bool? GcimpMethylation { get; set; }
 
+    public string[] Intervention { get; set; }
+
     public string[] Drug { get; set; }
     public Range<double?> Dss { get; set; }
     public Range<double?> DssSelective { get; set; }

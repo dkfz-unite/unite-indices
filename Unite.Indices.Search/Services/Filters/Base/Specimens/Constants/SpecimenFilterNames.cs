@@ -17,6 +17,8 @@ public class SpecimenFilterNames
     public string MethylationSubtype => $"{Prefix}.MethylationSubtype";
     public string GcimpMethylation => $"{Prefix}.GcimpMethylation";
 
+    public string  Intervention => $"{Prefix}.Intervention";
+
     public string Drug => $"{Prefix}.Drug";
     public string Dss => $"{Prefix}.Dss";
     public string DssSelective => $"{Prefix}.DssSelective";

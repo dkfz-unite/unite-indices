@@ -6,5 +6,4 @@ public class OrganoidFilterNames : SpecimenFilterNames
 
     public string Medium => $"{Prefix}.Medium";
     public string Tumorigenicity => $"{Prefix}.Tumorigenicity";
-    public string Intervention => $"{Prefix}.Intervention";
 }

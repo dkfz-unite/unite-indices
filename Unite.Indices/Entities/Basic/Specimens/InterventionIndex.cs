@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Basic.Specimens;
 
-public class XenograftInterventionIndex
+public class InterventionIndex
 {
     public string Type { get; set; }
     public string Details { get; set; }

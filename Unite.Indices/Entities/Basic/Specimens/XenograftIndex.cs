@@ -11,6 +11,4 @@ public class XenograftIndex : SpecimenBaseIndex
     public string TumorGrowthForm { get; set; }
     public int? SurvivalDaysFrom { get; set; }
     public int? SurvivalDaysTo { get; set; }
-
-    public XenograftInterventionIndex[] Interventions { get; set; }
 }

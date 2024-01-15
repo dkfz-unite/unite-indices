@@ -11,6 +11,7 @@ namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 public class XenograftFilters<T> : SpecimenBaseFilters<T, XenograftIndex> where T : class
 {
     protected override XenograftFilterNames FilterNames => new();
+    
 
     public XenograftFilters(XenograftCriteria criteria, Expression<Func<T, XenograftIndex>> path) : base(criteria, path)
     {
@@ -54,15 +55,6 @@ public class XenograftFilters<T> : SpecimenBaseFilters<T, XenograftIndex> where 
                 path.Join(specimen => specimen.SurvivalDaysTo),
                 criteria.SurvivalDays?.From,
                 criteria.SurvivalDays?.To
-            ));
-        }
-
-        if (IsNotEmpty(criteria.Intervention))
-        {
-            Add(new SimilarityFilter<T, string>(
-                FilterNames.Intervention,
-                path.Join(specimen => specimen.Interventions.First().Type),
-                criteria.Intervention
             ));
         }
     }

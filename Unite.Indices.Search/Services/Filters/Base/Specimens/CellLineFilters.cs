@@ -12,6 +12,9 @@ public class CellLineFilters<T> : SpecimenBaseFilters<T, CellLineIndex> where T 
 {
     protected override CellLineFilterNames FilterNames => new();
 
+    protected override bool IncludeInterventions => false;
+
+
     public CellLineFilters(CellLineCriteria criteria, Expression<Func<T, CellLineIndex>> path) : base(criteria, path)
     {
         if (criteria == null)

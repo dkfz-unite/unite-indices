@@ -11,6 +11,7 @@ namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 public class OrganoidFilters<T> : SpecimenBaseFilters<T, OrganoidIndex> where T : class
 {
     protected override OrganoidFilterNames FilterNames => new();
+    
 
     public OrganoidFilters(OrganoidCriteria criteria, Expression<Func<T, OrganoidIndex>> path) : base(criteria, path)
     {
@@ -34,15 +35,6 @@ public class OrganoidFilters<T> : SpecimenBaseFilters<T, OrganoidIndex> where T 
                 FilterNames.Tumorigenicity,
                 path.Join(specimen => specimen.Tumorigenicity),
                 criteria.Tumorigenicity
-            ));
-        }
-
-        if (IsNotEmpty(criteria.Intervention))
-        {
-            Add(new SimilarityFilter<T, string>(
-                FilterNames.Intervention,
-                path.Join(specimen => specimen.Interventions.First().Type),
-                criteria.Intervention
             ));
         }
     }

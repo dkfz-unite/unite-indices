@@ -14,7 +14,9 @@ public abstract class SpecimenBaseFilters<T, TModel> : FiltersCollection<T>
     protected abstract SpecimenFilterNames FilterNames { get; }
 
     protected virtual bool IncludeMolecularData => true;
+    protected virtual bool IncludeInterventions => true;
     protected virtual bool IncludeDrugScreenings => true;
+
 
     public SpecimenBaseFilters(SpecimenBaseCriteria criteria, Expression<Func<T, TModel>> path)
     {
@@ -46,6 +48,13 @@ public abstract class SpecimenBaseFilters<T, TModel> : FiltersCollection<T>
             var molecularDataFilters = new MolecularDataFilters<T>(criteria, path.Join(specimen => specimen.MolecularData));
 
             Add(molecularDataFilters.All());
+        }
+
+        if (IncludeInterventions)
+        {
+            var interventionFilters = new InterventionFilters<T>(criteria, path.Join(specimen => specimen.Interventions));
+
+            Add(interventionFilters.All());
         }
 
         if (IncludeDrugScreenings)

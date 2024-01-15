@@ -32,20 +32,16 @@ public class SpecimenIndex
                Xenograft?.MolecularData;
     }
 
+    public InterventionIndex[] GetInterventions()
+    {
+        return Organoid?.Interventions ??
+               Xenograft?.Interventions;
+    }
+
     public DrugScreeningIndex[] GetDrugScreenings()
     {
         return Cell?.DrugScreenings ??
                Organoid?.DrugScreenings ??
                Xenograft?.DrugScreenings;
-    }
-
-    public OrganoidInterventionIndex[] GetOrganoidInterventions()
-    {
-        return Organoid?.Interventions;
-    }
-
-    public XenograftInterventionIndex[] GetXenograftInterventions()
-    {
-        return Xenograft?.Interventions;
     }
 }
