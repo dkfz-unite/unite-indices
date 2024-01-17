@@ -9,7 +9,7 @@ public class LineIndex : SpecimenBaseIndex
     public string Name { get; set; }
     public string DepositorName { get; set; }
     public string DepositorEstablishment { get; set; }
-    public DateTime? EstablishmentDate { get; set; }
+    public DateOnly? EstablishmentDate { get; set; }
 
     public string PubMedLink { get; set; }
     public string AtccLink { get; set; }
