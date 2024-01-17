@@ -34,8 +34,8 @@ public class GenesSearchService : SearchService<GeneIndex>
             .AddOrdering(gene => gene.NumberOfDonors)
             .AddExclusion(gene => gene.Specimens.First().Donor)
             .AddExclusion(gene => gene.Specimens.First().Images.First().Mri)
-            .AddExclusion(gene => gene.Specimens.First().Tissue)
-            .AddExclusion(gene => gene.Specimens.First().Cell)
+            .AddExclusion(gene => gene.Specimens.First().Material)
+            .AddExclusion(gene => gene.Specimens.First().Line)
             .AddExclusion(gene => gene.Specimens.First().Organoid)
             .AddExclusion(gene => gene.Specimens.First().Xenograft);
 

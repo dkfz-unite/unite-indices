@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
-public record TissueCriteria : SpecimenBaseCriteria
+public record MaterialCriteria : SpecimenBaseCriteria
 {
     public string[] Type { get; set; }
     public string[] TumorType { get; set; }

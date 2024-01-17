@@ -52,8 +52,8 @@ public class ImagesSearchService : SearchService<ImageIndex>
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
             .AddOrdering(image => image.NumberOfGenes)
-            .AddExclusion(image => image.Specimens.First().Tissue)
-            .AddExclusion(image => image.Specimens.First().Cell)
+            .AddExclusion(image => image.Specimens.First().Material)
+            .AddExclusion(image => image.Specimens.First().Line)
             .AddExclusion(image => image.Specimens.First().Organoid)
             .AddExclusion(image => image.Specimens.First().Xenograft);
 

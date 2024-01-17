@@ -18,16 +18,16 @@ public class SpecimenIndex
     public string Type { get; set; }
      
 
-    public TissueIndex Tissue { get; set; }
-    public CellLineIndex Cell { get; set; }
+    public MaterialIndex Material { get; set; }
+    public LineIndex Line { get; set; }
     public OrganoidIndex Organoid { get; set; }
     public XenograftIndex Xenograft { get; set; }
 
 
     public MolecularDataIndex GetMolecularData()
     {
-        return Tissue?.MolecularData ?? 
-               Cell?.MolecularData ?? 
+        return Material?.MolecularData ?? 
+               Line?.MolecularData ?? 
                Organoid?.MolecularData ??
                Xenograft?.MolecularData;
     }
@@ -40,7 +40,7 @@ public class SpecimenIndex
 
     public DrugScreeningIndex[] GetDrugScreenings()
     {
-        return Cell?.DrugScreenings ??
+        return Line?.DrugScreenings ??
                Organoid?.DrugScreenings ??
                Xenograft?.DrugScreenings;
     }

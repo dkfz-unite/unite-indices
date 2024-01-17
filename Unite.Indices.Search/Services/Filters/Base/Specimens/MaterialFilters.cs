@@ -8,15 +8,15 @@ using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 
-public class TissueFilters<T> : SpecimenBaseFilters<T, TissueIndex> where T : class
+public class MaterialFilters<T> : SpecimenBaseFilters<T, MaterialIndex> where T : class
 {
-    protected override TissueFilterNames FilterNames => new();
+    protected override MaterialFilterNames FilterNames => new();
 
     protected override bool IncludeInterventions => false;
     protected override bool IncludeDrugScreenings => false;
     
 
-    public TissueFilters(TissueCriteria criteria, Expression<Func<T, TissueIndex>> path) : base(criteria, path)
+    public MaterialFilters(MaterialCriteria criteria, Expression<Func<T, MaterialIndex>> path) : base(criteria, path)
     {
         if (criteria == null)
         {

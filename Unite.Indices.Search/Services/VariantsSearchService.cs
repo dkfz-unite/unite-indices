@@ -33,8 +33,8 @@ public class VariantsSearchService : SearchService<VariantIndex>
             .AddOrdering(variant => variant.NumberOfDonors)
             .AddExclusion(variant => variant.Specimens.First().Donor)
             .AddExclusion(variant => variant.Specimens.First().Images.First().Mri)
-            .AddExclusion(variant => variant.Specimens.First().Tissue)
-            .AddExclusion(variant => variant.Specimens.First().Cell)
+            .AddExclusion(variant => variant.Specimens.First().Material)
+            .AddExclusion(variant => variant.Specimens.First().Line)
             .AddExclusion(variant => variant.Specimens.First().Organoid)
             .AddExclusion(variant => variant.Specimens.First().Xenograft);
 

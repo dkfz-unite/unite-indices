@@ -8,43 +8,43 @@ using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 
-public class CellLineFilters<T> : SpecimenBaseFilters<T, CellLineIndex> where T : class
+public class LineFilters<T> : SpecimenBaseFilters<T, LineIndex> where T : class
 {
-    protected override CellLineFilterNames FilterNames => new();
+    protected override LineFilterNames FilterNames => new();
 
     protected override bool IncludeInterventions => false;
 
 
-    public CellLineFilters(CellLineCriteria criteria, Expression<Func<T, CellLineIndex>> path) : base(criteria, path)
+    public LineFilters(LineCriteria criteria, Expression<Func<T, LineIndex>> path) : base(criteria, path)
     {
         if (criteria == null)
         {
             return;
         }
         
-        if (IsNotEmpty(criteria.Species))
+        if (IsNotEmpty(criteria.CellsSpecies))
         {
             Add(new EqualityFilter<T, object>(
-                FilterNames.Species,
-                path.Join(specimen => specimen.Species.Suffix(_keywordSuffix)),
-                criteria.Species
+                FilterNames.CellsSpecies,
+                path.Join(specimen => specimen.CellsSpecies.Suffix(_keywordSuffix)),
+                criteria.CellsSpecies
             ));
         }
 
-        if (IsNotEmpty(criteria.Type))
+        if (IsNotEmpty(criteria.CellsType))
         {
             Add(new EqualityFilter<T, object>(
-                FilterNames.Type,
-                path.Join(specimen => specimen.Type.Suffix(_keywordSuffix)),
-                criteria.Type
+                FilterNames.CellsType,
+                path.Join(specimen => specimen.CellsType.Suffix(_keywordSuffix)),
+                criteria.CellsType
             ));
         }
 
         if (IsNotEmpty(criteria.CultureType))
         {
             Add(new EqualityFilter<T, object>(
-                FilterNames.CultureType,
-                path.Join(specimen => specimen.CultureType.Suffix(_keywordSuffix)),
+                FilterNames.CellsCultureType,
+                path.Join(specimen => specimen.CellsCultureType.Suffix(_keywordSuffix)),
                 criteria.CultureType
             ));
         }

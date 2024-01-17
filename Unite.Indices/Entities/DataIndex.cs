@@ -10,11 +10,11 @@ public class DataIndex
     public virtual bool? Treatments { get; set; }
     public virtual bool? Mris { get; set; }
     public virtual bool? Cts { get; set; }
-    public virtual bool? Tissues { get; set; }
-    public virtual bool? TissuesMolecular { get; set; }
-    public virtual bool? Cells { get; set; }
-    public virtual bool? CellsMolecular { get; set; }
-    public virtual bool? CellsDrugs { get; set; }
+    public virtual bool? Materials { get; set; }
+    public virtual bool? MaterialsMolecular { get; set; }
+    public virtual bool? Lines { get; set; }
+    public virtual bool? LinesMolecular { get; set; }
+    public virtual bool? LinesDrugs { get; set; }
     public virtual bool? Organoids { get; set; }
     public virtual bool? OrganoidsMolecular { get; set; }
     public virtual bool? OrganoidsDrugs { get; set; }

@@ -18,8 +18,8 @@ public class VariantFiltersCollection : FiltersCollection<VariantIndex>
         var imageFilters = new ImageFilters<VariantIndex>(criteria.Image, variant => variant.Specimens.First().Images.First());
         var mriImageFilters = new MriImageFilters<VariantIndex>(criteria.Mri, variant => variant.Specimens.First().Images.First().Mri);
         var specimenFilters = new SpecimenFilters<VariantIndex>(criteria.Specimen, variant => variant.Specimens.First());
-        var tissueFilters = new TissueFilters<VariantIndex>(criteria.Tissue, variant => variant.Specimens.First().Tissue);
-        var cellLineFilters = new CellLineFilters<VariantIndex>(criteria.Cell, variant => variant.Specimens.First().Cell);
+        var materialFilters = new MaterialFilters<VariantIndex>(criteria.Material, variant => variant.Specimens.First().Material);
+        var lineFilters = new LineFilters<VariantIndex>(criteria.Line, variant => variant.Specimens.First().Line);
         var organoidFilters = new OrganoidFilters<VariantIndex>(criteria.Organoid, variant => variant.Specimens.First().Organoid);
         var xenograftFilters = new XenograftFilters<VariantIndex>(criteria.Xenograft, variant => variant.Specimens.First().Xenograft);
         var variantFilters = new VariantFilters<VariantIndex>(criteria.Variant, variant => variant);
@@ -31,8 +31,8 @@ public class VariantFiltersCollection : FiltersCollection<VariantIndex>
         Add(imageFilters.All());
         Add(mriImageFilters.All());
         Add(specimenFilters.All());
-        Add(tissueFilters.All());
-        Add(cellLineFilters.All());
+        Add(materialFilters.All());
+        Add(lineFilters.All());
         Add(organoidFilters.All());
         Add(xenograftFilters.All());
         Add(variantFilters.All());

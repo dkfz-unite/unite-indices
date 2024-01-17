@@ -16,8 +16,8 @@ public record SearchCriteria
     public ImageCriteria Image { get; set; }
     public MriImageCriteria Mri { get; set; }
     public SpecimenCriteria Specimen { get; set; }
-    public TissueCriteria Tissue { get; set; }
-    public CellLineCriteria Cell { get; set; }
+    public MaterialCriteria Material { get; set; }
+    public LineCriteria Line { get; set; }
     public OrganoidCriteria Organoid { get; set; }
     public XenograftCriteria Xenograft { get; set; }
     public GeneCriteria Gene { get; set; }

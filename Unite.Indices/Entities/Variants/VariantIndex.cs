@@ -8,8 +8,8 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     private int? _numberOfDonors;
     private int? _numberOfMris;
     private int? _numberOfCts;
-    private int? _numberOfTissues;
-    private int? _numberOfCells;
+    private int? _numberOfMaterials;
+    private int? _numberOfLines;
     private int? _numberOfOrganoids;
     private int? _numberOfXenografts;
     private int? _numberOfGenes;
@@ -33,14 +33,14 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
     public int NumberOfCts { get => _numberOfCts ?? GetNumberOfImages(Specimens, ImageType.CT); set => _numberOfCts = value; }
 
     /// <summary>
-    /// Number of tissues with the variant in any sample.
+    /// Number of donor derived materials with the variant in any sample.
     /// </summary>
-    public int NumberOfTissues { get => _numberOfTissues ?? GetNumberOfSpecimens(Specimens, SpecimenType.Tissue); set => _numberOfTissues = value; }
+    public int NumberOfMaterials { get => _numberOfMaterials ?? GetNumberOfSpecimens(Specimens, SpecimenType.Material); set => _numberOfMaterials = value; }
 
     /// <summary>
     /// Number of cell lines with the variant in any sample.
     /// </summary>
-    public int NumberOfCells { get => _numberOfCells ?? GetNumberOfSpecimens(Specimens, SpecimenType.CellLine); set => _numberOfCells = value; }
+    public int NumberOfLines { get => _numberOfLines ?? GetNumberOfSpecimens(Specimens, SpecimenType.Line); set => _numberOfLines = value; }
 
     /// <summary>
     /// Number of organoids with the variant in any sample.
@@ -100,11 +100,11 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
             Treatments = Specimens.Any(specimen => specimen.Donor.Treatments?.Any() == true),
             Mris = Specimens.Any(specimen => specimen.Images?.Any(image => image.Mri != null) == true),
             // Cts = Specimens.Any(specimen => specimen.Images?.Any(image => image.Ct != null) == true);
-            Tissues = Specimens.Any(specimen => specimen.Tissue != null),
-            TissuesMolecular = Specimens.Any(specimen => specimen.Tissue?.MolecularData != null),
-            Cells = Specimens.Any(specimen => specimen.Cell != null),
-            CellsMolecular = Specimens.Any(specimen => specimen.Cell?.MolecularData != null),
-            CellsDrugs = Specimens.Any(specimen => specimen.Cell?.DrugScreenings?.Any() == true),
+            Materials = Specimens.Any(specimen => specimen.Material != null),
+            MaterialsMolecular = Specimens.Any(specimen => specimen.Material?.MolecularData != null),
+            Lines = Specimens.Any(specimen => specimen.Line != null),
+            LinesMolecular = Specimens.Any(specimen => specimen.Line?.MolecularData != null),
+            LinesDrugs = Specimens.Any(specimen => specimen.Line?.DrugScreenings?.Any() == true),
             Organoids = Specimens.Any(specimen => specimen.Organoid != null),
             OrganoidsMolecular = Specimens.Any(specimen => specimen.Organoid?.MolecularData != null),
             OrganoidsDrugs = Specimens.Any(specimen => specimen.Organoid?.DrugScreenings?.Any() == true),

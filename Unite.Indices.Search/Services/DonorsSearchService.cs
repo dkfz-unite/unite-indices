@@ -53,8 +53,8 @@ public class DonorsSearchService : SearchService<DonorIndex>
             .AddFilters(filters)
             .AddOrdering(donor => donor.NumberOfGenes)
             .AddExclusion(donor => donor.Images)
-            .AddExclusion(donor => donor.Specimens.First().Tissue)
-            .AddExclusion(donor => donor.Specimens.First().Cell)
+            .AddExclusion(donor => donor.Specimens.First().Material)
+            .AddExclusion(donor => donor.Specimens.First().Line)
             .AddExclusion(donor => donor.Specimens.First().Organoid)
             .AddExclusion(donor => donor.Specimens.First().Xenograft);
 

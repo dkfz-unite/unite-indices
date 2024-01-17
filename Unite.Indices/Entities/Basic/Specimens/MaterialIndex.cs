@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Basic.Specimens;
 
-public class TissueIndex : SpecimenBaseIndex
+public class MaterialIndex : SpecimenBaseIndex
 {
     public string Type { get; set; }
     public string TumorType { get; set; }

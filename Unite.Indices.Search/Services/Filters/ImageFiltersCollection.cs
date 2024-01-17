@@ -16,13 +16,13 @@ public class ImageFiltersCollection : FiltersCollection<ImageIndex>
         var imageDataFilters = new ImageDataFilters<ImageIndex>(criteria.Image, image => image.Data);
         var mriImageFilters = new MriImageFilters<ImageIndex>(criteria.Mri, image => image.Mri);
         var specimenFilters = new SpecimenFilters<ImageIndex>(criteria.Specimen, image => image.Specimens.First());
-        var tissueFilters = new TissueFilters<ImageIndex>(criteria.Tissue, image => image.Specimens.First().Tissue);
+        var materialFilters = new MaterialFilters<ImageIndex>(criteria.Material, image => image.Specimens.First().Material);
 
         Add(donorFilters.All());
         Add(imageFilters.All());
         Add(imageDataFilters.All());
         Add(mriImageFilters.All());
         Add(specimenFilters.All());
-        Add(tissueFilters.All());
+        Add(materialFilters.All());
     }
 }

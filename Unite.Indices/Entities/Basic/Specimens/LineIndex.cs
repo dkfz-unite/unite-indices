@@ -1,10 +1,10 @@
 ﻿namespace Unite.Indices.Entities.Basic.Specimens;
 
-public class CellLineIndex : SpecimenBaseIndex
+public class LineIndex : SpecimenBaseIndex
 {
-    public string Species { get; set; }
-    public string Type { get; set; }
-    public string CultureType { get; set; }
+    public string CellsSpecies { get; set; }
+    public string CellsType { get; set; }
+    public string CellsCultureType { get; set; }
 
     public string Name { get; set; }
     public string DepositorName { get; set; }

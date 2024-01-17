@@ -16,8 +16,8 @@ public class DonorFiltersCollection : FiltersCollection<DonorIndex>
         var imageFilters = new ImageFilters<DonorIndex>(criteria.Image, donor => donor.Images.First());
         var mriImageFilters = new MriImageFilters<DonorIndex>(criteria.Mri, donor => donor.Images.First().Mri);
         var specimenFilters = new SpecimenFilters<DonorIndex>(criteria.Specimen, donor => donor.Specimens.First());
-        var tissueFilters = new TissueFilters<DonorIndex>(criteria.Tissue, donor => donor.Specimens.First().Tissue);
-        var cellLineFilters = new CellLineFilters<DonorIndex>(criteria.Cell, donor => donor.Specimens.First().Cell);
+        var materialFilters = new MaterialFilters<DonorIndex>(criteria.Material, donor => donor.Specimens.First().Material);
+        var lineFilters = new LineFilters<DonorIndex>(criteria.Line, donor => donor.Specimens.First().Line);
         var organoidFilters = new OrganoidFilters<DonorIndex>(criteria.Organoid, donor => donor.Specimens.First().Organoid);
         var xenograftFilters = new XenograftFilters<DonorIndex>(criteria.Xenograft, donor => donor.Specimens.First().Xenograft);
 
@@ -26,8 +26,8 @@ public class DonorFiltersCollection : FiltersCollection<DonorIndex>
         Add(imageFilters.All());
         Add(mriImageFilters.All());
         Add(specimenFilters.All());
-        Add(tissueFilters.All());
-        Add(cellLineFilters.All());
+        Add(materialFilters.All());
+        Add(lineFilters.All());
         Add(organoidFilters.All());
         Add(xenograftFilters.All());
     }
