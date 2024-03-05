@@ -15,6 +15,7 @@ public class DataIndex
     public virtual bool? Lines { get; set; }
     public virtual bool? LinesMolecular { get; set; }
     public virtual bool? LinesDrugs { get; set; }
+    public virtual bool? LinesInterventions { get; set; }
     public virtual bool? Organoids { get; set; }
     public virtual bool? OrganoidsMolecular { get; set; }
     public virtual bool? OrganoidsDrugs { get; set; }

@@ -90,6 +90,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
     /// </summary>
     public BulkExpressionStatsIndex Fpkm { get => _fpkm ?? GetExpression(Specimens, index => index.Fpkm); set => _fpkm = value; }
 
+
     /// <summary>
     /// Available data.
     /// </summary>
