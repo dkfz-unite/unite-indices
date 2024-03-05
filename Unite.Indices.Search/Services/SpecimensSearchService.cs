@@ -54,6 +54,7 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
             .AddOrdering(specimen => specimen.NumberOfGenes)
             .AddExclusion(specimen => specimen.Images)
             .AddExclusion(specimen => specimen.Line.DrugScreenings)
+            .AddExclusion(specimen => specimen.Line.Interventions)
             .AddExclusion(specimen => specimen.Organoid.DrugScreenings)
             .AddExclusion(specimen => specimen.Organoid.Interventions)
             .AddExclusion(specimen => specimen.Xenograft.DrugScreenings)

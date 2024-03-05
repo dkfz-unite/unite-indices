@@ -34,7 +34,8 @@ public class SpecimenIndex
 
     public InterventionIndex[] GetInterventions()
     {
-        return Organoid?.Interventions ??
+        return Line?.Interventions ??
+               Organoid?.Interventions ??
                Xenograft?.Interventions;
     }
 

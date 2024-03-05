@@ -1,11 +1,11 @@
 # Cell Line Filters Criteria
-Cell line filters criteria. Allows to filter the data by cell line specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Specimens/Criteria/CellLineCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-specimens-base.md) filters.
+Cell line filters criteria. Allows to filter the data by cell line specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Specimens/Criteria/LineCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-specimens-base.md) filters.
 
 ```jsonc
 {
     // Cell line specific filters
-    "species": ["Human", "Mouse"],
-    "type": ["Stem Cell", "Differentiated"],
+    "cellsSpecies": ["Human", "Mouse"],
+    "cellsType": ["Stem Cell", "Differentiated"],
     "cultureType": ["Suspension", "Adherent", "Both"],
     "name": ["A549"]
 }
@@ -15,13 +15,13 @@ Cell line filters criteria. Allows to filter the data by cell line specific crit
 ## General Fields
 General cell line filters applicable to any type of the index.
 
-**`species`** - Whom the cell line was initially taken from.
+**`cellsSpecies`** - Whom the cell line was initially taken from.
 - Options: `Human`, `Mouse`.
 - Type: String[].
 - Filter: **Options**.
 - Example: `["Human"]`
 
-**`type`** - Type of the cell line.
+**`cellsType`** - Type of the cell line.
 - Options: `Stem Cell`, `Differentiated`.
 - Type: String[].
 - Filter: **Options**.
@@ -40,21 +40,21 @@ General cell line filters applicable to any type of the index.
 
 
 ## Example 1
-Data, where cell line species is `Human` **and** type is `Stem Cell`.
+Data, where cells species is `Human` **and** cells type is `Stem Cell`.
 
 ```json
 {
-    "species": ["Human"],
-    "type": ["Stem Cell"]
+    "cellsSpecies": ["Human"],
+    "cellsType": ["Stem Cell"]
 }
 ```
 
 ## Example 2
-Data, where cell line species is `Mouse` **and** culture type is `Suspension` **or** `Both` **and** MGMT status is `Methylated`.
+Data, where cells species is `Mouse` **and** culture type is `Suspension` **or** `Both` **and** MGMT status is `Methylated`.
 
 ```json
 {
-    "species": ["Mouse"],
+    "cellsSpecies": ["Mouse"],
     "cultureType": ["Suspension", "Both"],
     "mgmtStatus": ["Methylated"]
 }

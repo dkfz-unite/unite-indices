@@ -11,8 +11,8 @@ Search criteria is used to filter the data indexed by the search engine. It is c
     "image": null,
     "mri": null,
     "specimen": null,
-    "tissue": null,
-    "cell": null,
+    "material": null,
+    "line": null,
     "organoid": null,
     "xenograft": null,
     "gene": null,
@@ -56,9 +56,9 @@ Allows to filter data by domain specific criteria.
 
 **`specimen`** - [Specimen](search-criteria-specimens.md) common filters criteria.
 
-**`tissue`** - [Tissue](search-criteria-tissues.md) filters criteria.
+**`material`** - [Material](search-criteria-materials.md) filters criteria.
 
-**`cell`** - [Cell line](search-criteria-cells.md) filters criteria.
+**`line`** - [Cell line](search-criteria-lines.md) filters criteria.
 
 **`organoid`** - [Organoid](search-criteria-organoids.md) filters criteria.
 
@@ -79,7 +79,7 @@ Allows to filter data by domain specific criteria.
 Depending on the index type, the following rules apply:
 
 - Donors Index - has **all** filters available.
-- Images Index - doesnt have `cell`, `organoid` and `xenograft` filters (images are currently associated only with tumor tissue specimens without parents).
+- Images Index - doesnt have `line`, `organoid` and `xenograft` filters (images are currently associated only with tumor material specimens without parents).
 - Specimens Index - has **all** filters available.
 - Genes Index - has **all** filters available.
 - Variants Index - has **all** filters available.
@@ -88,7 +88,7 @@ Filters of specific entry type conflict with other specific type filters of the 
 
 For example:
 - An image can not be MRI and CT at the same time, therefore setting `mri` filters will conflict with `ct` filters and vice versa.
-- A specimen can not be a tissue and a cell line at the same time, therefore setting `tissue` filters will conflict with `cell`, `organoid` and `xenograft` filters and vice versa.
+- A specimen can not be a material and a cell line at the same time, therefore setting `material` filters will conflict with `line`, `organoid` and `xenograft` filters and vice versa.
 - A variant can not be a SSM and a CNV at the same time, therefore setting `ssm` filters will conflict with `cnv` and `sv` filters and vice versa.
 
 

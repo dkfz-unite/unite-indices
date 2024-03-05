@@ -5,7 +5,6 @@ using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Constants;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
-
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 
 public class OrganoidFilters<T> : SpecimenBaseFilters<T, OrganoidIndex> where T : class

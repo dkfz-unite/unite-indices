@@ -11,7 +11,7 @@ There are different types of indices available, each has own structure most suit
     - Index is populated by [Images Feed](https://github.com/dkfz-unite/unite-images-feed) service.
 - [**Specimens**](#specimens-index) - specimens centric index.
     - Allows to search for specimens and their related information.
-    - All specimen share the same index and can be of one of the following types: `Tissue`, `Cell Line`, `Organoid` or `Xenograft`.
+    - All specimen share the same index and can be of one of the following types: `Material`, `Line`, `Organoid` or `Xenograft`.
     - Index is populated by [Specimens Feed](https://github.com/dkfz-unite/unite-specimens-feed) service.
 - [**Genes**](#genes-index) - genes centric index.
     - Allows to search for genes and their related information.

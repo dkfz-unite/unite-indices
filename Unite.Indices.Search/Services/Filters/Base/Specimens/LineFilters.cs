@@ -12,8 +12,6 @@ public class LineFilters<T> : SpecimenBaseFilters<T, LineIndex> where T : class
 {
     protected override LineFilterNames FilterNames => new();
 
-    protected override bool IncludeInterventions => false;
-
 
     public LineFilters(LineCriteria criteria, Expression<Func<T, LineIndex>> path) : base(criteria, path)
     {
