@@ -105,6 +105,7 @@ public class VariantIndex : Basic.Genome.Variants.VariantIndex
             Lines = Specimens.Any(specimen => specimen.Line != null),
             LinesMolecular = Specimens.Any(specimen => specimen.Line?.MolecularData != null),
             LinesDrugs = Specimens.Any(specimen => specimen.Line?.DrugScreenings?.Any() == true),
+            LinesInterventions = Specimens.Any(specimen => specimen.Line?.Interventions?.Any() == true),
             Organoids = Specimens.Any(specimen => specimen.Organoid != null),
             OrganoidsMolecular = Specimens.Any(specimen => specimen.Organoid?.MolecularData != null),
             OrganoidsDrugs = Specimens.Any(specimen => specimen.Organoid?.DrugScreenings?.Any() == true),
