@@ -1,11 +1,13 @@
+using Unite.Indices.Models;
+
 namespace Unite.Indices.Entities.Projects;
 
 public class ProjectIndex : Basic.Donors.ProjectIndex
 {
     public int NumberOfDonors { get; set; }
-    public Dictionary<string, int> NumberOfDonorsByGender { get; set; }
-    public Dictionary<int, int> NumberOfDonorsByAge { get; set; }
-    public Dictionary<string, int> NumberOfDonorsByDiagnosis { get; set; }
+    public Stat[] NumberOfDonorsByGender { get; set; }
+    public Stat[] NumberOfDonorsByAge { get; set; }
+    public Stat[] NumberOfDonorsByDiagnosis { get; set; }
     public double PercentOfDonorsVital { get; set; }
     public double PercentOfDonorsProgressing { get; set; }
 
@@ -17,11 +19,11 @@ public class ProjectIndex : Basic.Donors.ProjectIndex
     public int NumberOfXenografts { get; set; }
 
     public int NumberOfSsms { get; set; }
-    public Dictionary<string, int> GenesAffectedBySsms { get; set; }
+    public Stat[] GenesAffectedBySsms { get; set; }
     public int NumberOfCnvs { get; set; }
-    public Dictionary<string, int> GenesAffectedByCnvs { get; set; }
+    public Stat[] GenesAffectedByCnvs { get; set; }
     public int NumberOfSvs { get; set; }
-    public Dictionary<string, int> GenesAffectedBySvs { get; set; }
+    public Stat[] GenesAffectedBySvs { get; set; }
 
     public int NumberOfTranscriptomics { get; set; }
 }
