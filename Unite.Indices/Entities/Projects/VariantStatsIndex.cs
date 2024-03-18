@@ -1,5 +1,3 @@
-using Unite.Indices.Models;
-
 namespace Unite.Indices.Entities.Projects;
 
 public class VariantStatsIndex

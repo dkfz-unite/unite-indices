@@ -1,4 +1,4 @@
-namespace Unite.Indices.Models;
+namespace Unite.Indices.Entities;
 
 public record Stat
 {
