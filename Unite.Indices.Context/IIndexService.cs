@@ -21,19 +21,18 @@ public interface IIndexService<T>
     Task AddRange(IEnumerable<T> elements);
 
     /// <summary>
-    /// Deletes an element from the index.
+    /// Deletes document with given id from the index.
     /// </summary>
-    /// <param name="element">Element.</param>
+    /// <param name="key">Document id.</param>
     /// <returns>Task.</returns>
-    // Task Delete(T element);
+    Task Delete(string key);
 
     /// <summary>
-    /// Deletes a range of elements from the index.
+    /// Deletes a range of documents with given ids from the index.
     /// </summary>
-    /// <param name="elements">Elements.</param>
+    /// <param name="elements">Document ids.</param>
     /// <returns>Task.</returns>
-    // Task DeleteRange(IEnumerable<T> elements);
-
+    Task DeleteRange(IEnumerable<string> keys);
 
     /// <summary>
     /// Update index collection mapping.
