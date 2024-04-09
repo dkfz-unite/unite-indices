@@ -62,7 +62,9 @@ public abstract class IndexService<T> : IIndexService<T>
     public virtual async Task DeleteRange(IEnumerable<string> keys)
     {
         var response = await _client.BulkAsync(bulk => bulk
-            .DeleteMany(keys)
+            .DeleteMany(keys, (delete, key) => delete
+                .Id(key)
+            )
         );
 
         HandleResponseErrors(response);
