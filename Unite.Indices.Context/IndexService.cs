@@ -54,17 +54,18 @@ public abstract class IndexService<T> : IIndexService<T>
 
     public virtual async Task Delete(string key)
     {
-        var response = await _client.DeleteAsync<T>(key);
-
-        HandleResponseErrors(response);
+        await DeleteRange([key]);
     }
 
     public virtual async Task DeleteRange(IEnumerable<string> keys)
     {
-        foreach (var key in keys)
-        {
-            await Delete(key);
-        }
+        var response = await _client.DeleteByQueryAsync<T>(query => query
+            .Query(q => q
+                .Ids(ids => ids.Values(keys))
+            )
+        );
+
+        HandleResponseErrors(response);
     }
 
     public virtual async Task UpdateIndex()
