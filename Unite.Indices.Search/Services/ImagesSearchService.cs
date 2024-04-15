@@ -33,9 +33,9 @@ public class ImagesSearchService : SearchService<ImageIndex>
         int[] ids = null;
 
         if (criteria.HasGeneFilters)
-            ids = await AggregateFromGenes(index => index.Specimens.First().Images.First().Id, criteria);
+            ids = await AggregateFromGenes(index => index.Specimens.First().Images.First().Id, criteria) ?? [];
         else if (criteria.HasVariantFilters)
-            ids = await AggregateFromVariants(index => index.Specimens.First().Images.First().Id, criteria);
+            ids = await AggregateFromVariants(index => index.Specimens.First().Images.First().Id, criteria) ?? [];
 
         if (ids != null)
         {
