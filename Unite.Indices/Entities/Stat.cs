@@ -1,7 +1,7 @@
 namespace Unite.Indices.Entities;
 
-public record Stat
+public record Stat<T>
 {
     public string Key { get; init; }
-    public int Value { get; init; }
+    public T Value { get; init; }
 }
