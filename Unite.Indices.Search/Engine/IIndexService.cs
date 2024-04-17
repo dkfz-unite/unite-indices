@@ -1,4 +1,5 @@
-﻿using Unite.Indices.Search.Engine.Queries;
+﻿using Nest;
+using Unite.Indices.Search.Engine.Queries;
 
 namespace Unite.Indices.Search.Engine;
 
@@ -10,4 +11,5 @@ public interface IIndexService<T>
 {
     Task<T> Get(GetQuery<T> query);
     Task<SearchResult<T>> Search(SearchQuery<T> query);
+    Task<IEnumerable<IHit<T>>> Search(string query);
 }

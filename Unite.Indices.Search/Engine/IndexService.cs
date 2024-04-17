@@ -65,4 +65,24 @@ public abstract class IndexService<T> : IIndexService<T>
             return new SearchResult<T>();
         }
     }
+
+    public virtual async Task<IEnumerable<IHit<T>>> Search(string term)
+    {
+        var request = new SearchRequest<T>
+        {
+            Query = Query<T>.MultiMatch(d => d.Query(term))
+        };
+
+        var response = await _client.SearchAsync<T>(request);
+        
+
+        if (response.IsValid)
+        {
+            return response.Hits;
+        }
+        else
+        {
+            return new List<IHit<T>>();
+        }
+    }
 }
