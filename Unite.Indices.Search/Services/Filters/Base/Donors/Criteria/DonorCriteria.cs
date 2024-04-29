@@ -8,4 +8,5 @@ public record DonorCriteria : DonorBaseCriteria
     public bool? HasCnvs { get; set; }
     public bool? HasSvs { get; set; }
     public bool? HasGeneExp { get; set; }
+    public bool? HasGeneExpSc { get; set; }
 }
