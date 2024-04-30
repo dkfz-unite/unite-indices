@@ -3,8 +3,8 @@ namespace Unite.Indices.Entities.Projects;
 public class ProjectIndex : Basic.Donors.ProjectIndex
 {
     public DonorStatsIndex DonorStats { get; set; }
-    public ImageStatsIndex MriStats { get; set; } // make different classes on need
-    public ImageStatsIndex CtStats { get; set; } // make different classes on need
+    public ImageStatsIndex MriStats { get; set; }
+    public ImageStatsIndex CtStats { get; set; }
     public MaterialStatsIndex MaterialStats { get; set; }
     public LineStatsIndex LineStats { get; set; }
     public OrganoidStatsIndex OrganoidStats { get; set; }
