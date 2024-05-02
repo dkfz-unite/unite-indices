@@ -2,6 +2,7 @@ namespace Unite.Indices.Entities.Projects;
 
 public class ProjectIndex : Basic.Donors.ProjectIndex
 {
+    public string Description { get; set; }
     public DonorStatsIndex DonorStats { get; set; }
     public ImageStatsIndex MriStats { get; set; }
     public ImageStatsIndex CtStats { get; set; }
