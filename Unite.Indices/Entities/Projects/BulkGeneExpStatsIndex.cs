@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Projects;
 
-public class TranscriptomicStatsIndex
+public class BulkGeneExpStatsIndex
 {
     public int Total { get; set; }
 }

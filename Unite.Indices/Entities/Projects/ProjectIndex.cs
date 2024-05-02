@@ -13,5 +13,6 @@ public class ProjectIndex : Basic.Donors.ProjectIndex
     public SsmStatsIndex SsmStats { get; set; }
     public CnvStatsIndex CnvStats { get; set; }
     public SvStatsIndex SvStats { get; set; }
-    public TranscriptomicStatsIndex TranscriptomicStats { get; set; }
+    public BulkGeneExpStatsIndex BulkGeneExpStats { get; set; }
+    public BulkGeneExpStatsIndex CellGeneExpStatsIndex { get; set; }
 }
