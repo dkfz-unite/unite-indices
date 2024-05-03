@@ -6,5 +6,5 @@ public class CnvFilterNames : VariantBaseFilterNames
 
     public string Type => $"{Prefix}.Type";
     public string Loh => $"{Prefix}.Loh";
-    public string HomoDel => $"{Prefix}.HomoDel";
+    public string Del => $"{Prefix}.Del";
 }

@@ -37,12 +37,12 @@ public class CnvFilters<T> : VariantBaseFilters<T, CnvIndex> where T : class
             ));
         }
 
-        if (IsNotEmpty(criteria.HomoDel))
+        if (IsNotEmpty(criteria.Del))
         {
             Add(new BooleanFilter<T>(
-                FilterNames.HomoDel,
-                path.Join(variant => variant.HomoDel),
-                criteria.HomoDel
+                FilterNames.Del,
+                path.Join(variant => variant.Del),
+                criteria.Del
             ));
         }
     }
