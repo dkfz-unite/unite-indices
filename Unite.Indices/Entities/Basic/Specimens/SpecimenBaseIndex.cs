@@ -1,3 +1,5 @@
+using Unite.Indices.Entities.Basic.Specimens.Drugs;
+
 namespace Unite.Indices.Entities.Basic.Specimens;
 
 public abstract class SpecimenBaseIndex

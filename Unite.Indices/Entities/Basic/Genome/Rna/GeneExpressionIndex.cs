@@ -1,6 +1,6 @@
-﻿namespace Unite.Indices.Entities.Basic.Genome.Transcriptomics;
+﻿namespace Unite.Indices.Entities.Basic.Genome.Rna;
 
-public class BulkExpressionIndex
+public class GeneExpressionIndex
 {
 	public int Reads { get; set; }
 	public double Tpm { get; set; }

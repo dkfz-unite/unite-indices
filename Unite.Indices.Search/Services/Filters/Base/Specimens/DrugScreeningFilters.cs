@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
-using Unite.Indices.Entities.Basic.Specimens;
+using Unite.Indices.Entities.Basic.Specimens.Drugs;
 using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Constants;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;

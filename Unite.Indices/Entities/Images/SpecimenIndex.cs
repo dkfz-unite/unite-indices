@@ -2,5 +2,5 @@
 
 public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
-    public AnalysisIndex[] Analyses { get; set; }
+    public SampleIndex[] Samples { get; set; }
 }

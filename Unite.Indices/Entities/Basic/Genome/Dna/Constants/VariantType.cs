@@ -1,4 +1,4 @@
-namespace Unite.Indices.Entities.Basic.Genome.Variants.Constants;
+namespace Unite.Indices.Entities.Basic.Genome.Dna.Constants;
 
 public class VariantType
 {

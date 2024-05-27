@@ -1,4 +1,4 @@
-﻿using Unite.Indices.Entities.Basic.Genome.Variants.Constants;
+﻿using Unite.Indices.Entities.Basic.Genome.Dna.Constants;
 using Unite.Indices.Entities.Basic.Images.Constants;
 using Unite.Indices.Entities.Basic.Specimens.Constants;
 
@@ -17,9 +17,9 @@ public class GeneIndex : Basic.Genome.GeneIndex
     private int? _numberOfCnvs;
     private int? _numberOfSvs;
 
-    private BulkExpressionStatsIndex _reads;
-    private BulkExpressionStatsIndex _tpm;
-    private BulkExpressionStatsIndex _fpkm;
+    private ExpressionStatsIndex _reads;
+    private ExpressionStatsIndex _tpm;
+    private ExpressionStatsIndex _fpkm;
 
     private DataIndex _data;
 
@@ -78,17 +78,17 @@ public class GeneIndex : Basic.Genome.GeneIndex
     /// <summary>
     /// Raw expression stats for this gene.
     /// </summary>
-    public BulkExpressionStatsIndex Reads { get => _reads ?? GetExpression(Specimens, index => index.Reads); set => _reads = value; }
+    public ExpressionStatsIndex Reads { get => _reads ?? GetExpression(Specimens, index => index.Reads); set => _reads = value; }
 
     /// <summary>
     /// TPM expression stats for this gene.
     /// </summary>
-    public BulkExpressionStatsIndex Tpm { get => _tpm ?? GetExpression(Specimens, index => index.Tpm); set => _tpm = value; }
+    public ExpressionStatsIndex Tpm { get => _tpm ?? GetExpression(Specimens, index => index.Tpm); set => _tpm = value; }
 
     /// <summary>
     /// FPKM expression stats for this gene.
     /// </summary>
-    public BulkExpressionStatsIndex Fpkm { get => _fpkm ?? GetExpression(Specimens, index => index.Fpkm); set => _fpkm = value; }
+    public ExpressionStatsIndex Fpkm { get => _fpkm ?? GetExpression(Specimens, index => index.Fpkm); set => _fpkm = value; }
 
 
     /// <summary>
@@ -138,7 +138,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    public static BulkExpressionStatsIndex GetExpression(SpecimenIndex[] specimens, Func<BulkExpressionIndex, double> getter)
+    public static ExpressionStatsIndex GetExpression(SpecimenIndex[] specimens, Func<ExpressionIndex, double> getter)
     {
         var expressions = specimens?
             .Where(specimen => specimen.Expression != null)
@@ -148,12 +148,11 @@ public class GeneIndex : Basic.Genome.GeneIndex
 
         if (expressions?.Any() == true)
         {
-            return new BulkExpressionStatsIndex
+            return new ExpressionStatsIndex
             {
                 Min = Math.Round(expressions.First()),
                 Max = Math.Round(expressions.Last()),
-                Mean = Math.Round(expressions.Average()),
-                Median = Math.Round(expressions[expressions.Length / 2])
+                Mdn = Math.Round(expressions[expressions.Length / 2])
             };
         }
         

@@ -1,4 +1,4 @@
-﻿namespace Unite.Indices.Entities.Basic.Specimens;
+﻿namespace Unite.Indices.Entities.Basic.Specimens.Drugs;
 
 public class DrugScreeningIndex
 {

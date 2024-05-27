@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Donors;
 
-public class AnalysisIndex : Basic.Analysis.AnalysisIndex
+public class SampleIndex : Basic.Analysis.SampleIndex
 {
     public ResourceIndex[] Resources { get; set; }
 }

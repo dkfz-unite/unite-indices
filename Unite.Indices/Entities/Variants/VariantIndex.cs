@@ -3,7 +3,7 @@ using Unite.Indices.Entities.Basic.Specimens.Constants;
 
 namespace Unite.Indices.Entities.Variants;
 
-public class VariantIndex : Basic.Genome.Variants.VariantIndex
+public class VariantIndex : Basic.Genome.Dna.VariantIndex
 {
     private int? _numberOfDonors;
     private int? _numberOfMris;

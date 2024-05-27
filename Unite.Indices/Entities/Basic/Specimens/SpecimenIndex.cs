@@ -39,7 +39,7 @@ public class SpecimenIndex
                Xenograft?.Interventions;
     }
 
-    public DrugScreeningIndex[] GetDrugScreenings()
+    public Drugs.DrugScreeningIndex[] GetDrugScreenings()
     {
         return Line?.DrugScreenings ??
                Organoid?.DrugScreenings ??

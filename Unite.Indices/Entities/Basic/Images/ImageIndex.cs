@@ -20,4 +20,10 @@ public class ImageIndex
 
 
     public MriImageIndex Mri { get; set; }
+
+
+    public Radiomics.FeatureEntryIndex[] GetRadiomicsFeatures()
+    {
+        return Mri?.RadiomicsFeatures;
+    }
 }

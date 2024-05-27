@@ -1,4 +1,4 @@
-﻿using Unite.Indices.Entities.Basic.Genome.Variants.Constants;
+﻿using Unite.Indices.Entities.Basic.Genome.Dna.Constants;
 using Unite.Indices.Entities.Variants;
 using Unite.Indices.Search.Services.Filters.Base;
 using Unite.Indices.Search.Services.Filters.Base.Donors;

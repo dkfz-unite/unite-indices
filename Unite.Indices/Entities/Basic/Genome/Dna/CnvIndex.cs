@@ -1,4 +1,4 @@
-﻿namespace Unite.Indices.Entities.Basic.Genome.Variants;
+﻿namespace Unite.Indices.Entities.Basic.Genome.Dna;
 
 public class CnvIndex : VariantBaseIndex
 {
