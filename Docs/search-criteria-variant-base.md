@@ -9,7 +9,7 @@ Base variant filters criteria. These criteria are part of all variant specific f
     "position": { "from": 1000, "to": 2000 },
     "length": { "from": 1, "to": 20 },
     "impact": ["High", "Moderate"],
-    "consequence": ["missense_variant"]
+    "effect": ["missense_variant"]
 }
 ```
 
@@ -46,9 +46,9 @@ General variant filters applicable to any type of the index.
 - Filter: **Options**.
 - Example: `["Moderate"]`.
 
-**`consequence`** - Variant consequence type.
+**`effect`** - Variant effect type.
 - Type: String[].
-- Options: [Ensembl](https://www.ensembl.org/index.html) variant consequence [types](https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html).
+- Options: [Ensembl](https://www.ensembl.org/index.html) variant effect (consequence) [types](https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html).
 - Filter: **Options**.
 - Example: `["missense_variant"]`.
 
@@ -65,12 +65,12 @@ Data, where variant chromosome is `1` **and** position is between `1000` and `20
 ```
 
 ## Example 2
-Data, where variant impact is `Moderate` **and** consequence is `missense_variant`.
+Data, where variant impact is `Moderate` **and** effect is `missense_variant`.
 
 ```json
 {
     "impact": ["Moderate"],
-    "consequence": ["missense_variant"]
+    "effect": ["missense_variant"]
 }
 ```
 

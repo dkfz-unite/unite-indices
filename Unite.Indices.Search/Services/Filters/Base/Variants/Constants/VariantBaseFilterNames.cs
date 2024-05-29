@@ -13,5 +13,5 @@ public abstract class VariantBaseFilterNames
     public string Length => $"{Prefix}.Length";
 
     public string Impact => $"{Prefix}.Impact";
-    public string Consequence => $"{Prefix}.Consequence";
+    public string Effect => $"{Prefix}.Effect";
 }

@@ -8,5 +8,5 @@ public class AffectedFeatureIndex
     //public AffectedRegulatorIndex Regulator { get; set; }
     //public AffectedMotifIndex Motif { get; set; }
 
-    public ConsequenceIndex[] Consequences { get; set; }
+    public EffectIndex[] Effects { get; set; }
 }

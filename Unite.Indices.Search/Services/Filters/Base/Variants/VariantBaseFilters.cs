@@ -64,17 +64,17 @@ public abstract class VariantBaseFilters<T, TModel> : FiltersCollection<T>
         {
             Add(new EqualityFilter<T, object>(
                 FilterNames.Impact,
-                path.Join(variant => variant.AffectedFeatures.First().Consequences.First().Impact.Suffix(_keywordSuffix)),
+                path.Join(variant => variant.AffectedFeatures.First().Effects.First().Impact.Suffix(_keywordSuffix)),
                 criteria.Impact
             ));
         }
 
-        if (IsNotEmpty(criteria.Consequence))
+        if (IsNotEmpty(criteria.Effect))
         {
             Add(new EqualityFilter<T, object>(
-                FilterNames.Consequence,
-                path.Join(variant => variant.AffectedFeatures.First().Consequences.First().Type.Suffix(_keywordSuffix)),
-                criteria.Consequence
+                FilterNames.Effect,
+                path.Join(variant => variant.AffectedFeatures.First().Effects.First().Type.Suffix(_keywordSuffix)),
+                criteria.Effect
             ));
         }
     }

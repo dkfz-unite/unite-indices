@@ -11,7 +11,7 @@ public abstract record VariantBaseCriteria
     public Range<int?> Length { get; set; }
 
     public string[] Impact { get; set; }
-    public string[] Consequence { get; set; }
+    public string[] Effect { get; set; }
 
 
     public virtual bool IsNotEmpty()
@@ -23,6 +23,6 @@ public abstract record VariantBaseCriteria
             || Length?.From != null
             || Length?.To != null
             || Impact?.Any() == true
-            || Consequence?.Any() == true;
+            || Effect?.Any() == true;
     }
 }
