@@ -2,6 +2,7 @@ namespace Unite.Indices.Entities;
 
 /// <summary>
 /// Shows which data is available for given entity.
+/// TODO: this information and it's structure has to be completely revised.
 /// </summary>
 public class DataIndex
 {

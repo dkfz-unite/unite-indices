@@ -3,7 +3,6 @@
 public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
     public DonorIndex Donor { get; set; }
-    public ExpressionIndex Expression { get; set; }
 
     public ImageIndex[] Images { get; set; }
     public SampleIndex[] Samples { get; set; }

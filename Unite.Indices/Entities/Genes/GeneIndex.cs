@@ -17,10 +17,6 @@ public class GeneIndex : Basic.Genome.GeneIndex
     private int? _numberOfCnvs;
     private int? _numberOfSvs;
 
-    private ExpressionStatsIndex _reads;
-    private ExpressionStatsIndex _tpm;
-    private ExpressionStatsIndex _fpkm;
-
     private DataIndex _data;
 
 
@@ -76,22 +72,6 @@ public class GeneIndex : Basic.Genome.GeneIndex
 
 
     /// <summary>
-    /// Raw expression stats for this gene.
-    /// </summary>
-    public ExpressionStatsIndex Reads { get => _reads ?? GetExpression(Specimens, index => index.Reads); set => _reads = value; }
-
-    /// <summary>
-    /// TPM expression stats for this gene.
-    /// </summary>
-    public ExpressionStatsIndex Tpm { get => _tpm ?? GetExpression(Specimens, index => index.Tpm); set => _tpm = value; }
-
-    /// <summary>
-    /// FPKM expression stats for this gene.
-    /// </summary>
-    public ExpressionStatsIndex Fpkm { get => _fpkm ?? GetExpression(Specimens, index => index.Fpkm); set => _fpkm = value; }
-
-
-    /// <summary>
     /// Available data.
     /// </summary>
     public DataIndex Data { get => _data ?? GetData(); set => _data = value; }
@@ -138,27 +118,6 @@ public class GeneIndex : Basic.Genome.GeneIndex
             .Count() ?? 0;
     }
 
-    public static ExpressionStatsIndex GetExpression(SpecimenIndex[] specimens, Func<ExpressionIndex, double> getter)
-    {
-        var expressions = specimens?
-            .Where(specimen => specimen.Expression != null)
-            .Select(specimen => getter(specimen.Expression))
-            .OrderBy(expression => expression)
-            .ToArray();
-
-        if (expressions?.Any() == true)
-        {
-            return new ExpressionStatsIndex
-            {
-                Min = Math.Round(expressions.First()),
-                Max = Math.Round(expressions.Last()),
-                Mdn = Math.Round(expressions[expressions.Length / 2])
-            };
-        }
-        
-        return null;
-    }
-
     private DataIndex GetData()
     {
         return new DataIndex
@@ -185,7 +144,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
             Ssms = Specimens?.Any(specimen => specimen.Variants?.Any(variant => variant.Ssm != null) == true),
             Cnvs = Specimens?.Any(specimen => specimen.Variants?.Any(variant => variant.Cnv != null) == true),
             Svs = Specimens?.Any(specimen => specimen.Variants?.Any(variant => variant.Sv != null) == true),
-            GeneExp = Specimens?.Any(specimen => specimen.Expression != null),
+            GeneExp = false,
             GeneExpSc = false
         };
     }
