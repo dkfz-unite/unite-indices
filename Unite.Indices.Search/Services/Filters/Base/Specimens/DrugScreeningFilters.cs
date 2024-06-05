@@ -37,13 +37,13 @@ public class DrugScreeningFilters<T> : FiltersCollection<T> where T : class
             ));
         }
 
-        if (IsNotEmpty(criteria.DssSelective))
+        if (IsNotEmpty(criteria.DssS))
         {
             Add(new RangeFilter<T, double?>(
-                FilterNames.DssSelective,
-                path.Join(screenings => screenings.First().DssSelective),
-                criteria.DssSelective.From,
-                criteria.DssSelective.To
+                FilterNames.DssS,
+                path.Join(screenings => screenings.First().DssS),
+                criteria.DssS.From,
+                criteria.DssS.To
             ));
         }
     }

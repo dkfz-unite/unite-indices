@@ -21,7 +21,7 @@ public class SpecimenFilterNames
 
     public string Drug => $"{Prefix}.Drug";
     public string Dss => $"{Prefix}.Dss";
-    public string DssSelective => $"{Prefix}.DssSelective";
+    public string DssS => $"{Prefix}.DssS";
 
     public string HasDrugs => $"{Prefix}.HasDrugs";
     public string HasSsms => $"{Prefix}.HasSsms";

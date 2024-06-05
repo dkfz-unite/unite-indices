@@ -3,12 +3,12 @@
 public class DrugScreeningIndex
 {
     public string Drug { get; set; }
-    public double? Dss { get; set; }
-    public double? DssSelective { get; set; }
     public double? Gof { get; set; }
-    public double? AbsIC25 { get; set; }
-    public double? AbsIC50 { get; set; }
-    public double? AbsIC75 { get; set; }
-    public double? MinConcentration { get; set; }
-    public double? MaxConcentration { get; set; }
+    public double? Dss { get; set; }
+    public double? DssS { get; set; }
+    public double? MinDose { get; set; }
+    public double? MaxDose { get; set; }
+    public double? Dose25 { get; set; }
+    public double? Dose50 { get; set; }
+    public double? Dose75 { get; set; }
 }

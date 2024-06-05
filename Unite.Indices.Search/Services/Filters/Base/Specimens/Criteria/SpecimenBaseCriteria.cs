@@ -18,5 +18,5 @@ public abstract record SpecimenBaseCriteria
 
     public string[] Drug { get; set; }
     public Range<double?> Dss { get; set; }
-    public Range<double?> DssSelective { get; set; }
+    public Range<double?> DssS { get; set; }
 }
