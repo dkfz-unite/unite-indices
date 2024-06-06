@@ -4,7 +4,7 @@ public class AffectedTranscriptIndex
 {
     public TranscriptIndex Feature { get; set; }
 
-    public string AminoAcidChange { get; set; }
+    public string ProteinChange { get; set; }
     public string CodonChange { get; set; }
 
     public int? Distance { get; set; }
