@@ -84,7 +84,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
     {
         return specimens?
             .Where(specimen => specimen.Variants?.Any() == true)
-            .DistinctBy(specimens => specimens.Donor.Id)
+            .DistinctBy(specimen => specimen.Donor.Id)
             .Count() ?? 0;
     }
 

@@ -96,24 +96,24 @@ public class VariantIndex : Basic.Genome.Dna.VariantIndex
         return new DataIndex
         {
             Donors = true,
-            Clinical = Specimens.Any(specimen => specimen.Donor.ClinicalData != null),
-            Treatments = Specimens.Any(specimen => specimen.Donor.Treatments?.Any() == true),
-            Mris = Specimens.Any(specimen => specimen.Images?.Any(image => image.Mri != null) == true),
-            // Cts = Specimens.Any(specimen => specimen.Images?.Any(image => image.Ct != null) == true);
-            Materials = Specimens.Any(specimen => specimen.Material != null),
-            MaterialsMolecular = Specimens.Any(specimen => specimen.Material?.MolecularData != null),
-            Lines = Specimens.Any(specimen => specimen.Line != null),
-            LinesMolecular = Specimens.Any(specimen => specimen.Line?.MolecularData != null),
-            LinesDrugs = Specimens.Any(specimen => specimen.Line?.DrugScreenings?.Any() == true),
-            LinesInterventions = Specimens.Any(specimen => specimen.Line?.Interventions?.Any() == true),
-            Organoids = Specimens.Any(specimen => specimen.Organoid != null),
-            OrganoidsMolecular = Specimens.Any(specimen => specimen.Organoid?.MolecularData != null),
-            OrganoidsDrugs = Specimens.Any(specimen => specimen.Organoid?.DrugScreenings?.Any() == true),
-            OrganoidsInterventions = Specimens.Any(specimen => specimen.Organoid?.Interventions?.Any() == true),
-            Xenografts = Specimens.Any(specimen => specimen.Xenograft != null),
-            XenograftsMolecular = Specimens.Any(specimen => specimen.Xenograft?.MolecularData != null),
-            XenograftsDrugs = Specimens.Any(specimen => specimen.Xenograft?.DrugScreenings?.Any() == true),
-            XenograftsInterventions = Specimens.Any(specimen => specimen.Xenograft?.Interventions?.Any() == true),
+            Clinical = Specimens?.Any(specimen => specimen.Donor.ClinicalData != null),
+            Treatments = Specimens?.Any(specimen => specimen.Donor.Treatments?.Any() == true),
+            Mris = Specimens?.Any(specimen => specimen.Images?.Any(image => image.Mri != null) == true),
+            // Cts = Specimens?.Any(specimen => specimen.Images?.Any(image => image.Ct != null) == true);
+            Materials = Specimens?.Any(specimen => specimen.Material != null),
+            MaterialsMolecular = Specimens?.Any(specimen => specimen.Material?.MolecularData != null),
+            Lines = Specimens?.Any(specimen => specimen.Line != null),
+            LinesMolecular = Specimens?.Any(specimen => specimen.Line?.MolecularData != null),
+            LinesDrugs = Specimens?.Any(specimen => specimen.Line?.DrugScreenings?.Any() == true),
+            LinesInterventions = Specimens?.Any(specimen => specimen.Line?.Interventions?.Any() == true),
+            Organoids = Specimens?.Any(specimen => specimen.Organoid != null),
+            OrganoidsMolecular = Specimens?.Any(specimen => specimen.Organoid?.MolecularData != null),
+            OrganoidsDrugs = Specimens?.Any(specimen => specimen.Organoid?.DrugScreenings?.Any() == true),
+            OrganoidsInterventions = Specimens?.Any(specimen => specimen.Organoid?.Interventions?.Any() == true),
+            Xenografts = Specimens?.Any(specimen => specimen.Xenograft != null),
+            XenograftsMolecular = Specimens?.Any(specimen => specimen.Xenograft?.MolecularData != null),
+            XenograftsDrugs = Specimens?.Any(specimen => specimen.Xenograft?.DrugScreenings?.Any() == true),
+            XenograftsInterventions = Specimens?.Any(specimen => specimen.Xenograft?.Interventions?.Any() == true),
             Ssms = Ssm != null, // Intersections can not be calculated here.
             Cnvs = Cnv != null, // Intersections can not be calculated here.
             Svs = Sv != null, // Intersections can not be calculated here.
