@@ -2,7 +2,7 @@ namespace Unite.Indices.Entities.Basic.Genome.Dna;
 
 public abstract class VariantBaseIndex
 {
-    public long Id { get; set; }
+    public string Id { get; set; }
 
     public string Chromosome { get; set; }
     public int Start { get; set; }

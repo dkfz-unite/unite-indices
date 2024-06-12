@@ -19,9 +19,9 @@ public class VariantFilters<T> : FiltersCollection<T> where T : class
 
         if (IsNotEmpty(criteria.Id))
         {
-            Add(new EqualityFilter<T, string>(
+            Add(new EqualityFilter<T, object>(
                 VariantFilterNames.VariantId,
-                path.Join(variant => variant.Id),
+                path.Join(variant => variant.Id.Suffix(_keywordSuffix)),
                 criteria.Id
             ));
         }
