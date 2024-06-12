@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Search.Services.Filters.Base.Variants.Constants;
 
-public class CnvFilterNames : VariantBaseFilterNames
+public class CnvFilterNames : VariantFilterNames
 {
     protected override string Prefix => "CNV";
 

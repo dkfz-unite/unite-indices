@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Search.Services.Filters.Base.Variants.Constants;
 
-public class SvFilterNames : VariantBaseFilterNames
+public class SvFilterNames : VariantFilterNames
 {
     protected override string Prefix => "SV";
 

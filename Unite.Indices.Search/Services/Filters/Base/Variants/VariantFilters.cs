@@ -20,7 +20,7 @@ public class VariantFilters<T> : FiltersCollection<T> where T : class
         if (IsNotEmpty(criteria.Id))
         {
             Add(new EqualityFilter<T, object>(
-                VariantFilterNames.Id,
+                VariantFilterNames.VariantId,
                 path.Join(variant => variant.Id.Suffix(_keywordSuffix)),
                 criteria.Id
             ));
@@ -29,7 +29,7 @@ public class VariantFilters<T> : FiltersCollection<T> where T : class
         if (IsNotEmpty(criteria.Type))
         {
             Add(new EqualityFilter<T, object>(
-                VariantFilterNames.Type,
+                VariantFilterNames.VariantType,
                 path.Join(variant => variant.Type.Suffix(_keywordSuffix)),
                 criteria.Type
             ));

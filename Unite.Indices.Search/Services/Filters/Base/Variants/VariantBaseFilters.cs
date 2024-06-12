@@ -12,7 +12,7 @@ public abstract class VariantBaseFilters<T, TModel> : FiltersCollection<T>
     where T : class
     where TModel : VariantBaseIndex
 {
-    protected abstract VariantBaseFilterNames FilterNames { get; }
+    protected abstract VariantFilterNames FilterNames { get; }
 
     public VariantBaseFilters(VariantBaseCriteria criteria, Expression<Func<T, TModel>> path)
     {
