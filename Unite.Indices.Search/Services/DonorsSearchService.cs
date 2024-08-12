@@ -32,10 +32,10 @@ public class DonorsSearchService : SearchService<DonorIndex>
 
         int[] ids = null;
 
-        if (criteria.HasGeneFilters)
-            ids = await AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria) ?? [];
-        else if (criteria.HasVariantFilters)
+        if (criteria.HasVariantFilters)
             ids = await AggregateFromVariants(index => index.Specimens.First().Donor.Id, criteria) ?? [];
+        else if (criteria.HasGeneFilters)
+            ids = await AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria) ?? [];
 
         if (ids != null)
         {

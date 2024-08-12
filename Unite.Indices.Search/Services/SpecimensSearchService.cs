@@ -32,10 +32,10 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
 
         int[] ids = null;
 
-        if(criteria.HasGeneFilters)
-            ids = await AggregateFromGenes(index => index.Id, criteria) ?? [];
-        else if(criteria.HasVariantFilters)
+        if(criteria.HasVariantFilters)
             ids = await AggregateFromVariants(index => index.Id, criteria) ?? [];
+        else if(criteria.HasGeneFilters)
+            ids = await AggregateFromGenes(index => index.Id, criteria) ?? [];
 
         if(ids != null)
         {
