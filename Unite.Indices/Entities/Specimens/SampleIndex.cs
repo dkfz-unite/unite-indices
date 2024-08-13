@@ -2,5 +2,7 @@ namespace Unite.Indices.Entities.Specimens;
 
 public class SampleIndex : Basic.Analysis.SampleIndex
 {
-    public ResourceIndex[] Resources { get; set; }
+    public Basic.Analysis.SampleDataIndex Data { get; set; }
+    
+    public Basic.Analysis.ResourceIndex[] Resources { get; set; }
 }
