@@ -1,6 +1,5 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Specimens;
-using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
@@ -10,12 +9,8 @@ namespace Unite.Indices.Search.Services;
 
 public class SpecimensSearchService : SearchService<SpecimenIndex>
 {
-    private readonly IIndexService<SpecimenIndex> _specimensIndexService;
-
-
     public SpecimensSearchService(IElasticOptions options) : base(options)
     {
-        _specimensIndexService = new SpecimensIndexService(options);
     }
 
 
@@ -32,9 +27,9 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
 
         int[] ids = null;
 
-        if (criteria.HasGeneFilters)
+        if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
             ids = await AggregateFromGenes(index => index.Id, criteria) ?? [];
-        else if (criteria.HasVariantFilters)
+        else if (( criteria.HasGeneFilters && criteria.HasVariantFilters) || criteria.HasVariantFilters)
             ids = await AggregateFromVariants(index => index.Id, criteria) ?? [];
 
         if (ids != null)

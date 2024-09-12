@@ -1,6 +1,5 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Donors;
-using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
@@ -10,12 +9,8 @@ namespace Unite.Indices.Search.Services;
 
 public class DonorsSearchService : SearchService<DonorIndex>
 {
-    private readonly IIndexService<DonorIndex> _donorsIndexService;
-    
-
     public DonorsSearchService(IElasticOptions options) : base(options)
     {
-        _donorsIndexService = new DonorsIndexService(options);
     }
 
 
@@ -32,9 +27,9 @@ public class DonorsSearchService : SearchService<DonorIndex>
 
         int[] ids = null;
 
-        if (criteria.HasGeneFilters)
+        if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
             ids = await AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria) ?? [];
-        else if (criteria.HasVariantFilters)
+        else if ((criteria.HasGeneFilters && criteria.HasVariantFilters) || criteria.HasVariantFilters)
             ids = await AggregateFromVariants(index => index.Specimens.First().Donor.Id, criteria) ?? [];
 
         if (ids != null)

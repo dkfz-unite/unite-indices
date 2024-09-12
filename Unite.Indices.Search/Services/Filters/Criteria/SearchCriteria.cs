@@ -26,6 +26,18 @@ public record SearchCriteria
     public CnvCriteria Cnv { get; set; }
     public SvCriteria Sv { get; set; }
 
+    public bool HasDonorFilters =>
+        Donor?.IsNotEmpty() == true;
+
+    // public bool HasImageFilters =>
+    //     Mri?.IsNotEmpty() == true;
+
+    // public bool SpecimenFilters =>
+    //     Material?.IsNotEmpty() == true ||
+    //     Line?.IsNotEmpty() == true ||
+    //     Organoid?.IsNotEmpty() == true ||
+    //     Xenograft?.IsNotEmpty() == true;
+
     public bool HasGeneFilters =>
         Gene?.IsNotEmpty() == true;
 

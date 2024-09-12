@@ -1,6 +1,4 @@
-﻿using Unite.Indices.Search.Services.Filters.Criteria.Models;
-
-namespace Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
+﻿namespace Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 
 public record DonorCriteria : DonorBaseCriteria
 {

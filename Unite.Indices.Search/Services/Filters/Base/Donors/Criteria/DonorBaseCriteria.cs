@@ -22,4 +22,27 @@ public abstract record DonorBaseCriteria
     public bool? MtaProtected { get; set; }
     public string[] Project { get; set; }
     public string[] Study { get; set; }
+
+
+    public virtual bool IsNotEmpty()
+    {
+        return Id?.Any() == true
+            || ReferenceId?.Any() == true
+            || Gender?.Any() == true
+            || Age?.From != null
+            || Age?.To != null
+            || Diagnosis?.Any() == true
+            || PrimarySite?.Any() == true
+            || Localization?.Any() == true
+            || VitalStatus != null
+            || VitalStatusChangeDay?.From != null
+            || VitalStatusChangeDay?.To != null
+            || ProgressionStatus != null
+            || ProgressionStatusChangeDay?.From != null
+            || ProgressionStatusChangeDay?.To != null
+            || Therapy?.Any() == true
+            || MtaProtected != null
+            || Project?.Any() == true
+            || Study?.Any() == true;
+    } 
 }
