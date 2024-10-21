@@ -11,6 +11,7 @@ public class VariantFilterNames
     public string Chromosome => $"{Prefix}.Chromosome";
     public string Position => $"{Prefix}.Position";
     public string Length => $"{Prefix}.Length";
+    public string Gene => $"{Prefix}.Gene";
     public string Impact => $"{Prefix}.Impact";
     public string Effect => $"{Prefix}.Effect";
 }

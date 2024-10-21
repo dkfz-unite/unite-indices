@@ -60,6 +60,15 @@ public abstract class VariantBaseFilters<T, TModel> : FiltersCollection<T>
             ));
         }
 
+        if (IsNotEmpty(criteria.Gene))
+        {
+            Add(new EqualityFilter<T, object>(
+                FilterNames.Gene,
+                path.Join(variant => variant.AffectedFeatures.First().Gene.Symbol.Suffix(_keywordSuffix)),
+                criteria.Gene
+            ));
+        }
+
         if (IsNotEmpty(criteria.Impact))
         {
             Add(new EqualityFilter<T, object>(

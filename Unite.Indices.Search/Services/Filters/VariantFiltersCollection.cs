@@ -45,20 +45,20 @@ public class VariantFiltersCollection : FiltersCollection<VariantIndex>
         // because gene filters live in separate criteria, 
         // but gene index for search is part of the specific variant type index.
         // Only variants of specific type can be filtered by gene criteria.
-        if (criteria.Variant?.Type?.First() == VariantType.SSM)
-        {
-            var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Ssm.AffectedFeatures.First().Gene);
-            Add(geneFilters.All());
-        }
-        else if (criteria.Variant?.Type?.First() == VariantType.CNV)
-        {
-            var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Cnv.AffectedFeatures.First().Gene);
-            Add(geneFilters.All());
-        }
-        else if (criteria.Variant?.Type?.First() == VariantType.SV)
-        {
-            var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Sv.AffectedFeatures.First().Gene);
-            Add(geneFilters.All());
-        }
+        // if (criteria.Variant?.Type?.First() == VariantType.SSM)
+        // {
+        //     var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Ssm.AffectedFeatures.First().Gene);
+        //     Add(geneFilters.All());
+        // }
+        // else if (criteria.Variant?.Type?.First() == VariantType.CNV)
+        // {
+        //     var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Cnv.AffectedFeatures.First().Gene);
+        //     Add(geneFilters.All());
+        // }
+        // else if (criteria.Variant?.Type?.First() == VariantType.SV)
+        // {
+        //     var geneFilters = new GeneFilters<VariantIndex>(criteria.Gene, variant => variant.Sv.AffectedFeatures.First().Gene);
+        //     Add(geneFilters.All());
+        // }
     }
 }

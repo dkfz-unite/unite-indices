@@ -10,6 +10,7 @@ public abstract record VariantBaseCriteria
     public Range<double?> Position { get; set; }
     public Range<int?> Length { get; set; }
 
+    public string[] Gene { get; set; }
     public string[] Impact { get; set; }
     public string[] Effect { get; set; }
 
@@ -22,6 +23,7 @@ public abstract record VariantBaseCriteria
             || Position?.To != null
             || Length?.From != null
             || Length?.To != null
+            || Gene?.Any() == true
             || Impact?.Any() == true
             || Effect?.Any() == true;
     }
