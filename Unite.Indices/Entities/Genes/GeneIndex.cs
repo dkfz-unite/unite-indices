@@ -130,7 +130,7 @@ public class GeneIndex : Basic.Genome.GeneIndex
             Materials = Specimens?.Any(specimen => specimen.Material != null),
             MaterialsMolecular = Specimens?.Any(specimen => specimen.Material?.MolecularData != null),
             Lines = Specimens?.Any(specimen => specimen.Line != null),
-            LinesMolecular = Specimens.Any(specimen => specimen.Line?.MolecularData != null),
+            LinesMolecular = Specimens?.Any(specimen => specimen.Line?.MolecularData != null),
             LinesDrugs = Specimens?.Any(specimen => specimen.Line?.DrugScreenings?.Any() == true),
             LinesInterventions = Specimens?.Any(specimen => specimen.Line?.Interventions?.Any() == true),
             Organoids = Specimens?.Any(specimen => specimen.Organoid != null),
