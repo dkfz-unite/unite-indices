@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using Nest;
 using Unite.Essentials.Extensions;
 using Unite.Indices.Entities.Basic.Specimens;
 using Unite.Indices.Search.Engine.Filters;
@@ -8,31 +7,52 @@ using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 
-public class SpecimenFilters<T> : FiltersCollection<T> where T : class
+public abstract class SpecimenFilters<T, TModel> : FiltersCollection<T> 
+    where T : class
+    where TModel : SpecimenBaseIndex
 {
-    public SpecimenFilters(SpecimenCriteria criteria, Expression<Func<T, SpecimenIndex>> path)
+    protected abstract SpecimenFilterNames FilterNames { get; }
+
+    protected virtual bool IncludeMolecularData => true;
+    protected virtual bool IncludeInterventions => true;
+    protected virtual bool IncludeDrugScreenings => true;
+
+
+    public SpecimenFilters(SpecimenCriteria criteria, Expression<Func<T, TModel>> path)
     {
         if (criteria == null)
         {
             return;
         }
 
-        if (IsNotEmpty(criteria.Id))
+        if (IsNotEmpty(criteria.ReferenceId))
         {
-            Add(new EqualityFilter<T, int>(
-                SpecimenFilterNames.SpecimenId,
-                path.Join(specimen => specimen.Id),
-                criteria.Id
+            Add(new SimilarityFilter<T, string>(
+                FilterNames.ReferenceId,
+                path.Join(specimen => specimen.ReferenceId),
+                criteria.ReferenceId
             ));
         }
 
-        if (IsNotEmpty(criteria.Type))
+        if (IncludeMolecularData)
         {
-            Add(new EqualityFilter<T, object>(
-                SpecimenFilterNames.SpecimenType,
-                path.Join(specimen => specimen.Type.Suffix(_keywordSuffix)),
-                criteria.Type
-            ));
+            var molecularDataFilters = new MolecularDataFilters<T>(criteria, path.Join(specimen => specimen.MolecularData));
+
+            Add(molecularDataFilters.All());
+        }
+
+        if (IncludeInterventions)
+        {
+            var interventionFilters = new InterventionFilters<T>(criteria, path.Join(specimen => specimen.Interventions));
+
+            Add(interventionFilters.All());
+        }
+
+        if (IncludeDrugScreenings)
+        {
+            var drugScreeningFilters = new DrugScreeningFilters<T>(criteria, path.Join(specimen => specimen.DrugScreenings));
+
+            Add(drugScreeningFilters.All());
         }
     }
 }

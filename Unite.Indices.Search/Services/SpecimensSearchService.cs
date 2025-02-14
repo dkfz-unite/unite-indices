@@ -2,7 +2,6 @@
 using Unite.Indices.Entities.Specimens;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
-using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -25,23 +24,81 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
     {
         var criteria = searchCriteria;
 
-        int[] ids = null;
-
-        // if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
-        //     ids = await AggregateFromGenes(index => index.Id, criteria) ?? [];
-        // else if (( criteria.HasGeneFilters && criteria.HasVariantFilters) || criteria.HasVariantFilters)
-        //     ids = await AggregateFromVariants(index => index.Id, criteria) ?? [];
-
-        if (criteria.HasGeneFilters)
-            ids = await AggregateFromGenes(index => index.Id, criteria) ?? [];
-        else if (criteria.HasVariantFilters)
-            ids = await AggregateFromVariants(index => index.Id, criteria) ?? [];
-
-        if (ids != null)
+        if (criteria.HasDonorFilters)
         {
+            var ids = await AggregateFromDonors(index => index.Id, criteria);
+
             if (ids.Length > 0)
-                criteria.Specimen = (criteria.Specimen ?? new SpecimenCriteria()) with { Id = ids };
+                criteria.Donor = Set(criteria.Donor, [.. ids.Select(int.Parse)]);
             else
+                return new SearchResult<SpecimenIndex>();
+
+            if (criteria.Donor.Id.Length == 0)
+                return new SearchResult<SpecimenIndex>();
+        }
+
+        if (criteria.HasImageFilters)
+        {
+            var ids = await AggregateFromImages(index => index.Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Image = Set(criteria.Image, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<SpecimenIndex>();
+
+            if (criteria.Image.Id.Length == 0)
+                return new SearchResult<SpecimenIndex>();
+        }
+
+        if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
+        {
+            var ids = await AggregateFromGenes(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<SpecimenIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<SpecimenIndex>();
+        }
+
+        if (criteria.HasSsmFilters)
+        {
+            var ids = await AggregateFromSsms(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<SpecimenIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<SpecimenIndex>();
+        }
+
+        if (criteria.HasCnvFilters)
+        {
+            var ids = await AggregateFromCnvs(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<SpecimenIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<SpecimenIndex>();
+        }
+
+        if (criteria.HasSvFilters)
+        {
+            var ids = await AggregateFromSvs(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<SpecimenIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
                 return new SearchResult<SpecimenIndex>();
         }
 
@@ -51,14 +108,7 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
-            .AddOrdering(specimen => specimen.NumberOfGenes)
-            .AddExclusion(specimen => specimen.Images)
-            .AddExclusion(specimen => specimen.Line.DrugScreenings)
-            .AddExclusion(specimen => specimen.Line.Interventions)
-            .AddExclusion(specimen => specimen.Organoid.DrugScreenings)
-            .AddExclusion(specimen => specimen.Organoid.Interventions)
-            .AddExclusion(specimen => specimen.Xenograft.DrugScreenings)
-            .AddExclusion(specimen => specimen.Xenograft.Interventions);
+            .AddOrdering(specimen => specimen.Stats.Genes);
 
         return await _specimensIndexService.Search(query);
     }

@@ -7,7 +7,7 @@ using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 
-public class OrganoidFilters<T> : SpecimenBaseFilters<T, OrganoidIndex> where T : class
+public class OrganoidFilters<T> : SpecimenFilters<T, OrganoidIndex> where T : class
 {
     protected override OrganoidFilterNames FilterNames => new();
     

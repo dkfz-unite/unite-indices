@@ -18,6 +18,17 @@ public class SampleDataIndex
     public bool Sv { get; set; }
 
     /// <summary>
+    /// DNA Methylation data availability.
+    /// </summary>
+    public bool Meth { get; set; }
+
+    /// <summary>
     /// Bulk RNA gene expressions data availability.
+    /// </summary>
     public bool Exp { get; set; }
+
+    /// <summary>
+    /// Single-cell RNA gene expressions data availability.
+    /// </summary>
+    public bool ExpSc { get; set; }
 }

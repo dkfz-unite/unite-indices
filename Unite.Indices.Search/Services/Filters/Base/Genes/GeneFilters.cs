@@ -12,20 +12,11 @@ public class GeneFilters<T> : FiltersCollection<T> where T : class
 {
     protected GeneFilterNames FilterNames = new();
 
-    public GeneFilters(GeneBaseCriteria criteria, Expression<Func<T, GeneIndex>> path)
+    public GeneFilters(GeneCriteria criteria, Expression<Func<T, GeneIndex>> path)
     {
         if (criteria == null)
         {
             return;
-        }
-
-        if (IsNotEmpty(criteria.Id))
-        {
-            Add(new EqualityFilter<T, int>(
-                FilterNames.Id,
-                path.Join(gene => gene.Id),
-                criteria.Id
-            ));
         }
 
         if (IsNotEmpty(criteria.Symbol))

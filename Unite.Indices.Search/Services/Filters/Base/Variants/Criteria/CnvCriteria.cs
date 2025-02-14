@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 
-public record CnvCriteria : VariantBaseCriteria
+public record CnvCriteria : VariantCriteria
 {
     public string[] Type { get; set; }
     public bool? Loh { get; set; }
@@ -9,7 +9,7 @@ public record CnvCriteria : VariantBaseCriteria
     public override bool IsNotEmpty()
     {
         return base.IsNotEmpty()
-            || Type?.Any() == true
+            || Type?.Length > 0
             || Loh != null
             || Del != null;
     }

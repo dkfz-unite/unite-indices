@@ -11,7 +11,7 @@ public class InterventionFilters<T> : FiltersCollection<T> where T : class
 {
     protected SpecimenFilterNames FilterNames = new();
 
-    public InterventionFilters(SpecimenBaseCriteria criteria, Expression<Func<T, InterventionIndex[]>> path)
+    public InterventionFilters(SpecimenCriteria criteria, Expression<Func<T, InterventionIndex[]>> path)
     {
         if (criteria == null)
         {

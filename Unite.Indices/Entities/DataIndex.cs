@@ -25,9 +25,10 @@ public class DataIndex
     public virtual bool? XenograftsMolecular { get; set; }
     public virtual bool? XenograftsDrugs { get; set; }
     public virtual bool? XenograftsInterventions { get; set; }
-    public virtual bool? GeneExp { get; set; }
-    public virtual bool? GeneExpSc { get; set; }
+    public virtual bool? Exp { get; set; }
+    public virtual bool? ExpSc { get; set; }
     public virtual bool? Ssms { get; set; }
     public virtual bool? Cnvs { get; set; }
     public virtual bool? Svs { get; set; }
+    public virtual bool? Meth { get; set; }
 }

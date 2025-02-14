@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 
-public record SvCriteria : VariantBaseCriteria
+public record SvCriteria : VariantCriteria
 {
     public string[] Type { get; set; }
     public bool? Inverted { get; set; }
@@ -8,7 +8,7 @@ public record SvCriteria : VariantBaseCriteria
     public override bool IsNotEmpty()
     {
         return base.IsNotEmpty()
-            || Type?.Any() == true
+            || Type?.Length > 0
             || Inverted != null;
     }
 }

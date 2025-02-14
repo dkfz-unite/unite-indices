@@ -2,7 +2,6 @@
 using Unite.Indices.Entities.Images;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
-using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -25,23 +24,81 @@ public class ImagesSearchService : SearchService<ImageIndex>
     {
         var criteria = searchCriteria;
 
-        int[] ids = null;
-
-        // if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
-        //     ids = await AggregateFromGenes(index => index.Specimens.First().Images.First().Id, criteria) ?? [];
-        // else if ((criteria.HasGeneFilters && criteria.HasVariantFilters) || criteria.HasVariantFilters)
-        //     ids = await AggregateFromVariants(index => index.Specimens.First().Images.First().Id, criteria) ?? [];
-
-        if (criteria.HasGeneFilters)
-            ids = await AggregateFromGenes(index => index.Specimens.First().Images.First().Id, criteria) ?? [];
-        else if (criteria.HasVariantFilters)
-            ids = await AggregateFromVariants(index => index.Specimens.First().Images.First().Id, criteria) ?? [];
-
-        if (ids != null)
+        if (criteria.HasDonorFilters)
         {
+            var ids = await AggregateFromDonors(index => index.Id, criteria);
+
             if (ids.Length > 0)
-                criteria.Image = (criteria.Image ?? new ImageCriteria()) with { Id = ids };
+                criteria.Donor = Set(criteria.Donor, [.. ids.Select(int.Parse)]);
             else
+                return new SearchResult<ImageIndex>();
+
+            if (criteria.Donor.Id.Length == 0)
+                return new SearchResult<ImageIndex>();
+        }
+
+        if (criteria.HasSpecimenFilters)
+        {
+            var ids = await AggregateFromSpecimens(index => index.Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<ImageIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<ImageIndex>();
+        }
+
+        if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
+        {
+            var ids = await AggregateFromGenes(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<ImageIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<ImageIndex>();
+        }
+
+        if (criteria.HasSsmFilters)
+        {
+            var ids = await AggregateFromSsms(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<ImageIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<ImageIndex>();
+        }
+
+        if (criteria.HasCnvFilters)
+        {
+            var ids = await AggregateFromCnvs(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<ImageIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<ImageIndex>();
+        }
+
+        if (criteria.HasSvFilters)
+        {
+            var ids = await AggregateFromSvs(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<ImageIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
                 return new SearchResult<ImageIndex>();
         }
 
@@ -51,11 +108,7 @@ public class ImagesSearchService : SearchService<ImageIndex>
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
-            .AddOrdering(image => image.NumberOfGenes)
-            .AddExclusion(image => image.Specimens.First().Material)
-            .AddExclusion(image => image.Specimens.First().Line)
-            .AddExclusion(image => image.Specimens.First().Organoid)
-            .AddExclusion(image => image.Specimens.First().Xenograft);
+            .AddOrdering(image => image.Stats.Genes);
 
         return await _imagesIndexService.Search(query);
     }

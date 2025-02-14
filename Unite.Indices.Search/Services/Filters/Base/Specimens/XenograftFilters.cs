@@ -8,7 +8,7 @@ using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 
-public class XenograftFilters<T> : SpecimenBaseFilters<T, XenograftIndex> where T : class
+public class XenograftFilters<T> : SpecimenFilters<T, XenograftIndex> where T : class
 {
     protected override XenograftFilterNames FilterNames => new();
     

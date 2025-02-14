@@ -1,17 +1,23 @@
 using System.Linq.Expressions;
-using Unite.Essentials.Extensions;
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
+using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
+using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
+using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
 using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
 using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
-using VariantIndex = Unite.Indices.Entities.Variants.VariantIndex;
+using SsmIndex = Unite.Indices.Entities.Variants.SsmIndex;
+using CnvIndex = Unite.Indices.Entities.Variants.CnvIndex;
+using SvIndex = Unite.Indices.Entities.Variants.SvIndex;
+
 
 namespace Unite.Indices.Search.Services;
 
@@ -22,7 +28,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected readonly IIndexService<ImageIndex> _imagesIndexService;
     protected readonly IIndexService<SpecimenIndex> _specimensIndexService;
     protected readonly IIndexService<GeneIndex> _genesIndexService;
-    protected readonly IIndexService<VariantIndex> _variantsIndexService;
+    protected readonly IIndexService<SsmIndex> _ssmsIndexService;
+    protected readonly IIndexService<CnvIndex> _cnvsIndexService;
+    protected readonly IIndexService<SvIndex> _svsIndexService;
 
 
     protected SearchService(IElasticOptions options)
@@ -31,7 +39,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         _imagesIndexService = new ImagesIndexService(options);
         _specimensIndexService = new SpecimensIndexService(options);
         _genesIndexService = new GenesIndexService(options);
-        _variantsIndexService = new VariantsIndexService(options);
+        _ssmsIndexService = new SsmsIndexService(options);
+        _cnvsIndexService = new CnvsIndexService(options);
+        _svsIndexService = new SvsIndexService(options);
     }
 
 
@@ -65,49 +75,87 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     protected abstract void AddToStats(ref Dictionary<object, DataIndex> stats, T index);
 
-    protected async Task<int[]> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, SearchCriteria criteria)
     {
         var filters = new DonorFiltersCollection(criteria);
 
         var aggregation = await AggregateFromDonors(property, criteria.Term, filters);
 
-        return aggregation.Select(x => int.Parse(x.Key)).ToArrayOrNull();
+        return aggregation.Keys.ToArray();
     }
 
-    public async Task<int[]> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, SearchCriteria criteria)
+    public async Task<string[]> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, SearchCriteria criteria)
     {
         var filters = new ImageFiltersCollection(criteria);
 
         var aggregation = await AggregateFromImages(property, criteria.Term, filters);
 
-        return aggregation.Select(x => int.Parse(x.Key)).ToArrayOrNull();
+        return aggregation.Keys.ToArray();
     }
 
-    protected async Task<int[]> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, SearchCriteria criteria)
     {
         var filters = new SpecimenFiltersCollection(criteria);
 
         var aggregation = await AggregateFromSpecimens(property, criteria.Term, filters);
 
-        return aggregation.Select(x => int.Parse(x.Key)).ToArrayOrNull();
+        return aggregation.Keys.ToArray();
     }
 
-    protected async Task<int[]> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria)
     {
         var filters = new GeneFiltersCollection(criteria);
 
         var aggregation = await AggregateFromGenes(property, criteria.Term, filters);
 
-        return aggregation.Select(x => int.Parse(x.Key)).ToArrayOrNull();
+        return aggregation.Keys.ToArray();
     }
 
-    protected async Task<int[]> AggregateFromVariants<TProp>(Expression<Func<VariantIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromSsms<TProp>(Expression<Func<SsmIndex, TProp>> property, SearchCriteria criteria)
     {
-        var filters = new VariantFiltersCollection(criteria);
+        var filters = new SsmFiltersCollection(criteria);
 
-        var aggregation = await AggregateFromVariants(property, criteria.Term, filters);
+        var aggregation = await AggregateFromSsms(property, criteria.Term, filters);
 
-        return aggregation.Select(x => int.Parse(x.Key)).ToArrayOrNull();
+        return aggregation.Keys.ToArray();
+    }
+
+    protected async Task<string[]> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, SearchCriteria criteria)
+    {
+        var filters = new CnvFiltersCollection(criteria);
+
+        var aggregation = await AggregateFromCnvs(property, criteria.Term, filters);
+
+        return aggregation.Keys.ToArray();
+    }
+
+    protected async Task<string[]> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, SearchCriteria criteria)
+    {
+        var filters = new SvFiltersCollection(criteria);
+
+        var aggregation = await AggregateFromSvs(property, criteria.Term, filters);
+
+        return aggregation.Keys.ToArray();
+    }
+
+    protected static DonorCriteria Set(DonorCriteria criteria, int[] ids)
+    {
+        return (criteria ?? new DonorCriteria()) with { Id = Intersect(criteria?.Id, ids) };
+    }
+
+    protected static ImagesCriteria Set(ImagesCriteria criteria, int[] ids)
+    {
+        return (criteria ?? new ImagesCriteria()) with { Id = Intersect(criteria?.Id, ids) };
+    }
+
+    protected static SpecimensCriteria Set(SpecimensCriteria criteria, int[] ids)
+    {
+        return (criteria ?? new SpecimensCriteria()) with { Id = Intersect(criteria?.Id, ids) };
+    }
+
+    protected static GeneCriteria Set(GeneCriteria criteria, int[] ids)
+    {
+        return (criteria ?? new GeneCriteria()) with { Id = Intersect(criteria?.Id, ids) };
     }
 
 
@@ -121,7 +169,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddFilters(filters.All())
             .AddAggregation(aggregationName, property)
             .AddExclusion(index => index.Images)
-            .AddExclusion(index => index.Specimens);
+            .AddExclusion(index => index.Specimens)
+            .AddExclusion(index => index.Stats)
+            .AddExclusion(index => index.Data);
 
         var result = await _donorsIndexService.Search(query);
 
@@ -138,7 +188,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddFilters(filters.All())
             .AddAggregation(aggregationName, property)
             .AddExclusion(index => index.Donor)
-            .AddExclusion(index => index.Specimens);
+            .AddExclusion(index => index.Specimens)
+            .AddExclusion(index => index.Stats)
+            .AddExclusion(index => index.Data);
 
         var result = await _imagesIndexService.Search(query);
 
@@ -156,7 +208,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddAggregation(aggregationName, property)
             .AddExclusion(index => index.Donor)
             .AddExclusion(index => index.Images)
-            .AddExclusion(index => index.Samples);
+            .AddExclusion(index => index.Samples)
+            .AddExclusion(index => index.Stats)
+            .AddExclusion(index => index.Data);
 
         var result = await _specimensIndexService.Search(query);
 
@@ -173,6 +227,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddFilters(filters.All())
             .AddAggregation(aggregationName, property)
             .AddExclusion(index => index.Specimens)
+            .AddExclusion(index => index.Stats)
             .AddExclusion(index => index.Data);
 
         var result = await _genesIndexService.Search(query);
@@ -180,20 +235,65 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromVariants<TProp>(Expression<Func<VariantIndex, TProp>> property, string term, VariantFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromSsms<TProp>(Expression<Func<SsmIndex, TProp>> property, string term, SsmFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
 
-        var query = new SearchQuery<VariantIndex>()
+        var query = new SearchQuery<SsmIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(term)
             .AddFilters(filters.All())
             .AddAggregation(aggregationName, property)
             .AddExclusion(index => index.Specimens)
+            .AddExclusion(index => index.Stats)
             .AddExclusion(index => index.Data);
 
-        var result = await _variantsIndexService.Search(query);
+        var result = await _ssmsIndexService.Search(query);
 
         return result.Aggregations[aggregationName];
+    }
+
+    private async Task<IDictionary<string, long>> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, string term, CnvFiltersCollection filters)
+    {
+        var aggregationName = Guid.NewGuid().ToString();
+
+        var query = new SearchQuery<CnvIndex>()
+            .AddPagination(0, 0)
+            .AddFullTextSearch(term)
+            .AddFilters(filters.All())
+            .AddAggregation(aggregationName, property)
+            .AddExclusion(index => index.Specimens)
+            .AddExclusion(index => index.Stats)
+            .AddExclusion(index => index.Data);
+
+        var result = await _cnvsIndexService.Search(query);
+
+        return result.Aggregations[aggregationName];
+    }
+
+    private async Task<IDictionary<string, long>> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, string term, SvFiltersCollection filters)
+    {
+        var aggregationName = Guid.NewGuid().ToString();
+
+        var query = new SearchQuery<SvIndex>()
+            .AddPagination(0, 0)
+            .AddFullTextSearch(term)
+            .AddFilters(filters.All())
+            .AddAggregation(aggregationName, property)
+            .AddExclusion(index => index.Specimens)
+            .AddExclusion(index => index.Stats)
+            .AddExclusion(index => index.Data);
+
+        var result = await _svsIndexService.Search(query);
+
+        return result.Aggregations[aggregationName];
+    }
+    
+    private static int[] Intersect(int[] a, int[] b)
+    {        
+        if (a == null || a.Length == 0)
+            return b;
+        else
+            return a.Intersect(b).ToArray();
     }
 }
