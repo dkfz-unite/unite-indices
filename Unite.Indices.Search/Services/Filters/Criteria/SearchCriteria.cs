@@ -13,30 +13,32 @@ public record SearchCriteria
     public string Term { get; set; }
 
     public DonorCriteria Donor { get; set; }
-    public ImageCriteria Image { get; set; }
+    public ImagesCriteria Image { get; set; }
     public MriImageCriteria Mri { get; set; }
-    public SpecimenCriteria Specimen { get; set; }
+    public SpecimensCriteria Specimen { get; set; }
     public MaterialCriteria Material { get; set; }
     public LineCriteria Line { get; set; }
     public OrganoidCriteria Organoid { get; set; }
     public XenograftCriteria Xenograft { get; set; }
     public GeneCriteria Gene { get; set; }
-    public VariantCriteria Variant { get; set; }
     public SsmCriteria Ssm { get; set; }
     public CnvCriteria Cnv { get; set; }
     public SvCriteria Sv { get; set; }
 
+
     public bool HasDonorFilters =>
         Donor?.IsNotEmpty() == true;
 
-    // public bool HasImageFilters =>
-    //     Mri?.IsNotEmpty() == true;
+    public bool HasImageFilters =>
+        Image?.IsNotEmpty() == true ||
+        Mri?.IsNotEmpty() == true;
 
-    // public bool SpecimenFilters =>
-    //     Material?.IsNotEmpty() == true ||
-    //     Line?.IsNotEmpty() == true ||
-    //     Organoid?.IsNotEmpty() == true ||
-    //     Xenograft?.IsNotEmpty() == true;
+    public bool HasSpecimenFilters =>
+        Specimen?.IsNotEmpty() == true ||
+        Material?.IsNotEmpty() == true ||
+        Line?.IsNotEmpty() == true ||
+        Organoid?.IsNotEmpty() == true ||
+        Xenograft?.IsNotEmpty() == true;
 
     public bool HasGeneFilters =>
         Gene?.IsNotEmpty() == true;
@@ -44,6 +46,15 @@ public record SearchCriteria
     public bool HasVariantFilters =>
         Ssm?.IsNotEmpty() == true ||
         Cnv?.IsNotEmpty() == true ||
+        Sv?.IsNotEmpty() == true;
+
+    public bool HasSsmFilters =>
+        Ssm?.IsNotEmpty() == true;
+    
+    public bool HasCnvFilters =>
+        Cnv?.IsNotEmpty() == true;
+
+    public bool HasSvFilters =>
         Sv?.IsNotEmpty() == true;
 
     public SearchCriteria()

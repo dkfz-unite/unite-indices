@@ -8,7 +8,7 @@ using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 
-public class LineFilters<T> : SpecimenBaseFilters<T, LineIndex> where T : class
+public class LineFilters<T> : SpecimenFilters<T, LineIndex> where T : class
 {
     protected override LineFilterNames FilterNames => new();
 

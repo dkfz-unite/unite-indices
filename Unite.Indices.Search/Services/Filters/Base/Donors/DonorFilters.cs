@@ -12,20 +12,11 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
 {
     protected DonorFilterNames FilterNames = new();
 
-    public DonorFilters(DonorBaseCriteria criteria, Expression<Func<T, DonorIndex>> path)
+    public DonorFilters(DonorCriteria criteria, Expression<Func<T, DonorIndex>> path)
     {
         if (criteria == null)
         {
             return;
-        }
-
-        if (IsNotEmpty(criteria.Id))
-        {
-            Add(new EqualityFilter<T, int>(
-                FilterNames.Id,
-                path.Join(donor => donor.Id),
-                criteria.Id
-            ));
         }
 
         if (IsNotEmpty(criteria.ReferenceId))

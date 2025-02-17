@@ -7,7 +7,7 @@ using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Images;
 
-public class MriImageFilters<T> : ImageBaseFilters<T, MriImageIndex> where T : class
+public class MriImageFilters<T> : ImageFilters<T, MriImageIndex> where T : class
 {
     protected override MriImageFilterNames FilterNames => new();
 

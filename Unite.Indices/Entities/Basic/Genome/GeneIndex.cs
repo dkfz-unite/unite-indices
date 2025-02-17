@@ -1,8 +1,7 @@
 ﻿namespace Unite.Indices.Entities.Basic.Genome;
 
-public class GeneIndex
+public class GeneIndex : GeneNavIndex
 {
-    public int Id { get; set; }
     public string StableId { get; set; }
     public string Symbol { get; set; }
     public string Description { get; set; }

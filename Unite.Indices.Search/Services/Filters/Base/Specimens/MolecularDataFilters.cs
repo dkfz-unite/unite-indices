@@ -12,7 +12,7 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
 {
     protected SpecimenFilterNames FilterNames = new();
 
-    public MolecularDataFilters(SpecimenBaseCriteria criteria, Expression<Func<T, MolecularDataIndex>> path)
+    public MolecularDataFilters(SpecimenCriteria criteria, Expression<Func<T, MolecularDataIndex>> path)
     {
         if (criteria == null)
         {

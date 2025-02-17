@@ -25,19 +25,79 @@ public class GenesSearchService : SearchService<GeneIndex>
     {
         var criteria = searchCriteria ?? new SearchCriteria();
 
+        if (criteria.HasDonorFilters)
+        {
+            var ids = await AggregateFromDonors(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<GeneIndex>();
+        }
+
+        if (criteria.HasImageFilters)
+        {
+            var ids = await AggregateFromImages(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<GeneIndex>();
+        }
+
+        if (criteria.HasSpecimenFilters)
+        {
+            var ids = await AggregateFromSpecimens(index => index.Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<GeneIndex>();
+        }
+
+        if (criteria.HasSsmFilters)
+        {
+            var ids = await AggregateFromSsms(index => index.AffectedFeatures.First().Gene.Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Gene = Set(criteria.Gene, [.. ids.Select(int.Parse)]);
+
+            if (criteria.Gene.Id.Length == 0)
+                return new SearchResult<GeneIndex>();
+        }
+
+        if (criteria.HasCnvFilters)
+        {
+            var ids = await AggregateFromCnvs(index => index.AffectedFeatures.First().Gene.Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Gene = Set(criteria.Gene, [.. ids.Select(int.Parse)]);
+
+            if (criteria.Gene.Id.Length == 0)
+                return new SearchResult<GeneIndex>();
+        }
+
+        if (criteria.HasSvFilters)
+        {
+            var ids = await AggregateFromSvs(index => index.AffectedFeatures.First().Gene.Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Gene = Set(criteria.Gene, [.. ids.Select(int.Parse)]);
+
+            if (criteria.Gene.Id.Length == 0)
+                return new SearchResult<GeneIndex>();
+        }
+
         var filters = new GeneFiltersCollection(criteria).All();
 
         var query = new SearchQuery<GeneIndex>()
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
-            .AddOrdering(gene => gene.NumberOfDonors)
-            .AddExclusion(gene => gene.Specimens.First().Donor)
-            .AddExclusion(gene => gene.Specimens.First().Images.First().Mri)
-            .AddExclusion(gene => gene.Specimens.First().Material)
-            .AddExclusion(gene => gene.Specimens.First().Line)
-            .AddExclusion(gene => gene.Specimens.First().Organoid)
-            .AddExclusion(gene => gene.Specimens.First().Xenograft);
+            .AddOrdering(gene => gene.Stats.Donors);
 
         return await _genesIndexService.Search(query);
     }

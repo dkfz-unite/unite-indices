@@ -3,25 +3,9 @@
 public class DonorIndex : Basic.Donors.DonorIndex
 {
     /// <summary>
-    /// Number of genes with at least one SSM, CNV or SV in all samples of the donor.
+    /// Statistics.
     /// </summary>
-    public int NumberOfGenes { get; set; }
-
-    /// <summary>
-    /// Number of SSMs in all samples of the donor.
-    /// </summary>
-    public int NumberOfSsms { get; set; }
-
-    /// <summary>
-    /// Number of CNVs in all samples of the donor.
-    /// </summary>
-    public int NumberOfCnvs { get; set; }
-
-    /// <summary>
-    /// Number of SVs in all samples of the donor.
-    /// </summary>
-    public int NumberOfSvs { get; set; }
-
+    public StatsIndex Stats { get; set; }
 
     /// <summary>
     /// Available data.

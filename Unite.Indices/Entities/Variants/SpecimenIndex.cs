@@ -1,9 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Variants;
 
-public class SpecimenIndex : Basic.Specimens.SpecimenIndex
+public class SpecimenIndex : Basic.Specimens.SpecimenNavIndex
 {
-    public DonorIndex Donor { get; set; }
-
-    public ImageIndex[] Images { get; set; }
-    public SampleIndex[] Samples { get; set; }
+    // public SampleIndex[] Samples { get; set; }
 }

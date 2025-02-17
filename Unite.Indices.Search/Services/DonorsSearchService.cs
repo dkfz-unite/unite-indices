@@ -2,7 +2,6 @@
 using Unite.Indices.Entities.Donors;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
-using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -25,23 +24,81 @@ public class DonorsSearchService : SearchService<DonorIndex>
     {
         var criteria = searchCriteria;
 
-        int[] ids = null;
-
-        // if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
-        //     ids = await AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria) ?? [];
-        // else if ((criteria.HasGeneFilters && criteria.HasVariantFilters) || criteria.HasVariantFilters)
-        //     ids = await AggregateFromVariants(index => index.Specimens.First().Donor.Id, criteria) ?? [];
-
-        if (criteria.HasGeneFilters)
-            ids = await AggregateFromGenes(index => index.Specimens.First().Donor.Id, criteria) ?? [];
-        else if (criteria.HasVariantFilters)
-            ids = await AggregateFromVariants(index => index.Specimens.First().Donor.Id, criteria) ?? [];
-
-        if (ids != null)
+        if (criteria.HasImageFilters)
         {
+            var ids = await AggregateFromImages(index => index.Id, criteria);
+
             if (ids.Length > 0)
-                criteria.Donor = (criteria.Donor ?? new DonorCriteria()) with { Id = ids };
+                criteria.Image = Set(criteria.Image, [.. ids.Select(int.Parse)]);
             else
+                return new SearchResult<DonorIndex>();
+
+            if (criteria.Image.Id.Length == 0)
+                return new SearchResult<DonorIndex>();
+        }
+
+        if (criteria.HasSpecimenFilters)
+        { 
+            var ids = await AggregateFromSpecimens(index => index.Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<DonorIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<DonorIndex>();
+        }
+
+        if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
+        {
+            var ids = await AggregateFromGenes(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<DonorIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<DonorIndex>();
+        }
+
+        if (criteria.HasSsmFilters)
+        {
+            var ids = await AggregateFromSsms(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<DonorIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<DonorIndex>();
+        }
+
+        if (criteria.HasCnvFilters)
+        {
+            var ids = await AggregateFromCnvs(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<DonorIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
+                return new SearchResult<DonorIndex>();
+        }
+
+        if (criteria.HasSvFilters)
+        {
+            var ids = await AggregateFromSvs(index => index.Specimens.First().Id, criteria);
+
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return new SearchResult<DonorIndex>();
+
+            if (criteria.Specimen.Id.Length == 0)
                 return new SearchResult<DonorIndex>();
         }
 
@@ -51,12 +108,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
-            .AddOrdering(donor => donor.NumberOfGenes)
-            .AddExclusion(donor => donor.Images)
-            .AddExclusion(donor => donor.Specimens.First().Material)
-            .AddExclusion(donor => donor.Specimens.First().Line)
-            .AddExclusion(donor => donor.Specimens.First().Organoid)
-            .AddExclusion(donor => donor.Specimens.First().Xenograft);
+            .AddOrdering(donor => donor.Stats.Genes);
 
         return await _donorsIndexService.Search(query);
     }

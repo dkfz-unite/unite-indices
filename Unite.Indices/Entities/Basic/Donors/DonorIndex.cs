@@ -1,9 +1,7 @@
 ﻿namespace Unite.Indices.Entities.Basic.Donors;
 
-public class DonorIndex
-{
-    public int Id { get; set; }
-    public string ReferenceId { get; set; }
+public class DonorIndex : DonorNavIndex
+{      
     public bool? MtaProtected { get; set; }
 
     public ClinicalDataIndex ClinicalData { get; set; }

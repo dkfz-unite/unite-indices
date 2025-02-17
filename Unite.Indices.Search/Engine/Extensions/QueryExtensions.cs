@@ -304,6 +304,48 @@ public static class QueryExtensions
         request.Query = SetOrAdd(request.Query, query);
     }
 
+    /// <summary>
+    /// Adds boolean 'Terms' query to given request if values is set.
+    /// Creates new query or adds query to existing request query with logical 'AND' operator.
+    /// </summary>
+    /// <typeparam name="T">Index type</typeparam>
+    /// <param name="request">Source request</param>
+    /// <param name="property1">First filter property</param>
+    /// <param name="property2">Second filter property</param>
+    /// <param name="property3">Third filter property</param>
+    /// <param name="value">Filter value</param>
+    public static void AddBoolQuery<T>(this ISearchRequest<T> request,
+        Expression<Func<T, bool?>> property1,
+        Expression<Func<T, bool?>> property2,
+        Expression<Func<T, bool?>> property3,
+        bool? value)
+        where T : class
+    {
+        if (!value.HasValue)
+        {
+            return;
+        }
+
+        var query1 = Query<T>.Term(term => term
+            .Field(property1)
+            .Value(value)
+        );
+
+        var query2 = Query<T>.Term(term => term
+            .Field(property2)
+            .Value(value)
+        );
+
+        var query3 = Query<T>.Term(term => term
+            .Field(property3)
+            .Value(value)
+        );
+
+        var query = query1 || query2 || query3;
+
+        request.Query = SetOrAdd(request.Query, query);
+    }
+
 
     /// <summary>
     /// Adds 'Range' query to given request if any of range bounds is set.

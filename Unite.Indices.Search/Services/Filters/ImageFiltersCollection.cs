@@ -11,18 +11,19 @@ public class ImageFiltersCollection : FiltersCollection<ImageIndex>
 {
     public ImageFiltersCollection(SearchCriteria criteria) : base()
     {
-        var donorFilters = new DonorFilters<ImageIndex>(criteria.Donor, image => image.Donor);
-        var imageFilters = new ImageFilters<ImageIndex>(criteria.Image, image => image);
-        var imageDataFilters = new ImageDataFilters<ImageIndex>(criteria.Image, image => image.Data);
-        var mriImageFilters = new MriImageFilters<ImageIndex>(criteria.Mri, image => image.Mri);
-        var specimenFilters = new SpecimenFilters<ImageIndex>(criteria.Specimen, image => image.Specimens.First());
-        var materialFilters = new MaterialFilters<ImageIndex>(criteria.Material, image => image.Specimens.First().Material);
+        var mriFilters = new MriImageFilters<ImageIndex>(criteria.Mri, image => image.Mri);
 
-        Add(donorFilters.All());
-        Add(imageFilters.All());
-        Add(imageDataFilters.All());
-        Add(mriImageFilters.All());
-        Add(specimenFilters.All());
-        Add(materialFilters.All());
+        var donorsFilters = new DonorsFilters<ImageIndex>(criteria.Donor, image => image.Donor);
+        var imagesFilters = new ImagesFilters<ImageIndex>(criteria.Image, image => image);
+        var imagesDataFilters = new ImagesDataFilters<ImageIndex>(criteria.Image, image => image.Data);
+        var specimensFilters = new SpecimensFilters<ImageIndex>(criteria.Specimen, image => image.Specimens.First());
+
+
+        Add(mriFilters.All());
+
+        Add(donorsFilters.All());
+        Add(imagesFilters.All());
+        Add(imagesDataFilters.All());
+        Add(specimensFilters.All());
     }
 }

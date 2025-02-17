@@ -4,10 +4,6 @@ public class SpecimenFilterNames
 {
     protected virtual string Prefix => "Specimen";
 
-    public static string SpecimenId => "Specimen.Id";
-    public static string SpecimenType => "Specimen.Type";
-
-    public string Id => $"{Prefix}.Id";
     public string ReferenceId => $"{Prefix}.ReferenceId";
 
     public string MgmtStatus => $"{Prefix}.MgmtStatus";
@@ -22,11 +18,4 @@ public class SpecimenFilterNames
     public string Drug => $"{Prefix}.Drug";
     public string Dss => $"{Prefix}.Dss";
     public string DssS => $"{Prefix}.DssS";
-
-    public string HasDrugs => $"{Prefix}.HasDrugs";
-    public string HasSsms => $"{Prefix}.HasSsms";
-    public string HasCnvs => $"{Prefix}.HasCnvs";
-    public string HasSvs => $"{Prefix}.HasSvs";
-    public string HasGeneExp => $"{Prefix}.HasGeneExp";
-    public string HasGeneExpSc => $"{Prefix}.HasGeneExpSc";
 }

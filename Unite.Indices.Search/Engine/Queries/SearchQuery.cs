@@ -74,6 +74,9 @@ public class SearchQuery<T> where T : class
     {
         if (!_aggregations.Contains(name))
         {
+            // WARN!
+            // Aggregation returns only top 1000 results.
+            // This should be statistically sufficient for most nested search cases.
             _request.AddTermsAggregation(name, property, 1000);
             
             _aggregations.Add(name);

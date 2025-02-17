@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using Nest;
 using Unite.Essentials.Extensions;
 using Unite.Indices.Entities.Basic.Images;
 using Unite.Indices.Search.Engine.Filters;
@@ -8,30 +7,25 @@ using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Images;
 
-public class ImageFilters<T> : FiltersCollection<T> where T : class
+public abstract class ImageFilters<T, TModel> : FiltersCollection<T>
+    where T : class
+    where TModel : ImageBaseIndex
 {
-    public ImageFilters(ImageCriteria criteria, Expression<Func<T, ImageIndex>> path)
+    protected abstract ImageFilterNames FilterNames { get; }
+
+    public ImageFilters(ImageCriteria criteria, Expression<Func<T, TModel>> path)
     {
         if (criteria == null)
         {
             return;
         }
 
-        if (IsNotEmpty(criteria.Id))
+        if (IsNotEmpty(criteria.ReferenceId))
         {
-            Add(new EqualityFilter<T, int>(
-                ImageFilterNames.ImageId,
-                path.Join(image => image.Id),
-                criteria.Id
-            ));
-        }
-
-        if (IsNotEmpty(criteria.Type))
-        {
-            Add(new EqualityFilter<T, object>(
-                ImageFilterNames.ImageType,
-                path.Join(image => image.Type.Suffix(_keywordSuffix)),
-                criteria.Type
+            Add(new SimilarityFilter<T, string>(
+                FilterNames.ReferenceId,
+                path.Join(image => image.ReferenceId),
+                criteria.ReferenceId
             ));
         }
     }

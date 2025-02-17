@@ -3,8 +3,7 @@
 public class DonorFilterNames
 {
     protected string Prefix => "Donor";
-
-    public string Id => $"{Prefix}.Id";
+    
     public string ReferenceId => $"{Prefix}.ReferenceId";
     public string Diagnosis => $"{Prefix}.Diagnosis";
     public string PrimarySite => $"{Prefix}.PrimarySite";
@@ -20,10 +19,4 @@ public class DonorFilterNames
     public string MtaProtected => $"{Prefix}.MtaProtected";
     public string Project => $"{Prefix}.Project";
     public string Study => $"{Prefix}.Study";
-
-    public string HasSsms => $"{Prefix}.HasSsms";
-    public string HasCnvs => $"{Prefix}.HasCnvs";
-    public string HasSvs => $"{Prefix}.HasSvs";
-    public string HasGeneExp => $"{Prefix}.HasGeneExp";
-    public string HasGeneExpSc => $"{Prefix}.HasGeneExpSc";
 }

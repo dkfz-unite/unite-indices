@@ -1,14 +1,14 @@
 ﻿using System.Linq.Expressions;
 using Nest;
 using Unite.Essentials.Extensions;
-using Unite.Indices.Entities.Basic.Genome.Dna;
+using Unite.Indices.Entities.Basic.Genome.Variants;
 using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Variants.Constants;
 using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Variants;
 
-public class SsmFilters<T> : VariantBaseFilters<T, SsmIndex> where T : class
+public class SsmFilters<T> : VariantFilters<T, SsmIndex> where T : class
 {
     protected override SsmFilterNames FilterNames => new();
 

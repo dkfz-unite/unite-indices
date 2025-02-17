@@ -11,7 +11,7 @@ public class DrugScreeningFilters<T> : FiltersCollection<T> where T : class
 {
     protected SpecimenFilterNames FilterNames = new();
 
-    public DrugScreeningFilters(SpecimenBaseCriteria criteria, Expression<Func<T, DrugScreeningIndex[]>> path)
+    public DrugScreeningFilters(SpecimenCriteria criteria, Expression<Func<T, DrugScreeningIndex[]>> path)
     {
         if (criteria == null)
         {

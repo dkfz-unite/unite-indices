@@ -3,31 +3,9 @@
 public class ImageIndex : Basic.Images.ImageIndex
 {
     /// <summary>
-    /// Donor Id.
-    /// </summary> 
-    public int DonorId { get; set; }
-
-    
-    /// <summary>
-    /// Number of genes with at least one SSM, CNV or SV in all samples associated with the image.
+    /// Statistics.
     /// </summary>
-    public int NumberOfGenes { get; set; }
-
-    /// <summary>
-    /// Number of SSMs in all samples associated with the image.
-    /// </summary>
-    public int NumberOfSsms { get; set; }
-
-    /// <summary>
-    /// Number of CNVs in all samples associated with the image.
-    /// </summary>
-    public int NumberOfCnvs { get; set; }
-
-    /// <summary>
-    /// Number of SVs in all samples associated with the image.
-    /// </summary>
-    public int NumberOfSvs { get; set; }
-
+    public StatsIndex Stats { get; set; }
 
     /// <summary>
     /// Available data.
