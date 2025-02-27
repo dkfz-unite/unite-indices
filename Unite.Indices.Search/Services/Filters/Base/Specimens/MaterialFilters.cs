@@ -32,12 +32,31 @@ public class MaterialFilters<T> : SpecimenFilters<T, MaterialIndex> where T : cl
             ));
         }
 
+        if (IsNotEmpty(criteria.FixationType))
+        {
+            Add(new EqualityFilter<T, object>(
+                FilterNames.FixationType,
+                path.Join(specimen => specimen.FixationType.Suffix(_keywordSuffix)),
+                criteria.FixationType
+            ));
+        }
+
         if (IsNotEmpty(criteria.TumorType))
         {
             Add(new EqualityFilter<T, object>(
                 FilterNames.TumorType,
                 path.Join(specimen => specimen.TumorType.Suffix(_keywordSuffix)),
                 criteria.TumorType
+            ));
+        }
+
+        if (IsNotEmpty(criteria.TumorGrade))
+        {
+            Add(new RangeFilter<T, double?>(
+                FilterNames.TumorGrade,
+                path.Join(specimen => specimen.TumorGrade),
+                criteria.TumorGrade.From,
+                criteria.TumorGrade.To
             ));
         }
 

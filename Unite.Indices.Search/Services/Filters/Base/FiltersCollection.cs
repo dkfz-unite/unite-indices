@@ -61,6 +61,16 @@ public abstract class FiltersCollection<T> where T : class
         return values?.Any(value => value.HasValue) == true;
     }
 
+    protected virtual bool IsNotEmpty(params byte[] values)
+    {
+        return values?.Any() == true;
+    }
+
+    protected virtual bool IsNotEmpty(params byte?[] values)
+    {
+        return values?.Any(value => value.HasValue) == true;
+    }
+
     protected virtual bool IsNotEmpty(params int[] values)
     {
         return values?.Any() == true;
