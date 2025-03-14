@@ -1,6 +1,7 @@
 ﻿using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
+using Unite.Indices.Search.Services.Filters.Base.Projects.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 
@@ -12,6 +13,7 @@ public record SearchCriteria
     public int Size { get; set; }
     public string Term { get; set; }
 
+    public ProjectCriteria Project { get; set; }
     public DonorCriteria Donor { get; set; }
     public ImagesCriteria Image { get; set; }
     public MriImageCriteria Mri { get; set; }

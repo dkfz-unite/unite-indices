@@ -10,6 +10,7 @@ using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
+using ProjectIndex = Unite.Indices.Entities.Projects.ProjectIndex;
 using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
 using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
 using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
@@ -24,6 +25,7 @@ namespace Unite.Indices.Search.Services;
 
 public abstract class SearchService<T> : ISearchService<T> where T : class
 {
+    protected readonly IIndexService<ProjectIndex> _projectsIndexService;
     protected readonly IIndexService<DonorIndex> _donorsIndexService;
     protected readonly IIndexService<ImageIndex> _imagesIndexService;
     protected readonly IIndexService<SpecimenIndex> _specimensIndexService;
@@ -35,6 +37,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     protected SearchService(IElasticOptions options)
     {
+        _projectsIndexService = new ProjectsIndexService(options);
         _donorsIndexService = new DonorsIndexService(options);
         _imagesIndexService = new ImagesIndexService(options);
         _specimensIndexService = new SpecimensIndexService(options);

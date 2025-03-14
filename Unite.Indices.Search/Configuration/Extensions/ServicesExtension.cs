@@ -8,6 +8,7 @@ public static class ServicesExtension
 {
     public static IServiceCollection AddSearchEngine(this IServiceCollection services)
     {
+        services.AddTransient<IIndexService<Entities.Projects.ProjectIndex>, ProjectsIndexService>();
         services.AddTransient<IIndexService<Entities.Donors.DonorIndex>, DonorsIndexService>();
         services.AddTransient<IIndexService<Entities.Images.ImageIndex>, ImagesIndexService>();
         services.AddTransient<IIndexService<Entities.Specimens.SpecimenIndex>, SpecimensIndexService>();
@@ -21,6 +22,7 @@ public static class ServicesExtension
 
     public static IServiceCollection AddSearchServices(this IServiceCollection services)
     {
+        services.AddTransient<ISearchService<Entities.Projects.ProjectIndex>, ProjectsSearchService>();
         services.AddTransient<ISearchService<Entities.Donors.DonorIndex>, DonorsSearchService>();
         services.AddTransient<ISearchService<Entities.Images.ImageIndex>, ImagesSearchService>();
         services.AddTransient<ISearchService<Entities.Specimens.SpecimenIndex>, SpecimensSearchService>();

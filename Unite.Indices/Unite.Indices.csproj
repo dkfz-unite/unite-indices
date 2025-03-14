@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ReleaseVersion>10.1.0</ReleaseVersion>
-    <Version>10.1.0</Version>
+    <ReleaseVersion>10.2.0</ReleaseVersion>
+    <Version>10.2.0</Version>
     <SynchReleaseVersion>false</SynchReleaseVersion>
     <RepositoryUrl>https://github.com/dkfz-unite/unite-indices</RepositoryUrl>
     <Authors>Valiantsin Ulasau (DKFZ)</Authors>

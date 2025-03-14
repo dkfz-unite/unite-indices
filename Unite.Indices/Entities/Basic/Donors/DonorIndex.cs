@@ -1,4 +1,6 @@
-﻿namespace Unite.Indices.Entities.Basic.Donors;
+﻿using Unite.Indices.Entities.Basic.Projects;
+
+namespace Unite.Indices.Entities.Basic.Donors;
 
 public class DonorIndex : DonorNavIndex
 {      
@@ -6,6 +8,6 @@ public class DonorIndex : DonorNavIndex
 
     public ClinicalDataIndex ClinicalData { get; set; }
     public TreatmentIndex[] Treatments { get; set; }
-    public ProjectIndex[] Projects { get; set; }
-    public StudyIndex[] Studies { get; set; }
+    public ProjectNavIndex[] Projects { get; set; }
+    public StudyNavIndex[] Studies { get; set; }
 }

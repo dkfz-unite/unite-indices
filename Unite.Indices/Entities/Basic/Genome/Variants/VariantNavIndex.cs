@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Basic.Genome.Variants;
 
-public abstract class VariantNavIndex
+public class VariantNavIndex
 {
     /// <summary>
     /// Variant id.

@@ -13,5 +13,7 @@ public class SvIndex : Basic.Genome.Variants.SvIndex
     public DataIndex Data { get; set; }
 
 
+    public Basic.Genome.Variants.VariantNavIndex[] Similars { get; set; }
+    
     public SpecimenIndex[] Specimens { get; set; }
 }
