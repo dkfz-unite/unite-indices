@@ -10,4 +10,5 @@ public record ImageCriteria
     public bool? HasSvs { get; set; }
     public bool? HasGeneExp { get; set; }
     public bool? HasGeneExpSc { get; set; }
+    public bool? HasMeth { get; set; }
 }

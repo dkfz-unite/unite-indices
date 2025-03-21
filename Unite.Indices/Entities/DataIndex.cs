@@ -30,4 +30,5 @@ public class DataIndex
     public virtual bool? Ssms { get; set; }
     public virtual bool? Cnvs { get; set; }
     public virtual bool? Svs { get; set; }
+    public virtual bool? Meth { get; set; }
 }

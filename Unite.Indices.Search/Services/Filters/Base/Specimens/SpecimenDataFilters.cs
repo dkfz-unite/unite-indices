@@ -63,5 +63,14 @@ public class SpecimenDataFilters<T> : FiltersCollection<T> where T : class
                 criteria.HasGeneExpSc
             ));
         }
+
+        if (IsNotEmpty(criteria.HasMeth))
+        {
+            Add(new BooleanFilter<T>(
+                FilterNames.HasMeth,
+                path.Join(data => data.Meth),
+                criteria.HasMeth
+            ));
+        }
     }
 }

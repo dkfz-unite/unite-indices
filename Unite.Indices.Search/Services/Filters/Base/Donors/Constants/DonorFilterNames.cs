@@ -26,4 +26,5 @@ public class DonorFilterNames
     public string HasSvs => $"{Prefix}.HasSvs";
     public string HasGeneExp => $"{Prefix}.HasGeneExp";
     public string HasGeneExpSc => $"{Prefix}.HasGeneExpSc";
+    public string HasMeth => $"{Prefix}.HasMeth";
 }
