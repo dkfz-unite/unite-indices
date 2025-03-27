@@ -63,7 +63,9 @@ public class CnvsSearchService : SearchService<CnvIndex>
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
-            .AddOrdering(variant => variant.Stats.Donors);
+            .AddOrdering(variant => variant.Stats.Donors)
+            .AddOrdering(variant => variant.ChromosomeI, true)
+            .AddOrdering(variant => variant.Start, true);
 
         return await _cnvsIndexService.Search(query);
     }
