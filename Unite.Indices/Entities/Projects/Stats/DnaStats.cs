@@ -55,6 +55,11 @@ public class SsmStats
     /// Breakdown per alt base.
     /// </summary>
     public Dictionary<string, int> PerBaseAlt { get; set; }
+
+    /// <summary>
+    /// Breakdown per base change.
+    /// </summary>
+    public Dictionary<string, int> PerBaseChange { get; set; }
 }
 
 public class CnvStats
