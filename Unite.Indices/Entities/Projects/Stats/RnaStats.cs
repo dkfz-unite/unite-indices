@@ -14,9 +14,10 @@ public class RnaStats
     public Dictionary<string, int> PerAnalysis { get; set; }
 
     /// <summary>
-    /// Breakdown of top most variable genes per their min and max expression.
+    /// Breakdown of top most variable genes, where Key is the gene name and Value is the array of stats for the box plot:
+    /// [min, 25th percentile, median, 75th percentile, max, mean, standard deviation, standard deviation / mean].
     /// </summary>
-    public Dictionary<string, int[]> PerVariation { get; set; }
+    public Dictionary<string, double[]> PerVariation { get; set; }
 
     /// <summary>
     /// Breakdown of top most mutated genes per their mutations count.
