@@ -4,7 +4,7 @@ public record GenesCriteria
 {
     public int[] Id { get; set; }
 
-    public bool? HasSsms { get; set; }
+    public bool? HasSms { get; set; }
     public bool? HasCnvs { get; set; }
     public bool? HasSvs { get; set; }
 
@@ -12,7 +12,7 @@ public record GenesCriteria
     public virtual bool IsNotEmpty()
     {
         return Id?.Length > 0
-            || HasSsms != null
+            || HasSms != null
             || HasCnvs != null
             || HasSvs != null;
     }

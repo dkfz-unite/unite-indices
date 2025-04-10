@@ -3,14 +3,14 @@ namespace Unite.Indices.Entities.Donors;
 public class StatsIndex
 {
     /// <summary>
-    /// Number of genes with at least one SSM, CNV or SV in all samples of the donor.
+    /// Number of genes with at least one SM, CNV or SV in all samples of the donor.
     /// </summary>
     public int Genes { get; set; }
 
     /// <summary>
-    /// Number of SSMs in all samples of the donor.
+    /// Number of SMs in all samples of the donor.
     /// </summary>
-    public int Ssms { get; set; }
+    public int Sms { get; set; }
 
     /// <summary>
     /// Number of CNVs in all samples of the donor.

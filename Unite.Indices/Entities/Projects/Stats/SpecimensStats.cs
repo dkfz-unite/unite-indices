@@ -1,3 +1,5 @@
+using Unite.Indices.Entities.Projects.Stats.Base;
+
 namespace Unite.Indices.Entities.Projects.Stats;
 
 public class SpecimensStats
@@ -26,7 +28,7 @@ public class SpecimensStats
     /// <summary>
     /// Breakdown per specimen type.
     /// </summary>
-    public Dictionary<string, int> PerType { get; set; }
+    public Stat<string, int>[] PerType { get; set; }
 }
 
 public class MaterialStats

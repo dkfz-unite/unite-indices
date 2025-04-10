@@ -7,7 +7,7 @@ public static class IndexNames
     public const string Images = "images";
     public const string Specimens = "specimens";
     public const string Genes = "genes";
-    public const string Ssms = "ssms";
+    public const string Sms = "sms";
     public const string Cnvs = "cnvs";
     public const string Svs = "svs";
 }

@@ -1,3 +1,5 @@
+using Unite.Indices.Entities.Projects.Stats.Base;
+
 namespace Unite.Indices.Entities.Projects.Stats;
 
 public class DonorsStats
@@ -11,25 +13,25 @@ public class DonorsStats
     /// <summary>
     /// Breakdown per age.
     /// </summary>
-    public Dictionary<string, int> PerAge { get; set; }
+    public Stat<int?, int>[] PerAge { get; set; }
 
     /// <summary>
     /// Breakdown per sex.
     /// </summary>
-    public Dictionary<string, int> PerGender { get; set; }
+    public Stat<string, int>[] PerSex { get; set; }
 
     /// <summary>
     /// Breakdown per diagnosis.
     /// </summary>
-    public Dictionary<string, int> PerDiagnosis { get; set; }
+    public Stat<string, int>[] PerDiagnosis { get; set; }
 
     /// <summary>
     /// Breakdown per vital status.
     /// </summary>
-    public Dictionary<string, int> PerVitalStatus { get; set; }
+    public Stat<bool?, int>[] PerVitalStatus { get; set; }
 
     /// <summary>
     /// Breakdown per progression status.
     /// </summary>
-    public Dictionary<string, int> PerProgressionStatus { get; set; }
+    public Stat<bool?, int>[] PerProgressionStatus { get; set; }
 }

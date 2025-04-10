@@ -13,7 +13,7 @@ public static class ServicesExtension
         services.AddTransient<IIndexService<Entities.Images.ImageIndex>, ImagesIndexService>();
         services.AddTransient<IIndexService<Entities.Specimens.SpecimenIndex>, SpecimensIndexService>();
         services.AddTransient<IIndexService<Entities.Genes.GeneIndex>, GenesIndexService>();
-        services.AddTransient<IIndexService<Entities.Variants.SsmIndex>, SsmsIndexService>();
+        services.AddTransient<IIndexService<Entities.Variants.SmIndex>, SmsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.CnvIndex>, CnvsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.SvIndex>, SvsIndexService>();
 
@@ -27,7 +27,7 @@ public static class ServicesExtension
         services.AddTransient<ISearchService<Entities.Images.ImageIndex>, ImagesSearchService>();
         services.AddTransient<ISearchService<Entities.Specimens.SpecimenIndex>, SpecimensSearchService>();
         services.AddTransient<ISearchService<Entities.Genes.GeneIndex>, GenesSearchService>();
-        services.AddTransient<ISearchService<Entities.Variants.SsmIndex>, SsmsSearchService>();
+        services.AddTransient<ISearchService<Entities.Variants.SmIndex>, SmsSearchService>();
         services.AddTransient<ISearchService<Entities.Variants.CnvIndex>, CnvsSearchService>();
         services.AddTransient<ISearchService<Entities.Variants.SvIndex>, SvsSearchService>();
 

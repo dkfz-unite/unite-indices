@@ -8,11 +8,11 @@ using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Variants;
 
-public class SsmFilters<T> : VariantFilters<T, SsmIndex> where T : class
+public class SmFilters<T> : VariantFilters<T, SmIndex> where T : class
 {
-    protected override SsmFilterNames FilterNames => new();
+    protected override SmFilterNames FilterNames => new();
 
-    public SsmFilters(SsmCriteria criteria, Expression<Func<T, SsmIndex>> path) : base(criteria, path)
+    public SmFilters(SmCriteria criteria, Expression<Func<T, SmIndex>> path) : base(criteria, path)
     {
         if (criteria == null)
         {

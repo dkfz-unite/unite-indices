@@ -1,8 +1,8 @@
 ﻿namespace Unite.Indices.Search.Services.Filters.Base.Images.Constants;
 
-public class MriImageFilterNames : ImageFilterNames
+public class MrImageFilterNames : ImageFilterNames
 {
-    protected override string Prefix => "MRI";
+    protected override string Prefix => "MR";
 
     public string WholeTumor => $"{Prefix}.WholeTumor";
     public string ContrastEnhancing => $"{Prefix}.ContrastEnhancing";

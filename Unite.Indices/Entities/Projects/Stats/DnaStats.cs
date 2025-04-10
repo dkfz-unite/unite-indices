@@ -1,11 +1,13 @@
+using Unite.Indices.Entities.Projects.Stats.Base;
+
 namespace Unite.Indices.Entities.Projects.Stats;
 
 public class DnaStats
 {
     /// <summary>
-    /// SSM variants data.
+    /// SM variants data.
     /// </summary>
-    public SsmStats Ssm { get; set; } = new();
+    public SmStats Sm { get; set; } = new();
 
     /// <summary>
     /// CNV variants data.
@@ -18,10 +20,10 @@ public class DnaStats
     public SvStats Sv { get; set; } = new();
 }
 
-public class SsmStats
+public class SmStats
 {
     /// <summary>
-    /// Donors with SSM variants.
+    /// Donors with SM variants.
     /// </summary>
     public int Number { get; set; }
 
@@ -29,37 +31,37 @@ public class SsmStats
     /// <summary>
     /// Breakdown of donors per analysis type.
     /// </summary>
-    public Dictionary<string, int> PerAnalysis { get; set; }
+    public Stat<string, int>[] PerAnalysis { get; set; }
 
     /// <summary>
     /// Breakdown per type.
     /// </summary>
-    public Dictionary<string, int> PerType { get; set; }
+    public Stat<string, int>[] PerType { get; set; }
 
     /// <summary>
     /// Breakdown per effect impact.
     /// </summary>
-    public Dictionary<string, int> PerEffectImpact { get; set; }
+    public Stat<string, int>[] PerEffectImpact { get; set; }
 
     /// <summary>
     /// Breakdown per variant effect type.
     /// </summary>
-    public Dictionary<string, int> PerEffectType { get; set; }
+    public Stat<string, int>[] PerEffectType { get; set; }
 
     /// <summary>
     /// Breakdown per ref base.
     /// </summary>
-    public Dictionary<string, int> PerBaseRef { get; set; }
+    public Stat<string, int>[] PerBaseRef { get; set; }
 
     /// <summary>
     /// Breakdown per alt base.
     /// </summary>
-    public Dictionary<string, int> PerBaseAlt { get; set; }
+    public Stat<string, int>[] PerBaseAlt { get; set; }
 
     /// <summary>
     /// Breakdown per base change.
     /// </summary>
-    public Dictionary<string, int> PerBaseChange { get; set; }
+    public Stat<string, int>[] PerBaseChange { get; set; }
 }
 
 public class CnvStats
@@ -73,12 +75,12 @@ public class CnvStats
     /// <summary>
     /// Breakdown of donors per analysis type.
     /// </summary>
-    public Dictionary<string, int> PerAnalysis { get; set; }
+    public Stat<string, int>[] PerAnalysis { get; set; }
 
     /// <summary>
     /// Breakdown per type.
     /// </summary>
-    public Dictionary<string, int> PerType { get; set; }
+    public Stat<string, int>[] PerType { get; set; }
 }
 
 public class SvStats
@@ -92,10 +94,10 @@ public class SvStats
     /// <summary>
     /// Breakdown of donors per analysis type.
     /// </summary>
-    public Dictionary<string, int> PerAnalysis { get; set; }
+    public Stat<string, int>[] PerAnalysis { get; set; }
 
     /// <summary>
     /// Breakdown per type.
     /// </summary>
-    public Dictionary<string, int> PerType { get; set; }
+    public Stat<string, int>[] PerType { get; set; }
 }

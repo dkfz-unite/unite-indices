@@ -8,7 +8,7 @@ Common specimen filters criteria. Allows to filter the data by general specimen 
     "type": ["Tissue", "CellLine", "Organoid", "Xenograft"],
 
     // Data availability filters
-    "hasSsms": true,
+    "hasSms": true,
     "hasCnvs": true,
     "hasSvs": true,
     "hasGeneExp": true
@@ -41,7 +41,7 @@ General specimen filters applicable to any type of the index.
 ## Specific Fields
 Special filters applicable only to specimen-centric index.
 
-**`hasSsms`** - Whether or not any specimen has simple somatic mutations data available.
+**`hasSms`** - Whether or not any specimen has simple mutations data available.
 - Type: Boolean (`true` - has data, `false` - no data).
 - Filter: **Equals**.
 - Example: `true`.
@@ -68,7 +68,7 @@ Data, where specimens are `Tissue` specimens **and** they have all types of the 
 ```json
 {
     "type": ["Tissue"],
-    "hasSsms": true,
+    "hasSms": true,
     "hasCnvs": true,
     "hasSvs": true,
     "hasGeneExp": true

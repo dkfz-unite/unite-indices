@@ -15,7 +15,7 @@ using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
 using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
 using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
-using SsmIndex = Unite.Indices.Entities.Variants.SsmIndex;
+using SmIndex = Unite.Indices.Entities.Variants.SmIndex;
 using CnvIndex = Unite.Indices.Entities.Variants.CnvIndex;
 using SvIndex = Unite.Indices.Entities.Variants.SvIndex;
 
@@ -30,7 +30,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected readonly IIndexService<ImageIndex> _imagesIndexService;
     protected readonly IIndexService<SpecimenIndex> _specimensIndexService;
     protected readonly IIndexService<GeneIndex> _genesIndexService;
-    protected readonly IIndexService<SsmIndex> _ssmsIndexService;
+    protected readonly IIndexService<SmIndex> _smsIndexService;
     protected readonly IIndexService<CnvIndex> _cnvsIndexService;
     protected readonly IIndexService<SvIndex> _svsIndexService;
 
@@ -42,7 +42,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         _imagesIndexService = new ImagesIndexService(options);
         _specimensIndexService = new SpecimensIndexService(options);
         _genesIndexService = new GenesIndexService(options);
-        _ssmsIndexService = new SsmsIndexService(options);
+        _smsIndexService = new SmsIndexService(options);
         _cnvsIndexService = new CnvsIndexService(options);
         _svsIndexService = new SvsIndexService(options);
     }
@@ -114,11 +114,11 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromSsms<TProp>(Expression<Func<SsmIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, SearchCriteria criteria)
     {
-        var filters = new SsmFiltersCollection(criteria);
+        var filters = new SmFiltersCollection(criteria);
 
-        var aggregation = await AggregateFromSsms(property, criteria.Term, filters);
+        var aggregation = await AggregateFromSms(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
@@ -238,11 +238,11 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromSsms<TProp>(Expression<Func<SsmIndex, TProp>> property, string term, SsmFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, string term, SmFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
 
-        var query = new SearchQuery<SsmIndex>()
+        var query = new SearchQuery<SmIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(term)
             .AddFilters(filters.All())
@@ -251,7 +251,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddExclusion(index => index.Stats)
             .AddExclusion(index => index.Data);
 
-        var result = await _ssmsIndexService.Search(query);
+        var result = await _smsIndexService.Search(query);
 
         return result.Aggregations[aggregationName];
     }

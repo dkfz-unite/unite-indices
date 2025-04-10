@@ -3,9 +3,9 @@ namespace Unite.Indices.Entities.Basic.Analysis;
 public class SampleDataIndex
 {
     /// <summary>
-    /// DNA Simple Somatic Mutations (SSM) data availability.
+    /// DNA Simple Mutations (SM) data availability.
     /// </summary>
-    public bool Ssm { get; set; }
+    public bool Sm { get; set; }
 
     /// <summary>
     /// DNA Copy Number Variants (CNV) data availability.

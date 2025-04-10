@@ -60,7 +60,7 @@ public class GenesSearchService : SearchService<GeneIndex>
 
         if (criteria.HasSsmFilters)
         {
-            var ids = await AggregateFromSsms(index => index.AffectedFeatures.First().Gene.Id, criteria);
+            var ids = await AggregateFromSms(index => index.AffectedFeatures.First().Gene.Id, criteria);
 
             if (ids.Length > 0)
                 criteria.Gene = Set(criteria.Gene, [.. ids.Select(int.Parse)]);

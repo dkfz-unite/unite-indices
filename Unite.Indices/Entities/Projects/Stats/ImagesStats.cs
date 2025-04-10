@@ -1,11 +1,13 @@
+using Unite.Indices.Entities.Projects.Stats.Base;
+
 namespace Unite.Indices.Entities.Projects.Stats;
 
 public class ImagesStats
 {
     /// <summary>
-    /// MRI images data.
+    /// MR images data.
     /// </summary>
-    public MriStats Mri { get; set; } = new();
+    public MrStats Mr { get; set; } = new();
 
     /// <summary>
     /// CT images data.
@@ -16,10 +18,10 @@ public class ImagesStats
     /// <summary>
     /// Breakdown per image type.
     /// </summary>
-    public Dictionary<string, int> PerType { get; set; }
+    public Stat<string, int>[] PerType { get; set; }
 }
 
-public class MriStats
+public class MrStats
 {
     /// <summary>
     /// Donors with the data / total.
@@ -30,7 +32,7 @@ public class MriStats
     /// <summary>
     /// Breakdown per size.
     /// </summary>
-    public Dictionary<string, int> PerSize { get; set; }
+    public Stat<double?, int>[] PerSize { get; set; }
 }
 
 public class CtStats
