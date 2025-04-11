@@ -9,7 +9,7 @@ Search criteria is used to filter the data indexed by the search engine. It is c
 
     "donor": null,
     "image": null,
-    "mri": null,
+    "mr": null,
     "specimen": null,
     "material": null,
     "line": null,
@@ -17,7 +17,7 @@ Search criteria is used to filter the data indexed by the search engine. It is c
     "xenograft": null,
     "gene": null,
     "variant": null,
-    "ssm": null,
+    "sm": null,
     "cnv": null,
     "sv": null
 }
@@ -52,7 +52,7 @@ Allows to filter data by domain specific criteria.
 
 **`image`** - [Image](search-criteria-images.md) common filters criteria.
 
-**`mri`** - [MRI image](search-criteria-mris.md) filters criteria.
+**`mr`** - [MR image](search-criteria-mrs.md) filters criteria.
 
 **`specimen`** - [Specimen](search-criteria-specimens.md) common filters criteria.
 
@@ -68,7 +68,7 @@ Allows to filter data by domain specific criteria.
 
 **`variant`** - [Variant](search-criteria-variants.md) common filters criteria.
 
-**`ssm`** - [Simple somatic mutation](search-criteria-ssms.md) filters criteria.
+**`sm`** - [Simple mutation](search-criteria-sms.md) filters criteria.
 
 **`cnv`** - [Copy number variant](search-criteria-cnvs.md) filters criteria.
 
@@ -87,9 +87,9 @@ Depending on the index type, the following rules apply:
 Filters of specific entry type conflict with other specific type filters of the same entry type.
 
 For example:
-- An image can not be MRI and CT at the same time, therefore setting `mri` filters will conflict with `ct` filters and vice versa.
+- An image can not be MR and CT at the same time, therefore setting `mr` filters will conflict with `ct` filters and vice versa.
 - A specimen can not be a material and a cell line at the same time, therefore setting `material` filters will conflict with `line`, `organoid` and `xenograft` filters and vice versa.
-- A variant can not be a SSM and a CNV at the same time, therefore setting `ssm` filters will conflict with `cnv` and `sv` filters and vice versa.
+- A variant can not be a SM and a CNV at the same time, therefore setting `sm` filters will conflict with `cnv` and `sv` filters and vice versa.
 
 
 ## Filters
@@ -149,11 +149,11 @@ For example, the following criteria will filter the data where donors have diagn
 }
 ```
 
-For example, the following criteria will filter the data where donors have id `1`, `2` or `3` **and** `High` **or** `Moderate` impact SSMs in gene `TP53`:
+For example, the following criteria will filter the data where donors have id `1`, `2` or `3` **and** `High` **or** `Moderate` impact SMs in gene `TP53`:
 ```json
 { 
     "donor": { "id": [1, 2, 3] },
-    "ssm": { "impact": ["High", "Moderate"] },
+    "sm": { "impact": ["High", "Moderate"] },
     "gene": { "symbol": ["TP53"] }
 }
 ``` 

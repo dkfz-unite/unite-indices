@@ -16,14 +16,14 @@ public record SearchCriteria
     public ProjectCriteria Project { get; set; }
     public DonorCriteria Donor { get; set; }
     public ImagesCriteria Image { get; set; }
-    public MriImageCriteria Mri { get; set; }
+    public MrImageCriteria Mr { get; set; }
     public SpecimensCriteria Specimen { get; set; }
     public MaterialCriteria Material { get; set; }
     public LineCriteria Line { get; set; }
     public OrganoidCriteria Organoid { get; set; }
     public XenograftCriteria Xenograft { get; set; }
     public GeneCriteria Gene { get; set; }
-    public SsmCriteria Ssm { get; set; }
+    public SmCriteria Sm { get; set; }
     public CnvCriteria Cnv { get; set; }
     public SvCriteria Sv { get; set; }
 
@@ -33,7 +33,7 @@ public record SearchCriteria
 
     public bool HasImageFilters =>
         Image?.IsNotEmpty() == true ||
-        Mri?.IsNotEmpty() == true;
+        Mr?.IsNotEmpty() == true;
 
     public bool HasSpecimenFilters =>
         Specimen?.IsNotEmpty() == true ||
@@ -46,12 +46,12 @@ public record SearchCriteria
         Gene?.IsNotEmpty() == true;
 
     public bool HasVariantFilters =>
-        Ssm?.IsNotEmpty() == true ||
+        Sm?.IsNotEmpty() == true ||
         Cnv?.IsNotEmpty() == true ||
         Sv?.IsNotEmpty() == true;
 
     public bool HasSsmFilters =>
-        Ssm?.IsNotEmpty() == true;
+        Sm?.IsNotEmpty() == true;
     
     public bool HasCnvFilters =>
         Cnv?.IsNotEmpty() == true;

@@ -5,10 +5,10 @@ Common image filters criteria. Allows to filter the data by general image criter
 {
     // General filters
     "id": [1, 2, 3],
-    "type": ["MRI", "CT"],
+    "type": ["MR", "CT"],
 
     // Data availability filters
-    "hasSsms": true,
+    "hasSms": true,
     "hasCnvs": true,
     "hasSvs": true,
     "hasGeneExp": true
@@ -26,20 +26,20 @@ General image filters applicable to any type of the index.
 - Example: `[1, 2, 3]`.
 
 **`type`** - Type of the image.
-- Options: `MRI`, `CT`.
+- Options: `MR`, `CT`.
 - Type: String[].
 - Filter: **Options**.
-- Example: `["MRI"]`
+- Example: `["MR"]`
 
 ### Image Types
-- `MRI` - Magnetic resonance image.
+- `MR` - Magnetic resonance image.
 - `CT` - Computed tomography image.
 
 
 ## Specific Fields
 Special filters applicable only to image-centric index.
 
-**`hasSsms`** - Whether or not any image related specimen has simple somatic mutations data available.
+**`hasSms`** - Whether or not any image related specimen has simple mutations data available.
 - Type: Boolean (`true` - has data, `false` - no data).
 - Filter: **Equals**.
 - Example: `true`.
@@ -61,12 +61,12 @@ Special filters applicable only to image-centric index.
 
 
 ## Example 1
-Data, where images are `MRI` images **and** they have all types of the variants data associated.
+Data, where images are `MR` images **and** they have all types of the variants data associated.
 
 ```json
 {
-    "type": ["MRI"],
-    "hasSsms": true,
+    "type": ["MR"],
+    "hasSms": true,
     "hasCnvs": true,
     "hasSvs": true
 }

@@ -7,11 +7,11 @@ using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Images;
 
-public class MriImageFilters<T> : ImageFilters<T, MriImageIndex> where T : class
+public class MrImageFilters<T> : ImageFilters<T, MrImageIndex> where T : class
 {
-    protected override MriImageFilterNames FilterNames => new();
+    protected override MrImageFilterNames FilterNames => new();
 
-    public MriImageFilters(in MriImageCriteria criteria, in Expression<Func<T, MriImageIndex>> path) : base(criteria, path)
+    public MrImageFilters(in MrImageCriteria criteria, in Expression<Func<T, MrImageIndex>> path) : base(criteria, path)
     {
         if (criteria == null)
         {

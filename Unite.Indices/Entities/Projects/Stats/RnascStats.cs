@@ -1,3 +1,5 @@
+using Unite.Indices.Entities.Projects.Stats.Base;
+
 namespace Unite.Indices.Entities.Projects.Stats;
 
 public class RnascStats
@@ -11,10 +13,10 @@ public class RnascStats
     /// <summary>
     /// Breakdown of donors per analysis type.
     /// </summary>
-    public Dictionary<string, int> PerAnalysis { get; set; }
+    public Stat<string, int>[] PerAnalysis { get; set; }
 
     /// <summary>
     /// Breakdown of donors per cells number.
     /// </summary>
-    public Dictionary<string, int> PerCells { get; set; }
+    public Stat<int?, int>[] PerCells { get; set; }
 }

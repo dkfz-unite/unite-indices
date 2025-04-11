@@ -7,7 +7,7 @@ There are different types of indices available, each has own structure most suit
     - Index is populated by [Donors Feed](https://github.com/dkfz-unite/unite-donors-feed) service.
 - [**Images**](#images-index) - images centric index.
     - Allows to search for images and their related information.
-    - All images share the same index and can be of one of the following types: `MRI` or `CT`.
+    - All images share the same index and can be of one of the following types: `MR` or `CT`.
     - Index is populated by [Images Feed](https://github.com/dkfz-unite/unite-images-feed) service.
 - [**Specimens**](#specimens-index) - specimens centric index.
     - Allows to search for specimens and their related information.
@@ -18,7 +18,7 @@ There are different types of indices available, each has own structure most suit
     - Index is populated by [Genome Feed](https://github.com/dkfz-unite/unite-genome-feed) service.
 - [**Variants**](#variants-index) - variants centric index.
     - Allows to search for variants and their related information.
-    - All variants share the same index and can be of one of the following types: `SSM`, `CNV`, or `SV`.
+    - All variants share the same index and can be of one of the following types: `SM`, `CNV`, or `SV`.
     - Index is populated by [Genome Feed](https://github.com/dkfz-unite/unite-genome-feed) service.
 
 All the data in different indices can be filtered by cross reference search [criteria](./search-criteria.md).

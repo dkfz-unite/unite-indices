@@ -3,14 +3,14 @@ namespace Unite.Indices.Entities.Specimens;
 public class StatsIndex
 {
     /// <summary>
-    /// Number of genes with at least one SSM, CNV or SV in all samples of the specimen.
+    /// Number of genes with at least one SM, CNV or SV in all samples of the specimen.
     /// </summary>
     public int Genes { get; set; }
 
     /// <summary>
-    /// Number of SSMs in all samples of the specimen.
+    /// Number of SMs in all samples of the specimen.
     /// </summary>
-    public int Ssms { get; set; }
+    public int Sms { get; set; }
 
     /// <summary>
     /// Number of CNVs in all samples of the specimen.

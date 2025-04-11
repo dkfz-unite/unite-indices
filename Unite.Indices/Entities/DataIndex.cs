@@ -9,7 +9,7 @@ public class DataIndex
     public virtual bool? Donors { get; set; }
     public virtual bool? Clinical { get; set; }
     public virtual bool? Treatments { get; set; }
-    public virtual bool? Mris { get; set; }
+    public virtual bool? Mrs { get; set; }
     public virtual bool? Cts { get; set; }
     public virtual bool? Materials { get; set; }
     public virtual bool? MaterialsMolecular { get; set; }
@@ -27,7 +27,7 @@ public class DataIndex
     public virtual bool? XenograftsInterventions { get; set; }
     public virtual bool? Exp { get; set; }
     public virtual bool? ExpSc { get; set; }
-    public virtual bool? Ssms { get; set; }
+    public virtual bool? Sms { get; set; }
     public virtual bool? Cnvs { get; set; }
     public virtual bool? Svs { get; set; }
     public virtual bool? Meth { get; set; }

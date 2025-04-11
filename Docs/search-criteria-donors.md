@@ -8,7 +8,7 @@ Donor filters criteria. Allows to filter the data by donor specific criteria. Ac
     "referenceId": ["D01", "D02", "D03"],
 
     // Specific filters
-    "gender": ["Male", "Female"],
+    "sex": ["Male", "Female", "Other"],
     "age": { "from": 50, "to": 60 },
     "diagnosis": ["Glioblastoma"],
     "primarySite": ["Brain"],
@@ -23,7 +23,7 @@ Donor filters criteria. Allows to filter the data by donor specific criteria. Ac
     "study": ["Study 1"],
 
     // Data availability filters
-    "hasSsms": true,
+    "hasSms": true,
     "hasCnvs": true,
     "hasSvs": true,
     "hasGeneExp": true
@@ -46,7 +46,7 @@ General donor filters applicable to any type of the index.
 - Filter: **Like**.
 - Example: `["D01", "D02", "D03"]`.
 
-**`gender`** - Biological sex of the donor.
+**`sex`** - Biological sex of the donor.
 - Options: `Male`, `Female`, `Other`.
 - Type: String[].
 - Filter: **Options**.
@@ -116,7 +116,7 @@ General donor filters applicable to any type of the index.
 ## Specific Fields
 Special filters applicable only to donors-centric index.
 
-**`hasSsms`** - Whether or not the donor has simple somatic mutations data available.
+**`hasSms`** - Whether or not the donor has simple mutations data available.
 - Type: Boolean (`true` - has data, `false` - no data).
 - Filter: **Equals**.
 - Example: `true`.

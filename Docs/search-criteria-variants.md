@@ -5,7 +5,7 @@ Common variant filters criteria. Allows to filter the data by general variant cr
 {
     // General filters
     "id": ["SSM1221", "SSM1222"],
-    "type": ["SSM", "CNV", "SV"]
+    "type": ["SM", "CNV", "SV"]
 }
 ```
 
@@ -20,33 +20,33 @@ General variant filters applicable to any type of the index.
 - Example: `["SSM1221", "SSM1222"]`.
 
 **`type`** - Type of the variant.
-- Options: `SSM`, `CNV`, `SV`.
+- Options: `SM`, `CNV`, `SV`.
 - Type: String[].
 - Filter: **Options**.
-- Example: `["SSM"]`
+- Example: `["SM"]`
 
 ### Variant Types
-- `SSM` - Simple somatic mutation.
+- `SM` - Simple mutation.
 - `CNV` - Copy number variant.
 - `SV` - Structural variant.
 
 
 ## Example 1
-Data, where variant id is `SSM1221` and type is `SSM`.
+Data, where variant id is `SSM1221` and type is `SM`.
 
 ```jsonc
 {
     "id": ["SSM1221"],
-    "type": ["SSM"]
+    "type": ["SM"]
 }
 ```
 
 ## Example 2
-Data, where variant type is `SSM` or `CNV`.
+Data, where variant type is `SM` or `CNV`.
 
 ```jsonc
 {
-    "type": ["SSM", "CNV"]
+    "type": ["SM", "CNV"]
 }
 ```
 

@@ -55,12 +55,12 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
             ));
         }
 
-        if (IsNotEmpty(criteria.Gender))
+        if (IsNotEmpty(criteria.Sex))
         {
             Add(new EqualityFilter<T, object>(
-                FilterNames.Gender,
-                path.Join(donor => donor.ClinicalData.Gender.Suffix(_keywordSuffix)),
-                criteria.Gender
+                FilterNames.Sex,
+                path.Join(donor => donor.ClinicalData.Sex.Suffix(_keywordSuffix)),
+                criteria.Sex
             ));
         }
 

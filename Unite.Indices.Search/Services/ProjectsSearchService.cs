@@ -78,7 +78,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
 
         if (criteria.HasSsmFilters)
         {
-            var ids = await AggregateFromSsms(index => index.Specimens.First().Id, criteria);
+            var ids = await AggregateFromSms(index => index.Specimens.First().Id, criteria);
 
             if (ids.Length > 0)
                 criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);

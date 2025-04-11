@@ -11,7 +11,7 @@ public class ImageFiltersCollection : FiltersCollection<ImageIndex>
 {
     public ImageFiltersCollection(SearchCriteria criteria) : base()
     {
-        var mriFilters = new MriImageFilters<ImageIndex>(criteria.Mri, image => image.Mri);
+        var mriFilters = new MrImageFilters<ImageIndex>(criteria.Mr, image => image.Mr);
 
         var donorsFilters = new DonorsFilters<ImageIndex>(criteria.Donor, image => image.Donor);
         var imagesFilters = new ImagesFilters<ImageIndex>(criteria.Image, image => image);

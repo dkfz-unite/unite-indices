@@ -1,3 +1,5 @@
+using Unite.Indices.Entities.Projects.Stats.Base;
+
 namespace Unite.Indices.Entities.Projects.Stats;
 
 public class MethStats
@@ -11,5 +13,5 @@ public class MethStats
     /// <summary>
     /// Breakdown of donors per analysis type.
     /// </summary>
-    public Dictionary<string, int> PerAnalysis { get; set; }
+    public Stat<string, int>[] PerAnalysis { get; set; }
 }

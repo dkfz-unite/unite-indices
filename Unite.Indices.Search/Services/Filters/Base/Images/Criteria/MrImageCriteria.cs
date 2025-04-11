@@ -2,7 +2,7 @@
 
 namespace Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 
-public record MriImageCriteria : ImageCriteria
+public record MrImageCriteria : ImageCriteria
 {
     public Range<double?> WholeTumor { get; set; }
     public Range<double?> ContrastEnhancing { get; set; }

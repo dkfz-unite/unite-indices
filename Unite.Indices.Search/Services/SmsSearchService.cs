@@ -6,21 +6,21 @@ using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
 
-public class SsmsSearchService : SearchService<SsmIndex>
+public class SmsSearchService : SearchService<SmIndex>
 {
-    public SsmsSearchService(IElasticOptions options) : base(options)
+    public SmsSearchService(IElasticOptions options) : base(options)
     {
     }
 
-    public override async Task<SsmIndex> Get(string key)
+    public override async Task<SmIndex> Get(string key)
     {
-        var query = new GetQuery<SsmIndex>(key)
+        var query = new GetQuery<SmIndex>(key)
             .AddExclusion(variant => variant.Specimens);
 
-        return await _ssmsIndexService.Get(query);
+        return await _smsIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<SsmIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<SmIndex>> Search(SearchCriteria searchCriteria)
     {
         var criteria = searchCriteria;
 
@@ -32,7 +32,7 @@ public class SsmsSearchService : SearchService<SsmIndex>
                 criteria.Specimen = Set(criteria.Specimen, ids.Select(int.Parse).ToArray());
 
             if (criteria.Specimen.Id.Length == 0)
-                return new SearchResult<SsmIndex>();
+                return new SearchResult<SmIndex>();
         }
 
         if (criteria.HasImageFilters)
@@ -43,7 +43,7 @@ public class SsmsSearchService : SearchService<SsmIndex>
                 criteria.Specimen = Set(criteria.Specimen, ids.Select(int.Parse).ToArray());
 
             if (criteria.Specimen.Id.Length == 0)
-                return new SearchResult<SsmIndex>();
+                return new SearchResult<SmIndex>();
         }
 
         if (criteria.HasSpecimenFilters)
@@ -54,12 +54,12 @@ public class SsmsSearchService : SearchService<SsmIndex>
                 criteria.Specimen = Set(criteria.Specimen, ids.Select(int.Parse).ToArray());
 
             if (criteria.Specimen.Id.Length == 0)
-                return new SearchResult<SsmIndex>();
+                return new SearchResult<SmIndex>();
         }
 
-        var filters = new SsmFiltersCollection(criteria).All();
+        var filters = new SmFiltersCollection(criteria).All();
 
-        var query = new SearchQuery<SsmIndex>()
+        var query = new SearchQuery<SmIndex>()
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
@@ -67,10 +67,10 @@ public class SsmsSearchService : SearchService<SsmIndex>
             .AddOrdering(variant => variant.ChromosomeI, true)
             .AddOrdering(variant => variant.Start, true);
 
-        return await _ssmsIndexService.Search(query);
+        return await _smsIndexService.Search(query);
     }
 
-    protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, SsmIndex index)
+    protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, SmIndex index)
     {
         stats.Add(index.Id, index.Data);
     }

@@ -8,7 +8,7 @@ public class DonorFilterNames
     public string Diagnosis => $"{Prefix}.Diagnosis";
     public string PrimarySite => $"{Prefix}.PrimarySite";
     public string Localization => $"{Prefix}.Localization";
-    public string Gender => $"{Prefix}.Gender";
+    public string Sex => $"{Prefix}.Sex";
     public string Age => $"{Prefix}.Age";
     public string VitalStatus => $"{Prefix}.VitalStatus";
     public string VitalStatusChangeDay => $"{Prefix}.VitalStatusChangeDay";

@@ -2,11 +2,11 @@
 
 public class ImageIndex : ImageNavIndex
 {   
-    public MriImageIndex Mri { get; set; }
+    public MrImageIndex Mr { get; set; }
 
 
     public Radiomics.FeatureEntryIndex[] GetRadiomicsFeatures()
     {
-        return Mri?.RadiomicsFeatures;
+        return Mr?.RadiomicsFeatures;
     }
 }

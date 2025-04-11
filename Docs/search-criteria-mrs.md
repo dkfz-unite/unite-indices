@@ -1,5 +1,5 @@
-# MRI Image Filters Criteria
-MRI image filters criteria. Allows to filter the data by MRI image specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Images/Criteria/MriImageCriteria.cs).
+# MR Image Filters Criteria
+MR image filters criteria. Allows to filter the data by MR image specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Images/Criteria/MrImageCriteria.cs).
 
 ```jsonc
 {
@@ -7,7 +7,7 @@ MRI image filters criteria. Allows to filter the data by MRI image specific crit
     "id": [1, 2, 3],
     "referenceId": ["I01", "I02", "I03"],
 
-    // MRI specific filters
+    // MR specific filters
     "wholeTumor": { "from": 40, "to": 50 },
     "contrastEnhancing": { "from": 5, "to": 10 },
     "nonContrastEnhancing": { "from": 5, "to": 10 }
@@ -16,7 +16,7 @@ MRI image filters criteria. Allows to filter the data by MRI image specific crit
 
 
 ## General Fields
-General MRI image filters applicable to any type of the index.
+General MR image filters applicable to any type of the index.
 
 **`id`** - Internal image identifier.
 - Description: Allows to filter images by internal identifiers.

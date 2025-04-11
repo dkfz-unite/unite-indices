@@ -13,7 +13,7 @@ Gene filters criteria. Allows to filter the data by gene specific criteria. Actu
     "position": { "from": 1000, "to": 2000 },
 
     // Data availability filters
-    "hasSsms": true,
+    "hasSms": true,
     "hasCnvs": true,
     "hasSvs": true,
     "hasGeneExp": true
@@ -58,7 +58,7 @@ General gene filters applicable to any type of the index.
 ## Specific Fields
 Gene specific filters applicable to gene index only.
 
-**`hasSsms`** - Whether or not the gene is affected by any simple somitic mutation.
+**`hasSms`** - Whether or not the gene is affected by any simple somitic mutation.
 - Type: Boolean ( `true` - yes, `false` - no).
 - Filter: **Equals**.
 - Example: `true`.

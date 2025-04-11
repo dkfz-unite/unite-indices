@@ -4,7 +4,7 @@ using Unite.Indices.Entities.Variants;
 
 namespace Unite.Indices.Search.Engine;
 
-public class SsmsIndexService(IElasticOptions options) : IndexService<SsmIndex>(options)
+public class SmsIndexService(IElasticOptions options) : IndexService<SmIndex>(options)
 {
-    protected override string Collection => IndexNames.Ssms;
+    protected override string Collection => IndexNames.Sms;
 }

@@ -36,12 +36,12 @@ public class SpecimensDataFilters<T> : FiltersCollection<T> where T : class
             ));
         }
 
-        if (IsNotEmpty(criteria.HasSsms))
+        if (IsNotEmpty(criteria.HasSms))
         {
             Add(new BooleanFilter<T>(
-                FilterNames.HasSsms,
-                path.Join(data => data.Ssms),
-                criteria.HasSsms
+                FilterNames.HasSms,
+                path.Join(data => data.Sms),
+                criteria.HasSms
             ));
         }
 

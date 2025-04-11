@@ -10,7 +10,7 @@ public class SpecimensFilterNames
 
     public string HasExp => $"{Prefix}.HasExp";
     public string HasExpSc => $"{Prefix}.HasExpSc";
-    public string HasSsms => $"{Prefix}.HasSsms";
+    public string HasSms => $"{Prefix}.HasSms";
     public string HasCnvs => $"{Prefix}.HasCnvs";
     public string HasSvs => $"{Prefix}.HasSvs";
     public string HasMeth => $"{Prefix}.HasMeth";

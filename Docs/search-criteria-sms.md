@@ -1,21 +1,21 @@
-# SSM Filters Criteria
-Simple somatic mutation (SSM) filters criteria. Allows to filter the data by SSM specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Variants/Criteria/SsmCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-variant-base.md) filters.
+# SM Filters Criteria
+Simple mutation (SM) filters criteria. Allows to filter the data by SM specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Variants/Criteria/SsmCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-variant-base.md) filters.
 
 
 public string[] Type { get; set; }
 
 ```jsonc
 {
-    // SSM specific filters
+    // SM specific filters
     "type": ["SNV", "INS", "DEL", "MNV"]
 }
 ```
 
 
 ## General Fields
-General SSM filters applicable to any type of the index.
+General SM filters applicable to any type of the index.
 
-**`type`** - Type of the SSM.
+**`type`** - Type of the SM.
 - Options: `SNV`, `INS`, `DEL`, `MNV`.
 - Type: String[].
 - Filter: **Options**.
@@ -29,7 +29,7 @@ General SSM filters applicable to any type of the index.
 
 
 ## Example 1
-Data, where SSM type is `INS` **or** `DEL`.
+Data, where SM type is `INS` **or** `DEL`.
 
 ```json
 {
@@ -38,7 +38,7 @@ Data, where SSM type is `INS` **or** `DEL`.
 ```
 
 ## Example 2
-Data, where SSM is located beetween `1000` and `2000` of the chromosome `1` **and** it's type is `INS` **or** `DEL`.
+Data, where SM is located beetween `1000` and `2000` of the chromosome `1` **and** it's type is `INS` **or** `DEL`.
 
 ```json
 {
