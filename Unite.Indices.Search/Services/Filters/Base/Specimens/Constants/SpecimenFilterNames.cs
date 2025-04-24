@@ -4,6 +4,7 @@ public class SpecimenFilterNames
 {
     protected virtual string Prefix => "Specimen";
 
+    public string Id => $"{Prefix}.Id";
     public string ReferenceId => $"{Prefix}.ReferenceId";
 
     public string MgmtStatus => $"{Prefix}.MgmtStatus";

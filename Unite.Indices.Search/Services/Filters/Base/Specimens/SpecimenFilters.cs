@@ -25,6 +25,15 @@ public abstract class SpecimenFilters<T, TModel> : FiltersCollection<T>
             return;
         }
 
+        if (IsNotEmpty(criteria.Id))
+        {
+            Add(new EqualityFilter<T, int>(
+                FilterNames.Id,
+                path.Join(specimen => specimen.Id),
+                criteria.Id
+            ));
+        }
+
         if (IsNotEmpty(criteria.ReferenceId))
         {
             Add(new SimilarityFilter<T, string>(
