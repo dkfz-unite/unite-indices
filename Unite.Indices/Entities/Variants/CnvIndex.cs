@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Variants;
 
-public class CnvIndex : Basic.Genome.Variants.CnvIndex
+public class CnvIndex : Basic.Omics.Variants.CnvIndex
 {
     /// <summary>
     /// Statistics.
@@ -13,7 +13,7 @@ public class CnvIndex : Basic.Genome.Variants.CnvIndex
     public DataIndex Data { get; set; }
 
 
-    public Basic.Genome.Variants.VariantNavIndex[] Similars { get; set; }
+    public Basic.Omics.Variants.VariantNavIndex[] Similars { get; set; }
 
     public SpecimenIndex[] Specimens { get; set; }
 }

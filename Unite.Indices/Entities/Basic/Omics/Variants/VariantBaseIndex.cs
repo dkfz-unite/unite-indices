@@ -1,4 +1,4 @@
-namespace Unite.Indices.Entities.Basic.Genome.Variants;
+namespace Unite.Indices.Entities.Basic.Omics.Variants;
 
 public abstract class VariantBaseIndex : VariantNavIndex
 {

@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
-using Unite.Indices.Entities.Basic.Genome;
+using Unite.Indices.Entities.Basic.Omics;
 using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Genes.Constants;
 using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;

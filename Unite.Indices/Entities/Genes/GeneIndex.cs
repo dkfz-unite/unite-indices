@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Genes;
 
-public class GeneIndex : Basic.Genome.GeneIndex
+public class GeneIndex : Basic.Omics.GeneIndex
 {
     /// <summary>
     /// Statistics.

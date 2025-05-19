@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Variants;
 
-public class SmIndex : Basic.Genome.Variants.SmIndex
+public class SmIndex : Basic.Omics.Variants.SmIndex
 {
     /// <summary>
     /// Statistics.

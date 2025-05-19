@@ -1,4 +1,4 @@
-namespace Unite.Indices.Entities.Basic.Genome;
+namespace Unite.Indices.Entities.Basic.Omics;
 
 public class GeneNavIndex
 {

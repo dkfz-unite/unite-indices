@@ -1,6 +1,6 @@
 namespace Unite.Indices.Entities.Variants;
 
-public class SvIndex : Basic.Genome.Variants.SvIndex
+public class SvIndex : Basic.Omics.Variants.SvIndex
 {
     /// <summary>
     /// Statistics.
@@ -13,7 +13,7 @@ public class SvIndex : Basic.Genome.Variants.SvIndex
     public DataIndex Data { get; set; }
 
 
-    public Basic.Genome.Variants.VariantNavIndex[] Similars { get; set; }
+    public Basic.Omics.Variants.VariantNavIndex[] Similars { get; set; }
     
     public SpecimenIndex[] Specimens { get; set; }
 }

@@ -15,11 +15,11 @@ There are different types of indices available, each has own structure most suit
     - Index is populated by [Specimens Feed](https://github.com/dkfz-unite/unite-specimens-feed) service.
 - [**Genes**](#genes-index) - genes centric index.
     - Allows to search for genes and their related information.
-    - Index is populated by [Genome Feed](https://github.com/dkfz-unite/unite-genome-feed) service.
+    - Index is populated by [Omics Feed](https://github.com/dkfz-unite/unite-omics-feed) service.
 - [**Variants**](#variants-index) - variants centric index.
     - Allows to search for variants and their related information.
     - All variants share the same index and can be of one of the following types: `SM`, `CNV`, or `SV`.
-    - Index is populated by [Genome Feed](https://github.com/dkfz-unite/unite-genome-feed) service.
+    - Index is populated by [Omics Feed](https://github.com/dkfz-unite/unite-omics-feed) service.
 
 All the data in different indices can be filtered by cross reference search [criteria](./search-criteria.md).
 
@@ -65,12 +65,12 @@ It means that a sigle specimen can have single donor and multiple images associa
 Genes index is self-contained and includes all information about associated entities. This is the most advanced index.
 
 Index has the following structure:
-- [Gene](../Unite.Indices/Entities/Genes/GeneIndex.cs): [GeneBase](../Unite.Indices/Entities/Basic/Genome/GeneIndex.cs)
+- [Gene](../Unite.Indices/Entities/Genes/GeneIndex.cs): [GeneBase](../Unite.Indices/Entities/Basic/Omics/GeneIndex.cs)
     - Specimens - [SpecimenBase](../Unite.Indices/Entities/Basic/Specimens/SpecimenIndex.cs)[]
         - Expression - [Expression](../Unite.Indices/Entities/Genes/BulkExpressionIndex.cs) data
         - Donor - [DonorBase](../Unite.Indices/Entities/Basic/Donors/DonorIndex.cs)
         - Images - [ImageBase](../Unite.Indices/Entities/Basic/Images/ImageIndex.cs)[]
-        - Variants - [VariantBase](../Unite.Indices/Entities/Basic/Genome/Variants/VariantIndex.cs)[]
+        - Variants - [VariantBase](../Unite.Indices/Entities/Basic/Omics/Variants/VariantIndex.cs)[]
     - Data - [Data](../Unite.Indices/Entities/DataIndex.cs) availability fields
     - Statistics - Statistics fields
 
@@ -80,8 +80,8 @@ It means that a sigle gene can be affected by multiple variants and have express
 Variants index is self-contained and includes information about associated entities (except gene expression data).
 
 Index has the following structure:
-- [Variant](../Unite.Indices/Entities/Variants/VariantIndex.cs): [VariantBase](../Unite.Indices/Entities/Basic/Genome/Variants/VariantIndex.cs)
-    - Genes - [GeneBase](../Unite.Indices/Entities/Basic/Genome/GeneIndex.cs)[]
+- [Variant](../Unite.Indices/Entities/Variants/VariantIndex.cs): [VariantBase](../Unite.Indices/Entities/Basic/Omics/Variants/VariantIndex.cs)
+    - Genes - [GeneBase](../Unite.Indices/Entities/Basic/Omics/GeneIndex.cs)[]
     - Specimens - [SpecimenBase](../Unite.Indices/Entities/Basic/Specimens/SpecimenIndex.cs)[]
         - Donor - [DonorBase](../Unite.Indices/Entities/Basic/Donors/DonorIndex.cs)
         - Images - [ImageBase](../Unite.Indices/Entities/Basic/Images/ImageIndex.cs)[]
