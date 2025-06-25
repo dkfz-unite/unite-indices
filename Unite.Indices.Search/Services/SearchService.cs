@@ -143,22 +143,22 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     protected static DonorCriteria Set(DonorCriteria criteria, int[] ids)
     {
-        return (criteria ?? new DonorCriteria()) with { Id = Intersect(criteria?.Id, ids) };
+        return (criteria ?? new DonorCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids)) };
     }
 
     protected static ImagesCriteria Set(ImagesCriteria criteria, int[] ids)
     {
-        return (criteria ?? new ImagesCriteria()) with { Id = Intersect(criteria?.Id, ids) };
+        return (criteria ?? new ImagesCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids)) };
     }
 
     protected static SpecimensCriteria Set(SpecimensCriteria criteria, int[] ids)
     {
-        return (criteria ?? new SpecimensCriteria()) with { Id = Intersect(criteria?.Id, ids) };
+        return (criteria ?? new SpecimensCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids)) };
     }
 
     protected static GeneCriteria Set(GeneCriteria criteria, int[] ids)
     {
-        return (criteria ?? new GeneCriteria()) with { Id = Intersect(criteria?.Id, ids) };
+        return (criteria ?? new GeneCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids)) };
     }
 
 

@@ -25,7 +25,7 @@ public class XenograftFilters<T> : SpecimenFilters<T, XenograftIndex> where T : 
             Add(new SimilarityFilter<T, string>(
                 FilterNames.MouseStrain,
                 path.Join(specimen => specimen.MouseStrain),
-                criteria.MouseStrain
+                criteria.MouseStrain.Value
             ));
         }
 
@@ -34,7 +34,7 @@ public class XenograftFilters<T> : SpecimenFilters<T, XenograftIndex> where T : 
             Add(new BooleanFilter<T>(
                 FilterNames.Tumorigenicity,
                 path.Join(specimen => specimen.Tumorigenicity),
-                criteria.Tumorigenicity
+                criteria.Tumorigenicity.Value
             ));
         }
 
@@ -43,7 +43,7 @@ public class XenograftFilters<T> : SpecimenFilters<T, XenograftIndex> where T : 
             Add(new EqualityFilter<T, object>(
                 FilterNames.TumorGrowthForm,
                 path.Join(specimen => specimen.TumorGrowthForm.Suffix(_keywordSuffix)),
-                criteria.TumorGrowthForm
+                criteria.TumorGrowthForm.Value
             ));
         }
 
@@ -53,8 +53,8 @@ public class XenograftFilters<T> : SpecimenFilters<T, XenograftIndex> where T : 
                 FilterNames.SurvivalDays,
                 path.Join(specimen => specimen.SurvivalDaysFrom),
                 path.Join(specimen => specimen.SurvivalDaysTo),
-                criteria.SurvivalDays?.From,
-                criteria.SurvivalDays?.To
+                criteria.SurvivalDays?.Value.From,
+                criteria.SurvivalDays?.Value.To
             ));
         }
     }

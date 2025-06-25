@@ -23,7 +23,7 @@ public class GenesDataFilters<T> : FiltersCollection<T> where T : class
             Add(new BooleanFilter<T>(
                 FilterNames.HasSms,
                 path.Join(data => data.Sms),
-                criteria.HasSms
+                criteria.HasSms.Value
             ));
         }
 
@@ -32,7 +32,7 @@ public class GenesDataFilters<T> : FiltersCollection<T> where T : class
             Add(new BooleanFilter<T>(
                 FilterNames.HasCnvs,
                 path.Join(data => data.Cnvs),
-                criteria.HasCnvs
+                criteria.HasCnvs.Value
             ));
         }
 
@@ -41,7 +41,7 @@ public class GenesDataFilters<T> : FiltersCollection<T> where T : class
             Add(new BooleanFilter<T>(
                 FilterNames.HasSvs,
                 path.Join(data => data.Svs),
-                criteria.HasSvs
+                criteria.HasSvs.Value
             ));
         }
     }

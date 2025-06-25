@@ -23,8 +23,8 @@ public class MrImageFilters<T> : ImageFilters<T, MrImageIndex> where T : class
             Add(new RangeFilter<T, double?>(
                 FilterNames.WholeTumor,
                 path.Join(image => image.WholeTumor),
-                criteria.WholeTumor.From,
-                criteria.WholeTumor.To
+                criteria.WholeTumor.Value?.From,
+                criteria.WholeTumor.Value?.To
             ));
         }
 
@@ -33,8 +33,8 @@ public class MrImageFilters<T> : ImageFilters<T, MrImageIndex> where T : class
             Add(new RangeFilter<T, double?>(
                 FilterNames.ContrastEnhancing,
                 path.Join(image => image.ContrastEnhancing),
-                criteria.ContrastEnhancing.From,
-                criteria.ContrastEnhancing.To
+                criteria.ContrastEnhancing?.Value.From,
+                criteria.ContrastEnhancing?.Value.To
             ));
         }
 
@@ -43,8 +43,8 @@ public class MrImageFilters<T> : ImageFilters<T, MrImageIndex> where T : class
             Add(new RangeFilter<T, double?>(
                 FilterNames.NonContrastEnhancing,
                 path.Join(image => image.NonContrastEnhancing),
-                criteria.NonContrastEnhancing.From,
-                criteria.NonContrastEnhancing.To
+                criteria.NonContrastEnhancing?.Value.From,
+                criteria.NonContrastEnhancing?.Value.To
             ));
         }
     }

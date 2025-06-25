@@ -24,7 +24,7 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.MgmtStatus,
                 path.Join(molecularData => molecularData.MgmtStatus.Suffix(_keywordSuffix)),
-                criteria.MgmtStatus
+                criteria.MgmtStatus.Value
             ));
         }
 
@@ -33,7 +33,7 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.IdhStatus,
                 path.Join(molecularData => molecularData.IdhStatus.Suffix(_keywordSuffix)),
-                criteria.IdhStatus
+                criteria.IdhStatus.Value
             ));
         }
 
@@ -42,7 +42,7 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.IdhMutation,
                 path.Join(molecularData => molecularData.IdhMutation.Suffix(_keywordSuffix)),
-                criteria.IdhMutation
+                criteria.IdhMutation.Value
             ));
         }
 
@@ -51,7 +51,7 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.GeneExpressionSubtype,
                 path.Join(molecularData => molecularData.GeneExpressionSubtype.Suffix(_keywordSuffix)),
-                criteria.GeneExpressionSubtype
+                criteria.GeneExpressionSubtype.Value
             ));
         }
 
@@ -60,7 +60,7 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.MethylationSubtype,
                 path.Join(molecularData => molecularData.MethylationSubtype.Suffix(_keywordSuffix)),
-                criteria.MethylationSubtype
+                criteria.MethylationSubtype.Value
             ));
         }
 
@@ -69,7 +69,7 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
             Add(new BooleanFilter<T>(
                 FilterNames.GcimpMethylation,
                 path.Join(molecularData => molecularData.GcimpMethylation),
-                criteria.GcimpMethylation
+                criteria.GcimpMethylation.Value
             ));
         }
     }

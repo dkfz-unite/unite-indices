@@ -24,7 +24,7 @@ public class GeneFilters<T> : FiltersCollection<T> where T : class
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Symbol,
                 path.Join(gene => gene.Symbol),
-                criteria.Symbol
+                criteria.Symbol.Value
             ));
         }
 
@@ -33,7 +33,7 @@ public class GeneFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.Biotype,
                 path.Join(gene => gene.Biotype.Suffix(_keywordSuffix)),
-                criteria.Biotype
+                criteria.Biotype.Value
             ));
         }
 
@@ -42,7 +42,7 @@ public class GeneFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.Chromosome,
                 path.Join(gene => gene.Chromosome.Suffix(_keywordSuffix)),
-                criteria.Chromosome
+                criteria.Chromosome.Value
             ));
         }
 
@@ -52,8 +52,8 @@ public class GeneFilters<T> : FiltersCollection<T> where T : class
                 FilterNames.Position,
                 path.Join(gene => gene.Start),
                 path.Join(gene => gene.End),
-                criteria.Position?.From,
-                criteria.Position?.To
+                criteria.Position.Value?.From,
+                criteria.Position.Value?.To
             ));
         }
     }

@@ -23,7 +23,7 @@ public class ProjectFilters<T> : FiltersCollection<T> where T : class
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Name,
                 path.Join(project => project.Name),
-                criteria.Name
+                criteria.Name.Value
             ));
         }
     }

@@ -24,7 +24,7 @@ public class VariantsFilters<T> : FiltersCollection<T>
             Add(new EqualityFilter<T, int>(
                 FilterNames.Id,
                 path.Join(variant => variant.Id),
-                criteria.Id
+                criteria.Id.Value
             ));
         }
     }

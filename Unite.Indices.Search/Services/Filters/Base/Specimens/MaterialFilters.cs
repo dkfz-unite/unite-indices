@@ -28,7 +28,7 @@ public class MaterialFilters<T> : SpecimenFilters<T, MaterialIndex> where T : cl
             Add(new EqualityFilter<T, object>(
                 FilterNames.Type,
                 path.Join(specimen => specimen.Type.Suffix(_keywordSuffix)),
-                criteria.Type
+                criteria.Type.Value
             ));
         }
 
@@ -37,7 +37,7 @@ public class MaterialFilters<T> : SpecimenFilters<T, MaterialIndex> where T : cl
             Add(new EqualityFilter<T, object>(
                 FilterNames.FixationType,
                 path.Join(specimen => specimen.FixationType.Suffix(_keywordSuffix)),
-                criteria.FixationType
+                criteria.FixationType.Value
             ));
         }
 
@@ -46,7 +46,7 @@ public class MaterialFilters<T> : SpecimenFilters<T, MaterialIndex> where T : cl
             Add(new EqualityFilter<T, object>(
                 FilterNames.TumorType,
                 path.Join(specimen => specimen.TumorType.Suffix(_keywordSuffix)),
-                criteria.TumorType
+                criteria.TumorType.Value
             ));
         }
 
@@ -55,8 +55,8 @@ public class MaterialFilters<T> : SpecimenFilters<T, MaterialIndex> where T : cl
             Add(new RangeFilter<T, double?>(
                 FilterNames.TumorGrade,
                 path.Join(specimen => specimen.TumorGrade),
-                criteria.TumorGrade.From,
-                criteria.TumorGrade.To
+                criteria.TumorGrade.Value?.From,
+                criteria.TumorGrade.Value?.To
             ));
         }
 
@@ -65,7 +65,7 @@ public class MaterialFilters<T> : SpecimenFilters<T, MaterialIndex> where T : cl
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Source,
                 path.Join(specimen => specimen.Source),
-                criteria.Source
+                criteria.Source.Value
             ));
         }
     }

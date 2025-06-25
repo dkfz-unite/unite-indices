@@ -24,7 +24,7 @@ public class OrganoidFilters<T> : SpecimenFilters<T, OrganoidIndex> where T : cl
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Medium,
                 path.Join(specimen => specimen.Medium),
-                criteria.Medium
+                criteria.Medium.Value
             ));
         }
 
@@ -33,7 +33,7 @@ public class OrganoidFilters<T> : SpecimenFilters<T, OrganoidIndex> where T : cl
             Add(new BooleanFilter<T>(
                 FilterNames.Tumorigenicity,
                 path.Join(specimen => specimen.Tumorigenicity),
-                criteria.Tumorigenicity
+                criteria.Tumorigenicity.Value
             ));
         }
     }

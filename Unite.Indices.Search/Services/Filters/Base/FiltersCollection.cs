@@ -1,4 +1,5 @@
 ﻿using Unite.Indices.Search.Engine.Filters;
+using Unite.Indices.Search.Services.Filters.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria.Models;
 
 namespace Unite.Indices.Search.Services.Filters.Base;
@@ -45,6 +46,10 @@ public abstract class FiltersCollection<T> where T : class
         return _filters.Where(filter => !filterNames.Contains(filter.Name));
     }
 
+    protected virtual bool IsNotEmpty<TProp>(Criteria<TProp> criteria)
+    {
+        return criteria?.IsNotEmpty() == true;
+    }
 
     protected virtual bool IsNotEmpty(params string[] values)
     {

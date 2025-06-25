@@ -25,7 +25,7 @@ public class LineFilters<T> : SpecimenFilters<T, LineIndex> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.CellsSpecies,
                 path.Join(specimen => specimen.CellsSpecies.Suffix(_keywordSuffix)),
-                criteria.CellsSpecies
+                criteria.CellsSpecies.Value
             ));
         }
 
@@ -34,7 +34,7 @@ public class LineFilters<T> : SpecimenFilters<T, LineIndex> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.CellsType,
                 path.Join(specimen => specimen.CellsType.Suffix(_keywordSuffix)),
-                criteria.CellsType
+                criteria.CellsType.Value
             ));
         }
 
@@ -43,7 +43,7 @@ public class LineFilters<T> : SpecimenFilters<T, LineIndex> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.CellsCultureType,
                 path.Join(specimen => specimen.CellsCultureType.Suffix(_keywordSuffix)),
-                criteria.CultureType
+                criteria.CultureType.Value
             ));
         }
 
@@ -52,7 +52,7 @@ public class LineFilters<T> : SpecimenFilters<T, LineIndex> where T : class
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Name,
                 path.Join(specimen => specimen.Name),
-                criteria.Name
+                criteria.Name.Value
             ));
         }
     }

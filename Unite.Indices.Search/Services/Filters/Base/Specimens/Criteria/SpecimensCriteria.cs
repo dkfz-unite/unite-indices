@@ -1,29 +1,31 @@
+using Unite.Indices.Search.Services.Filters.Criteria;
+
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 public record SpecimensCriteria
 {
-    public int[] Id { get; init; }
-    public string[] ReferenceId { get; init; }
-    public string[] SpecimenType { get; set; }
+    public ValuesCriteria<int> Id { get; init; }
+    public ValuesCriteria<string> ReferenceId { get; init; }
+    public ValuesCriteria<string> SpecimenType { get; set; }
 
-    public bool? HasExp { get; set; }
-    public bool? HasExpSc { get; set; }
-    public bool? HasSms { get; set; }
-    public bool? HasCnvs { get; set; }
-    public bool? HasSvs { get; set; }
-    public bool? HasMeth { get; set; }
+    public BoolCriteria HasExp { get; set; }
+    public BoolCriteria HasExpSc { get; set; }
+    public BoolCriteria HasSms { get; set; }
+    public BoolCriteria HasCnvs { get; set; }
+    public BoolCriteria HasSvs { get; set; }
+    public BoolCriteria HasMeth { get; set; }
 
 
     public virtual bool IsNotEmpty()
     {
-        return Id?.Length > 0
-            || ReferenceId?.Length > 0
-            || SpecimenType?.Length > 0
-            || HasExp != null
-            || HasExpSc != null
-            || HasSms != null
-            || HasCnvs != null
-            || HasSvs != null
-            || HasMeth != null;
+        return Id?.IsNotEmpty() == true
+            || ReferenceId?.IsNotEmpty() == true
+            || SpecimenType?.IsNotEmpty() == true
+            || HasExp?.IsNotEmpty() == true
+            || HasExpSc?.IsNotEmpty() == true
+            || HasSms?.IsNotEmpty() == true
+            || HasCnvs?.IsNotEmpty() == true
+            || HasSvs?.IsNotEmpty() == true
+            || HasMeth?.IsNotEmpty() == true;
     }
 }

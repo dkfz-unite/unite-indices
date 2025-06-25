@@ -26,7 +26,7 @@ public abstract class VariantFilters<T, TModel> : FiltersCollection<T>
             Add(new EqualityFilter<T, object>(
                 FilterNames.Chromosome,
                 path.Join(variant => variant.Chromosome.Suffix(_keywordSuffix)),
-                criteria.Chromosome
+                criteria.Chromosome.Value
             ));
         }
 
@@ -36,8 +36,8 @@ public abstract class VariantFilters<T, TModel> : FiltersCollection<T>
                 FilterNames.Position,
                 path.Join(variant => variant.Start),
                 path.Join(variant => variant.End),
-                criteria.Position?.From,
-                criteria.Position?.To
+                criteria.Position.Value?.From,
+                criteria.Position.Value?.To
             ));
         }
 
@@ -46,8 +46,8 @@ public abstract class VariantFilters<T, TModel> : FiltersCollection<T>
             Add(new RangeFilter<T, int?>(
                 FilterNames.Length,
                 path.Join(variant => variant.Length),
-                criteria.Length?.From,
-                criteria.Length?.To
+                criteria.Length.Value?.From,
+                criteria.Length.Value?.To
             ));
         }
 
@@ -56,7 +56,7 @@ public abstract class VariantFilters<T, TModel> : FiltersCollection<T>
             Add(new EqualityFilter<T, object>(
                 FilterNames.Gene,
                 path.Join(variant => variant.AffectedFeatures.First().Gene.Symbol.Suffix(_keywordSuffix)),
-                criteria.Gene
+                criteria.Gene.Value
             ));
         }
 
@@ -65,7 +65,7 @@ public abstract class VariantFilters<T, TModel> : FiltersCollection<T>
             Add(new EqualityFilter<T, object>(
                 FilterNames.Impact,
                 path.Join(variant => variant.AffectedFeatures.First().Effects.First().Impact.Suffix(_keywordSuffix)),
-                criteria.Impact
+                criteria.Impact.Value
             ));
         }
 
@@ -74,7 +74,7 @@ public abstract class VariantFilters<T, TModel> : FiltersCollection<T>
             Add(new EqualityFilter<T, object>(
                 FilterNames.Effect,
                 path.Join(variant => variant.AffectedFeatures.First().Effects.First().Type.Suffix(_keywordSuffix)),
-                criteria.Effect
+                criteria.Effect.Value
             ));
         }
     }

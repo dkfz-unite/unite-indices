@@ -24,7 +24,7 @@ public class ImagesFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, int>(
                 FilterNames.Id,
                 path.Join(image => image.Id),
-                criteria.Id
+                criteria.Id.Value
             ));
         }
 
@@ -33,7 +33,7 @@ public class ImagesFilters<T> : FiltersCollection<T> where T : class
             Add(new SimilarityFilter<T, string>(
                 FilterNames.ReferenceId,
                 path.Join(donor => donor.ReferenceId),
-                criteria.ReferenceId
+                criteria.ReferenceId.Value
             ));
         }
 
@@ -42,7 +42,7 @@ public class ImagesFilters<T> : FiltersCollection<T> where T : class
             Add(new EqualityFilter<T, object>(
                 FilterNames.ImageType,
                 path.Join(image => image.Type.Suffix(_keywordSuffix)),
-                criteria.ImageType
+                criteria.ImageType.Value
             ));
         }
     }

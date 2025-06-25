@@ -1,27 +1,29 @@
+using Unite.Indices.Search.Services.Filters.Criteria;
+
 namespace Unite.Indices.Search.Services.Filters.Base.Projects.Criteria;
 
 public class ProjectsCriteria
 {
-    public int[] Id { get; set; }
-    public string[] Name { get; set; }
+    public ValuesCriteria<int> Id { get; set; }
+    public ValuesCriteria<string> Name { get; set; }
 
-    public bool? HasExp { get; set; }
-    public bool? HasExpSc { get; set; }
-    public bool? HasSms { get; set; }
-    public bool? HasCnvs { get; set; }
-    public bool? HasSvs { get; set; }
-    public bool? HasMeth { get; set; }
+    public BoolCriteria HasExp { get; set; }
+    public BoolCriteria HasExpSc { get; set; }
+    public BoolCriteria HasSms { get; set; }
+    public BoolCriteria HasCnvs { get; set; }
+    public BoolCriteria HasSvs { get; set; }
+    public BoolCriteria HasMeth { get; set; }
 
 
     public virtual bool IsNotEmpty()
     {
-        return Id?.Length > 0
-            || Name?.Length > 0
-            || HasExp != null
-            || HasExpSc != null
-            || HasSms != null
-            || HasCnvs != null
-            || HasSvs != null
-            || HasMeth != null;
+        return Id?.IsNotEmpty() == true
+            || Name?.IsNotEmpty() == true
+            || HasExp?.IsNotEmpty() == true
+            || HasExpSc?.IsNotEmpty() == true
+            || HasSms?.IsNotEmpty() == true
+            || HasCnvs?.IsNotEmpty() == true
+            || HasSvs?.IsNotEmpty() == true
+            || HasMeth?.IsNotEmpty() == true;
     }
 }
