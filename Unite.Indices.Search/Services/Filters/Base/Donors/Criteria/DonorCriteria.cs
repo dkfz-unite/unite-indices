@@ -1,5 +1,4 @@
 ﻿using Unite.Indices.Search.Services.Filters.Criteria;
-using Unite.Indices.Search.Services.Filters.Criteria.Models;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 

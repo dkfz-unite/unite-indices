@@ -7,22 +7,34 @@ namespace Unite.Indices.Search.Engine.Filters;
 public class GreaterThanFilter<T, TProp> : IFilter<T> where T : class
 {
     public string Name { get; }
+    public bool Not { get; }
+    public bool IsEmpty => Value == null;
 
     public Expression<Func<T, TProp>>[] Properties { get; }
     public double? Value { get; }
 
-    
-    public GreaterThanFilter(string name, double? value, params Expression<Func<T, TProp>>[] properties)
+
+    public GreaterThanFilter(string name, Expression<Func<T, TProp>>[] properties, double? value)
     {
         Name = name;
+        Not = false;
+
+        Properties = properties;
+        Value = value;
+    }
+
+    public GreaterThanFilter(string name, bool not, double? value, params Expression<Func<T, TProp>>[] properties)
+    {
+        Name = name;
+        Not = not;
 
         Properties = properties;
         Value = value;
     }
 
 
-    public void Apply(ISearchRequest<T> request)
+    public QueryContainer CreateQuery()
     {
-        request.AddGreaterThanQuery(Value, Properties);
+        return !IsEmpty ? QueryExtensions.CreateGreaterThanQuery(Value, Properties) : null;
     }
 }

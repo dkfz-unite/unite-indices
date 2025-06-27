@@ -7,6 +7,8 @@ namespace Unite.Indices.Search.Engine.Filters;
 public class SimilarityFilter<T, TProp> : IFilter<T> where T : class
 {
     public string Name { get; }
+    public bool Not { get; }
+    public bool IsEmpty => Values?.Any() != true;
 
     public Expression<Func<T, TProp>> Property { get; }
     public IEnumerable<string> Values { get; }
@@ -15,14 +17,24 @@ public class SimilarityFilter<T, TProp> : IFilter<T> where T : class
     public SimilarityFilter(string name, Expression<Func<T, TProp>> property, IEnumerable<string> values)
     {
         Name = name;
+        Not = false;
+
+        Property = property;
+        Values = values;
+    }
+
+    public SimilarityFilter(string name, bool not, Expression<Func<T, TProp>> property, IEnumerable<string> values)
+    {
+        Name = name;
+        Not = not;
 
         Property = property;
         Values = values;
     }
 
 
-    public void Apply(ISearchRequest<T> request)
+    public QueryContainer CreateQuery()
     {
-        request.AddMatchQuery(Property, Values);
+        return !IsEmpty ? QueryExtensions.CreateMatchQuery(Property, Values) : null;
     }
 }

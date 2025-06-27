@@ -7,21 +7,34 @@ namespace Unite.Indices.Search.Engine.Filters;
 public class LessThanFilter<T, TProp> : IFilter<T> where T : class
 {
     public string Name { get; }
+    public bool Not { get; }
+    public bool IsEmpty => Value == null;
 
     public Expression<Func<T, TProp>>[] Properties { get; }
     public double? Value { get; }
 
-    
-    public LessThanFilter(string name, double? value, params Expression<Func<T, TProp>>[] properties)
+
+    public LessThanFilter(string name, Expression<Func<T, TProp>>[] properties, double? value)
     {
         Name = name;
+        Not = false;
 
         Properties = properties;
         Value = value;
     }
 
-    public void Apply(ISearchRequest<T> request)
+    public LessThanFilter(string name, bool not, double? value, params Expression<Func<T, TProp>>[] properties)
     {
-        request.AddLessThanQuery(Value, Properties);
+        Name = name;
+        Not = not;
+
+        Properties = properties;
+        Value = value;
+    }
+
+
+    public QueryContainer CreateQuery()
+    {
+        return !IsEmpty ? QueryExtensions.CreateLessThanQuery(Value, Properties) : null;
     }
 }

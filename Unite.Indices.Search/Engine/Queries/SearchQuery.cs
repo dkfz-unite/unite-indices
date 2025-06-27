@@ -20,9 +20,9 @@ public class SearchQuery<T> where T : class
     public SearchQuery()
     {
         _request = new SearchDescriptor<T>();
-        _filters = new List<IFilter<T>>();
-        _exclusions = new List<Expression<Func<T, object>>>();
-        _aggregations = new List<string>();
+        _filters = [];
+        _exclusions = [];
+        _aggregations = [];
 
         _request.TrackTotalHits();
     }
@@ -37,7 +37,8 @@ public class SearchQuery<T> where T : class
 
     public SearchQuery<T> AddFullTextSearch(string query)
     {
-        _request.AddMultiMatchQuery(query);
+        // TODO: Doesn't seem to work.
+        _filters.Add(new MultiMatchFilter<T>("query", query));
 
         return this;
     }
@@ -88,14 +89,42 @@ public class SearchQuery<T> where T : class
 
     public ISearchRequest<T> GetRequest()
     {
-        if (_filters.Any())
+        var query = new QueryContainer();
+
+        var includeQueries = new List<QueryContainer>();
+        var includeFilters = _filters.Where(filter => filter.Not == false);
+        foreach (var filter in includeFilters)
         {
-            _filters.ForEach(filter => filter.Apply(_request));
+            if (!filter.IsEmpty)
+                includeQueries.Add(filter.CreateQuery());
         }
 
-        if (_exclusions.Any())
+        var excludeQueries = new List<QueryContainer>();
+        var excludeFilters = _filters.Where(filter => filter.Not == true);
+        foreach (var filter in excludeFilters)
         {
-            _request.Exclude(_exclusions.ToArray());
+            if (!filter.IsEmpty)
+                excludeQueries.Add(filter.CreateQuery());
+        }
+
+        if (includeQueries.Count != 0 && excludeQueries.Count != 0)
+        {
+            _request.Query(q => q.Bool(b => b
+                .Must(includeQueries.ToArray())
+                .MustNot(excludeQueries.ToArray())
+            ));
+        }
+        else if (includeQueries.Count != 0)
+        {
+            _request.Query(q => q.Bool(b => b
+                .Must(includeQueries.ToArray())
+            ));
+        }
+        else if (excludeQueries.Count != 0)
+        {
+            _request.Query(q => q.Bool(b => b
+                .MustNot(excludeQueries.ToArray())
+            ));
         }
 
         return _request;
