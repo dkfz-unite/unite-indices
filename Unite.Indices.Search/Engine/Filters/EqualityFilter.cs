@@ -23,10 +23,10 @@ public class EqualityFilter<T, TProp> : IFilter<T> where T : class
         Values = values;
     }
 
-    public EqualityFilter(string name, bool not, Expression<Func<T, TProp>> property, IEnumerable<TProp> values)
+    public EqualityFilter(string name, bool? not, Expression<Func<T, TProp>> property, IEnumerable<TProp> values)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Property = property;
         Values = values;
@@ -41,10 +41,10 @@ public class EqualityFilter<T, TProp> : IFilter<T> where T : class
         Values = [value];
     }
 
-    public EqualityFilter(string name, bool not, Expression<Func<T, TProp>> property, TProp value)
+    public EqualityFilter(string name, bool? not, Expression<Func<T, TProp>> property, TProp value)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Property = property;
         Values = [value];

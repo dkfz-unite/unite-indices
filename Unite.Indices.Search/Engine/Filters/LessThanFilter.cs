@@ -23,10 +23,10 @@ public class LessThanFilter<T, TProp> : IFilter<T> where T : class
         Value = value;
     }
 
-    public LessThanFilter(string name, bool not, double? value, params Expression<Func<T, TProp>>[] properties)
+    public LessThanFilter(string name, bool? not, double? value, params Expression<Func<T, TProp>>[] properties)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Properties = properties;
         Value = value;

@@ -21,10 +21,10 @@ public class NotNullFilter<T, TProp> : IFilter<T> where T : class
         Property = property;
     }
 
-    public NotNullFilter(string name, bool not, Expression<Func<T, TProp>> property)
+    public NotNullFilter(string name, bool? not, Expression<Func<T, TProp>> property)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Property = property;
     }

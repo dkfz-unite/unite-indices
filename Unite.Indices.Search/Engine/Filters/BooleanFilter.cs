@@ -23,10 +23,10 @@ public class BooleanFilter<T> : IFilter<T> where T : class
         Value = value;
     }
 
-    public BooleanFilter(string name, bool not, Expression<Func<T, bool?>> property, bool? value)
+    public BooleanFilter(string name, bool? not, Expression<Func<T, bool?>> property, bool? value)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Property = property;
         Value = value;

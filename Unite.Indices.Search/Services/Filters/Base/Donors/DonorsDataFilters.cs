@@ -22,6 +22,7 @@ public class DonorsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasExp,
+                criteria.HasExp.Not,
                 path.Join(data => data.Exp),
                 criteria.HasExp.Value
             ));
@@ -31,6 +32,7 @@ public class DonorsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasExpSc,
+                criteria.HasExpSc.Not,
                 path.Join(data => data.ExpSc),
                 criteria.HasExpSc.Value
             ));
@@ -40,6 +42,7 @@ public class DonorsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasSms,
+                criteria.HasSms.Not,
                 path.Join(data => data.Sms),
                 criteria.HasSms.Value
             ));
@@ -49,6 +52,7 @@ public class DonorsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasCnvs,
+                criteria.HasCnvs.Not,
                 path.Join(data => data.Cnvs),
                 criteria.HasCnvs.Value
             ));
@@ -58,6 +62,7 @@ public class DonorsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasSvs,
+                criteria.HasSvs.Not,
                 path.Join(data => data.Svs),
                 criteria.HasSvs.Value
             ));
@@ -67,6 +72,7 @@ public class DonorsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasMeth,
+                criteria.HasMeth.Not,
                 path.Join(data => data.Meth),
                 criteria.HasMeth.Value
             ));

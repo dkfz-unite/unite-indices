@@ -34,14 +34,14 @@ public class MultiPropertyEqualityFilter<T, TProp> : IFilter<T> where T : class
 
     public MultiPropertyEqualityFilter(
         string name,
-        bool not,
+        bool? not,
         Expression<Func<T, TProp>> property1,
         Expression<Func<T, TProp>> property2,
         Expression<Func<T, TProp>> property3,
         IEnumerable<TProp> values)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Property1 = property1;
         Property2 = property2;
@@ -67,14 +67,14 @@ public class MultiPropertyEqualityFilter<T, TProp> : IFilter<T> where T : class
 
     public MultiPropertyEqualityFilter(
             string name,
-            bool not,
+            bool? not,
             Expression<Func<T, TProp>> property1,
             Expression<Func<T, TProp>> property2,
             Expression<Func<T, TProp>> property3,
             TProp value)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Property1 = property1;
         Property2 = property2;

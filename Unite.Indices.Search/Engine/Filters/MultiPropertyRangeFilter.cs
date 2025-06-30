@@ -35,14 +35,14 @@ public class MultiPropertyRangeFilter<T, TProp> : IFilter<T> where T : class
 
     public MultiPropertyRangeFilter(
         string name,
-        bool not,
+        bool? not,
         Expression<Func<T, TProp>> propertyFrom,
         Expression<Func<T, TProp>> propertyTo,
         double? valueFrom,
         double? valueTo)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         PropertyFrom = propertyFrom;
         PropertyTo = propertyTo;

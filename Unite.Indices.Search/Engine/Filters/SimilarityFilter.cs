@@ -23,10 +23,10 @@ public class SimilarityFilter<T, TProp> : IFilter<T> where T : class
         Values = values;
     }
 
-    public SimilarityFilter(string name, bool not, Expression<Func<T, TProp>> property, IEnumerable<string> values)
+    public SimilarityFilter(string name, bool? not, Expression<Func<T, TProp>> property, IEnumerable<string> values)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Property = property;
         Values = values;

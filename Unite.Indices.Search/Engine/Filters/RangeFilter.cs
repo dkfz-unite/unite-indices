@@ -25,10 +25,10 @@ public class RangeFilter<T, TProp> : IFilter<T> where T : class
         To = to;
     }
 
-    public RangeFilter(string name, bool not, Expression<Func<T, TProp>> property, double? from, double? to)
+    public RangeFilter(string name, bool? not, Expression<Func<T, TProp>> property, double? from, double? to)
     {
         Name = name;
-        Not = not;
+        Not = not ?? false;
 
         Property = property;
         From = from;
