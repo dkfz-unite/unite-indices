@@ -50,7 +50,7 @@ public record SearchCriteria
         Cnv?.IsNotEmpty() == true ||
         Sv?.IsNotEmpty() == true;
 
-    public bool HasSsmFilters =>
+    public bool HasSmFilters =>
         Sm?.IsNotEmpty() == true;
     
     public bool HasCnvFilters =>
@@ -58,6 +58,31 @@ public record SearchCriteria
 
     public bool HasSvFilters =>
         Sv?.IsNotEmpty() == true;
+
+    public bool AreDonorFiltersNegative =>
+        Donor?.IsNegative() == true;
+
+    public bool AreImageFiltersNegative =>
+        Mr?.IsNegative() == true;
+
+    public bool AreSpecimenFiltersNegative =>
+        Material?.IsNegative() == true ||
+        Line?.IsNegative() == true ||
+        Organoid?.IsNegative() == true ||
+        Xenograft?.IsNegative() == true;
+
+    public bool AreGeneFiltersNegative =>
+        Gene?.IsNegative() == true;
+
+    public bool AreSmFiltersNegative =>
+        Sm?.IsNegative() == true;
+
+    public bool AreCnvFiltersNegative =>
+        Cnv?.IsNegative() == true;
+
+    public bool AreSvFiltersNegative =>
+        Sv?.IsNegative() == true;
+        
 
     public SearchCriteria()
     {

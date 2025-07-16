@@ -7,7 +7,7 @@ namespace Unite.Indices.Search.Engine.Filters;
 public class MultiPropertyEqualityFilter<T, TProp> : IFilter<T> where T : class
 {
     public string Name { get; }
-    public bool Not { get; }
+    public bool Not { get; set; }
     public bool IsEmpty => Values?.Any() != true;
 
     public Expression<Func<T, TProp>> Property1 { get; }

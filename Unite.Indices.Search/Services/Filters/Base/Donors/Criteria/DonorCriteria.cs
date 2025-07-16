@@ -19,23 +19,4 @@ public record DonorCriteria : DonorsCriteria
     public BoolCriteria MtaProtected { get; set; }
     public ValuesCriteria<string> Project { get; set; }
     public ValuesCriteria<string> Study { get; set; }
-
-
-    public override bool IsNotEmpty()
-    {
-        return base.IsNotEmpty()
-            || Sex?.IsNotEmpty() == true
-            || Age?.IsNotEmpty() == true
-            || Diagnosis?.IsNotEmpty() == true
-            || PrimarySite?.IsNotEmpty() == true
-            || Localization?.IsNotEmpty() == true
-            || VitalStatus?.IsNotEmpty() == true
-            || VitalStatusChangeDay?.IsNotEmpty() == true
-            || ProgressionStatus?.IsNotEmpty() == true
-            || ProgressionStatusChangeDay?.IsNotEmpty() == true
-            || Therapy?.IsNotEmpty() == true
-            || MtaProtected?.IsNotEmpty() == true
-            || Project?.IsNotEmpty() == true
-            || Study?.IsNotEmpty() == true;
-    }
 }

@@ -23,6 +23,7 @@ public class VariantsFilters<T> : FiltersCollection<T>
         {
             Add(new EqualityFilter<T, int>(
                 FilterNames.Id,
+                criteria.Id.Not,
                 path.Join(variant => variant.Id),
                 criteria.Id.Value
             ));

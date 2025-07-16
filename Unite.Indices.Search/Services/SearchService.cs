@@ -78,87 +78,124 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     protected abstract void AddToStats(ref Dictionary<object, DataIndex> stats, T index);
 
-    protected async Task<string[]> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new DonorFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
 
         var aggregation = await AggregateFromDonors(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    public async Task<string[]> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, SearchCriteria criteria)
+    public async Task<string[]> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new ImageFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
 
         var aggregation = await AggregateFromImages(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new SpecimenFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
 
         var aggregation = await AggregateFromSpecimens(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new GeneFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
 
         var aggregation = await AggregateFromGenes(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new SmFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
 
         var aggregation = await AggregateFromSms(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new CnvFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
 
         var aggregation = await AggregateFromCnvs(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, SearchCriteria criteria)
+    protected async Task<string[]> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new SvFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
 
         var aggregation = await AggregateFromSvs(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected static DonorCriteria Set(DonorCriteria criteria, int[] ids)
+    protected static DonorCriteria Set(DonorCriteria criteria, int[] ids, bool? exclude = null)
     {
-        return (criteria ?? new DonorCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids)) };
+        return (criteria ?? new DonorCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids), exclude) };
     }
 
-    protected static ImagesCriteria Set(ImagesCriteria criteria, int[] ids)
+    protected static ImagesCriteria Set(ImagesCriteria criteria, int[] ids, bool? exclude = null)
     {
-        return (criteria ?? new ImagesCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids)) };
+        return (criteria ?? new ImagesCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids), exclude) };
     }
 
-    protected static SpecimensCriteria Set(SpecimensCriteria criteria, int[] ids)
+    protected static SpecimensCriteria Set(SpecimensCriteria criteria, int[] ids, bool? exclude = null)
     {
-        return (criteria ?? new SpecimensCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids)) };
+        return (criteria ?? new SpecimensCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids), exclude) };
     }
 
-    protected static GeneCriteria Set(GeneCriteria criteria, int[] ids)
+    protected static GeneCriteria Set(GeneCriteria criteria, int[] ids, bool? exclude = null)
     {
-        return (criteria ?? new GeneCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids)) };
+        return (criteria ?? new GeneCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids), exclude) };
+    }
+
+    protected static int[] Intersect(int[] a, int[] b)
+    {
+        if (a == null || a.Length == 0)
+            return b;
+        else
+            return a.Intersect(b).ToArray();
+    }
+
+    protected static int[] Subtract(int[] a, int[] b)
+    {
+        if (a == null || a.Length == 0)
+            return [];
+        else
+            return a.Except(b).ToArray();
     }
 
 
@@ -290,13 +327,5 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         var result = await _svsIndexService.Search(query);
 
         return result.Aggregations[aggregationName];
-    }
-    
-    private static int[] Intersect(int[] a, int[] b)
-    {        
-        if (a == null || a.Length == 0)
-            return b;
-        else
-            return a.Intersect(b).ToArray();
     }
 }

@@ -25,6 +25,7 @@ public class SvFilters<T> : VariantFilters<T, SvIndex> where T : class
 
             Add(new MultiPropertyRangeFilter<T, int>(
                 FilterNames.Position,
+                criteria.Position.Not,
                 path.Join(variant => variant.End),
                 path.Join(variant => variant.OtherStart),
                 criteria.Position.Value?.From,
@@ -36,6 +37,7 @@ public class SvFilters<T> : VariantFilters<T, SvIndex> where T : class
         {
             Add(new EqualityFilter<T, object>(
                 FilterNames.Type,
+                criteria.Type.Not,
                 path.Join(variant => variant.Type.Suffix(_keywordSuffix)),
                 criteria.Type.Value
             ));
@@ -45,6 +47,7 @@ public class SvFilters<T> : VariantFilters<T, SvIndex> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.Inverted,
+                criteria.Inverted.Not,
                 path.Join(variant => variant.Inverted),
                 criteria.Inverted.Value
             ));

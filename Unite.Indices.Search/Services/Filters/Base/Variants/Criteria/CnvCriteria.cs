@@ -7,12 +7,4 @@ public record CnvCriteria : VariantCriteria
     public ValuesCriteria<string> Type { get; set; }
     public BoolCriteria Loh { get; set; }
     public BoolCriteria Del { get; set; }
-
-    public override bool IsNotEmpty()
-    {
-        return base.IsNotEmpty()
-            || Type?.IsNotEmpty() == true
-            || Loh?.IsNotEmpty() == true
-            || Del?.IsNotEmpty() == true;
-    }
 }

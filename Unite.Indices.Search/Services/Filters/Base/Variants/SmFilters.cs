@@ -23,6 +23,7 @@ public class SmFilters<T> : VariantFilters<T, SmIndex> where T : class
         {
             Add(new EqualityFilter<T, object>(
                 FilterNames.Type,
+                criteria.Type.Not,
                 path.Join(variant => variant.Type.Suffix(_keywordSuffix)),
                 criteria.Type.Value
             ));

@@ -6,7 +6,7 @@ namespace Unite.Indices.Search.Engine.Filters;
 public class MultiMatchFilter<T> : IFilter<T> where T : class
 {
     public string Name { get; }
-    public bool Not { get; }
+    public bool Not { get; set; }
     public bool IsEmpty => string.IsNullOrWhiteSpace(Value);
 
     public string Value { get; }

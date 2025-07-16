@@ -2,7 +2,7 @@ using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 
-public record ImagesCriteria
+public record ImagesCriteria : CriteriaCollection
 {
     public ValuesCriteria<int> Id { get; set; }
     public ValuesCriteria<string> ReferenceId { get; set; }
@@ -14,18 +14,4 @@ public record ImagesCriteria
     public BoolCriteria HasCnvs { get; set; }
     public BoolCriteria HasSvs { get; set; }
     public BoolCriteria HasMeth { get; set; }
-
-
-    public virtual bool IsNotEmpty()
-    {
-        return Id?.IsNotEmpty() == true
-            || ReferenceId?.IsNotEmpty() == true
-            || ImageType?.IsNotEmpty() == true
-            || HasExp?.IsNotEmpty() == true
-            || HasExpSc?.IsNotEmpty() == true
-            || HasSms?.IsNotEmpty() == true
-            || HasCnvs?.IsNotEmpty() == true
-            || HasSvs?.IsNotEmpty() == true
-            || HasMeth?.IsNotEmpty() == true;
-    }
 }

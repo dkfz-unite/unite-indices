@@ -22,6 +22,7 @@ public class ProjectsFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new EqualityFilter<T, int>(
                 FilterNames.Id,
+                criteria.Id.Not,
                 path.Join(project => project.Id),
                 criteria.Id.Value
             ));
@@ -31,6 +32,7 @@ public class ProjectsFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Name,
+                criteria.Name.Not,
                 path.Join(project => project.Name),
                 criteria.Name.Value
             ));

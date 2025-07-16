@@ -22,6 +22,7 @@ public class GenesFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new EqualityFilter<T, int>(
                 FilterNames.Id,
+                criteria.Id.Not,
                 path.Join(gene => gene.Id),
                 criteria.Id.Value
             ));

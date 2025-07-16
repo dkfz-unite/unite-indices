@@ -2,7 +2,7 @@ using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Projects.Criteria;
 
-public class ProjectsCriteria
+public record ProjectsCriteria : CriteriaCollection
 {
     public ValuesCriteria<int> Id { get; set; }
     public ValuesCriteria<string> Name { get; set; }
@@ -13,17 +13,4 @@ public class ProjectsCriteria
     public BoolCriteria HasCnvs { get; set; }
     public BoolCriteria HasSvs { get; set; }
     public BoolCriteria HasMeth { get; set; }
-
-
-    public virtual bool IsNotEmpty()
-    {
-        return Id?.IsNotEmpty() == true
-            || Name?.IsNotEmpty() == true
-            || HasExp?.IsNotEmpty() == true
-            || HasExpSc?.IsNotEmpty() == true
-            || HasSms?.IsNotEmpty() == true
-            || HasCnvs?.IsNotEmpty() == true
-            || HasSvs?.IsNotEmpty() == true
-            || HasMeth?.IsNotEmpty() == true;
-    }
 }

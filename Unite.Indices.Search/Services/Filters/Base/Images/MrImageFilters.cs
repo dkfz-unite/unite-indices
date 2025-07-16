@@ -22,6 +22,7 @@ public class MrImageFilters<T> : ImageFilters<T, MrImageIndex> where T : class
         {
             Add(new RangeFilter<T, double?>(
                 FilterNames.WholeTumor,
+                criteria.WholeTumor.Not,
                 path.Join(image => image.WholeTumor),
                 criteria.WholeTumor.Value?.From,
                 criteria.WholeTumor.Value?.To
@@ -32,6 +33,7 @@ public class MrImageFilters<T> : ImageFilters<T, MrImageIndex> where T : class
         {
             Add(new RangeFilter<T, double?>(
                 FilterNames.ContrastEnhancing,
+                criteria.ContrastEnhancing.Not,
                 path.Join(image => image.ContrastEnhancing),
                 criteria.ContrastEnhancing?.Value.From,
                 criteria.ContrastEnhancing?.Value.To
@@ -42,6 +44,7 @@ public class MrImageFilters<T> : ImageFilters<T, MrImageIndex> where T : class
         {
             Add(new RangeFilter<T, double?>(
                 FilterNames.NonContrastEnhancing,
+                criteria.NonContrastEnhancing.Not,
                 path.Join(image => image.NonContrastEnhancing),
                 criteria.NonContrastEnhancing?.Value.From,
                 criteria.NonContrastEnhancing?.Value.To

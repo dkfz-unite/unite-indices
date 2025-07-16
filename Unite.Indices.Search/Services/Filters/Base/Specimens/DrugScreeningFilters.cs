@@ -22,6 +22,7 @@ public class DrugScreeningFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Drug,
+                criteria.Drug.Not,
                 path.Join(screenings => screenings.First().Drug),
                 criteria.Drug.Value
             ));
@@ -31,6 +32,7 @@ public class DrugScreeningFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new RangeFilter<T, double?>(
                 FilterNames.Dss,
+                criteria.Dss.Not,
                 path.Join(screenings => screenings.First().Dss),
                 criteria.Dss.Value?.From,
                 criteria.Dss.Value?.To
@@ -41,6 +43,7 @@ public class DrugScreeningFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new RangeFilter<T, double?>(
                 FilterNames.DssS,
+                criteria.DssS.Not,
                 path.Join(screenings => screenings.First().DssS),
                 criteria.DssS.Value?.From,
                 criteria.DssS.Value?.To

@@ -9,14 +9,4 @@ public record MaterialCriteria : SpecimenCriteria
     public ValuesCriteria<string> TumorType { get; set; }
     public RangeCriteria<double?> TumorGrade { get; set; }
     public ValuesCriteria<string> Source { get; set; }
-
-    public override bool IsNotEmpty()
-    {
-        return base.IsNotEmpty()
-            || Type?.IsNotEmpty() == true
-            || FixationType?.IsNotEmpty() == true
-            || TumorType?.IsNotEmpty() == true
-            || TumorGrade?.IsNotEmpty() == true
-            || Source?.IsNotEmpty() == true;
-    }
 }

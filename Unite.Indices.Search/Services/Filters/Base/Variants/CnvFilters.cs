@@ -23,6 +23,7 @@ public class CnvFilters<T> : VariantFilters<T, CnvIndex> where T : class
         {
             Add(new EqualityFilter<T, object>(
                 FilterNames.Type,
+                criteria.Type.Not,
                 path.Join(variant => variant.Type.Suffix(_keywordSuffix)),
                 criteria.Type.Value
             ));
@@ -32,6 +33,7 @@ public class CnvFilters<T> : VariantFilters<T, CnvIndex> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.Loh,
+                criteria.Loh.Not,
                 path.Join(variant => variant.Loh),
                 criteria.Loh.Value
             ));
@@ -41,6 +43,7 @@ public class CnvFilters<T> : VariantFilters<T, CnvIndex> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.Del,
+                criteria.Del.Not,
                 path.Join(variant => variant.Del),
                 criteria.Del.Value
             ));

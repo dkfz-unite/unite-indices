@@ -13,7 +13,7 @@ public class ValuesCriteria<T> : Criteria<T[]>
     {
     }
 
-    public ValuesCriteria(T[] value) : base(value)
+    public ValuesCriteria(T[] value, bool? not = null) : base(value, not)
     {
     }
 }

@@ -2,7 +2,7 @@ using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
-public record SpecimensCriteria
+public record SpecimensCriteria : CriteriaCollection
 {
     public ValuesCriteria<int> Id { get; init; }
     public ValuesCriteria<string> ReferenceId { get; init; }
@@ -14,18 +14,4 @@ public record SpecimensCriteria
     public BoolCriteria HasCnvs { get; set; }
     public BoolCriteria HasSvs { get; set; }
     public BoolCriteria HasMeth { get; set; }
-
-
-    public virtual bool IsNotEmpty()
-    {
-        return Id?.IsNotEmpty() == true
-            || ReferenceId?.IsNotEmpty() == true
-            || SpecimenType?.IsNotEmpty() == true
-            || HasExp?.IsNotEmpty() == true
-            || HasExpSc?.IsNotEmpty() == true
-            || HasSms?.IsNotEmpty() == true
-            || HasCnvs?.IsNotEmpty() == true
-            || HasSvs?.IsNotEmpty() == true
-            || HasMeth?.IsNotEmpty() == true;
-    }
 }
