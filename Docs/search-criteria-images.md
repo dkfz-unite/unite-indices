@@ -4,14 +4,14 @@ Common image filters criteria. Allows to filter the data by general image criter
 ```jsonc
 {
     // General filters
-    "id": [1, 2, 3],
-    "type": ["MR", "CT"],
+    "id": { "value": [1, 2, 3] },
+    "type": { "value": ["MR", "CT"] },
 
     // Data availability filters
-    "hasSms": true,
-    "hasCnvs": true,
-    "hasSvs": true,
-    "hasGeneExp": true
+    "hasSms": { "value": true },
+    "hasCnvs": { "value": true },
+    "hasSvs": { "value": true },
+    "hasGeneExp": { "value": true }
 }
 ```
 
@@ -21,15 +21,13 @@ General image filters applicable to any type of the index.
 
 **`id`** - Internal image identifier.
 - Description: Allows to filter images by internal identifiers.
-- Type: Integer[].
-- Filter: **Equals**.
-- Example: `[1, 2, 3]`.
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": [1, 2, 3], "not": false }`.
 
 **`type`** - Type of the image.
 - Options: `MR`, `CT`.
-- Type: String[].
-- Filter: **Options**.
-- Example: `["MR"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["MR"], "not": false }`
 
 ### Image Types
 - `MR` - Magnetic resonance image.
@@ -40,45 +38,43 @@ General image filters applicable to any type of the index.
 Special filters applicable only to image-centric index.
 
 **`hasSms`** - Whether or not any image related specimen has simple mutations data available.
-- Type: Boolean (`true` - has data, `false` - no data).
-- Filter: **Equals**.
-- Example: `true`.
+- Values: `true` - has data, `false` - no data.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`
 
 **`hasCnvs`** - Whether or not any image related specimen has copy number variations data available.
-- Type: Boolean (`true` - has data, `false` - no data).
-- Filter: **Equals**.
-- Example: `true`.
+- Values: `true` - has data, `false` - no data.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`.
 
 **`hasSvs`** - Whether or not any image related specimen has structural variants data available.
-- Type: Boolean (`true` - has data, `false` - no data).
-- Filter: **Equals**.
-- Example: `true`.
+- Values: `true` - has data, `false` - no data.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`.
 
 **`hasGeneExp`** - Whether or not any image related specimen has bulk gene expression data available.
-- Type: Boolean (`true` - has data, `false` - no data).
-- Filter: **Equals**.
-- Example: `true`.
+- Values: `true` - has data, `false` - no data.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`.
 
 
 ## Example 1
 Data, where images are `MR` images **and** they have all types of the variants data associated.
-
 ```json
 {
-    "type": ["MR"],
-    "hasSms": true,
-    "hasCnvs": true,
-    "hasSvs": true
+    "type": { "value": ["MR"] },
+    "hasSms": { "value": true },
+    "hasCnvs": { "value": true },
+    "hasSvs": { "value": true }
 }
 ```
 
 ## Example 2
 Data, where image ID's are `1` **or** `2` and they have bulk gene expression data available.
-
 ```json
 {
-    "id": [1, 2],
-    "hasGeneExp": true
+    "id": { "value": [1, 2] },
+    "hasGeneExp": { "value": true }
 }
 ```
 

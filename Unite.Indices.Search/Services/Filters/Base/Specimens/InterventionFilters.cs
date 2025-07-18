@@ -22,8 +22,9 @@ public class InterventionFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Intervention,
+                criteria.Intervention.Not,
                 path.Join(intervention => intervention.First().Type),
-                criteria.Intervention
+                criteria.Intervention.Value
             ));
         }
     }

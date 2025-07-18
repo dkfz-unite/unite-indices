@@ -22,8 +22,9 @@ public class DonorsFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new EqualityFilter<T, int>(
                 FilterNames.Id,
+                criteria.Id.Not,
                 path.Join(donor => donor.Id),
-                criteria.Id
+                criteria.Id.Value
             ));
         }
 
@@ -31,8 +32,9 @@ public class DonorsFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.ReferenceId,
+                criteria.ReferenceId.Not,
                 path.Join(donor => donor.ReferenceId),
-                criteria.ReferenceId
+                criteria.ReferenceId.Value
             ));
         }
     }

@@ -4,11 +4,11 @@ Xenograft filters criteria. Allows to filter the data by xenograft specific crit
 ```jsonc
 {
     // Xenograft specific filters
-    "mouseStrain": ["NOD/SCID"],
-    "intervention": ["Metalisonib"],
-    "survivalDays": { "from": 10, "to": 20 },
-    "tumorigenicity": true,
-    "tumorGrowthForm": ["Encapsulated", "Ivasive"]
+    "mouseStrain": { "value": ["NOD/SCID"] },
+    "intervention": { "value": ["Metalisonib"] },
+    "survivalDays": { "value": { "from": 10, "to": 20 } },
+    "tumorigenicity": { "value": true },
+    "tumorGrowthForm": { "value": ["Encapsulated", "Ivasive"] }
 }
 ```
 
@@ -17,50 +17,44 @@ Xenograft filters criteria. Allows to filter the data by xenograft specific crit
 General xenograft filters applicable to any type of the index.
 
 **`mouseStrain`** - Mouse strain used for xenograft.
-- Type: String[].
-- Filter: **Like**.
-- Example: `["NOD/SCID"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["NOD/SCID"] }`
 
 **`intervention`** - Intervention type.
-- Type: String[].
-- Filter: **Like**.
-- Example: `["Metalisonib"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Metalisonib"] }`
 
 **`survivalDays`** - Survival days range.
-- Type: Range\<Integer\>
-- Filter: **Range**.
-- Example: `{ "from": 10, "to": 20 }`
+- Filter: [Range](./search-criteria.md#range-criteria).
+- Example: `{ "value": { "from": 10, "to": 20 } }`
 
 **`tumorigenicity`** - Does tumour grow in xenograft or not.
-- Type: Boolean (`true` - yes, `false` - no).
-- Filter: **Equals**.
-- Example: `true`
+- Values: `true` - tumour grows, `false` - no tumour growth.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`
 
 **`tumorGrowthForm`** - Tumor growth form.
 - Options: `Encapsulated`, `Ivasive`.
-- Type: String[].
-- Filter: **Options**.
-- Example: `["Encapsulated"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Encapsulated"] }`
 
 
 ## Example 1
 Data, where mouse strain is `NOD/SCID` **and** intervention type is `Metalisonib`.
-
 ```json
 {
-    "mouseStrain": ["NOD/SCID"],
-    "intervention": ["Metalisonib"]
+    "mouseStrain": { "value": ["NOD/SCID"] },
+    "intervention": { "value": ["Metalisonib"] }
 }
 ```
 
 ## Example 2
 Data, where mouse strain is `NOD/SCID` **and** intervention type is `Metalisonib` **or** `Cloxinomab` **and** MGMT status is `Methylated`.
-
 ```json
 {
-    "mouseStrain": ["NOD/SCID"],
-    "intervention": ["Metalisonib", "Cloxinomab"],
-    "mgmtStatus": ["Methylated"]
+    "mouseStrain": { "value": ["NOD/SCID"] },
+    "intervention": { "value": ["Metalisonib", "Cloxinomab"] },
+    "mgmtStatus": { "value": ["Methylated"] }
 }
 ```
 

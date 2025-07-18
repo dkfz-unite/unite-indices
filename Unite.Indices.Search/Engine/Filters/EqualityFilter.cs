@@ -7,6 +7,8 @@ namespace Unite.Indices.Search.Engine.Filters;
 public class EqualityFilter<T, TProp> : IFilter<T> where T : class
 {
     public string Name { get; }
+    public bool Not { get; set; }
+    public bool IsEmpty => Values?.Any() != true;
 
     public Expression<Func<T, TProp>> Property { get; }
     public IEnumerable<TProp> Values { get; }
@@ -15,6 +17,16 @@ public class EqualityFilter<T, TProp> : IFilter<T> where T : class
     public EqualityFilter(string name, Expression<Func<T, TProp>> property, IEnumerable<TProp> values)
     {
         Name = name;
+        Not = false;
+
+        Property = property;
+        Values = values;
+    }
+
+    public EqualityFilter(string name, bool? not, Expression<Func<T, TProp>> property, IEnumerable<TProp> values)
+    {
+        Name = name;
+        Not = not ?? false;
 
         Property = property;
         Values = values;
@@ -23,14 +35,24 @@ public class EqualityFilter<T, TProp> : IFilter<T> where T : class
     public EqualityFilter(string name, Expression<Func<T, TProp>> property, TProp value)
     {
         Name = name;
+        Not = false;
 
         Property = property;
-        Values = new TProp[] { value };
+        Values = [value];
+    }
+
+    public EqualityFilter(string name, bool? not, Expression<Func<T, TProp>> property, TProp value)
+    {
+        Name = name;
+        Not = not ?? false;
+
+        Property = property;
+        Values = [value];
     }
 
 
-    public void Apply(ISearchRequest<T> request)
+    public QueryContainer CreateQuery()
     {
-        request.AddTermsQuery(Property, Values);
+        return !IsEmpty ? QueryExtensions.CreateTermsQuery(Property, Values) : null;
     }
 }

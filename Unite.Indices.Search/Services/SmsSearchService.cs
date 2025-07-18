@@ -1,4 +1,5 @@
-﻿using Unite.Indices.Context.Configuration.Options;
+﻿using Unite.Essentials.Extensions;
+using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Variants;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
@@ -24,38 +25,79 @@ public class SmsSearchService : SearchService<SmIndex>
     {
         var criteria = searchCriteria;
 
+        var specimensToExclude = new HashSet<string>();
+
         if (criteria.HasDonorFilters)
         {
-            var ids = await AggregateFromDonors(index => index.Specimens.First().Id, criteria);
+            var exclusive = criteria.AreDonorFiltersNegative;
 
-            if (ids.Length > 0)
-                criteria.Specimen = Set(criteria.Specimen, ids.Select(int.Parse).ToArray());
+            var ids = await AggregateFromDonors(index => index.Specimens.First().Id, criteria, exclusive);
 
-            if (criteria.Specimen.Id.Length == 0)
-                return new SearchResult<SmIndex>();
+            if (exclusive)
+            {
+                specimensToExclude.AddRange(ids);
+            }
+            else
+            {
+                if (ids.Length > 0)
+                    criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+                else if (!exclusive)
+                    return new SearchResult<SmIndex>();
+
+                if (criteria.Specimen.Id.Length == 0)
+                    return new SearchResult<SmIndex>();
+            }
         }
 
         if (criteria.HasImageFilters)
         {
-            var ids = await AggregateFromImages(index => index.Specimens.First().Id, criteria with { Specimen = null });
+            var exclusive = criteria.AreImageFiltersNegative;
 
-            if (ids.Length > 0)
-                criteria.Specimen = Set(criteria.Specimen, ids.Select(int.Parse).ToArray());
+            var ids = await AggregateFromImages(index => index.Specimens.First().Id, criteria with { Specimen = null }, exclusive);
 
-            if (criteria.Specimen.Id.Length == 0)
-                return new SearchResult<SmIndex>();
+            if (exclusive)
+            {
+                specimensToExclude.AddRange(ids);
+            }
+            else
+            {
+                if (ids.Length > 0)
+                    criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+                else if (!exclusive)
+                    return new SearchResult<SmIndex>();
+
+                if (criteria.Specimen.Id.Length == 0)
+                    return new SearchResult<SmIndex>();
+            }
         }
 
         if (criteria.HasSpecimenFilters)
         {
-            var ids = await AggregateFromSpecimens(index => index.Id, criteria);
+            var exclusive = criteria.AreSpecimenFiltersNegative;
 
-            if (ids.Length > 0)
-                criteria.Specimen = Set(criteria.Specimen, ids.Select(int.Parse).ToArray());
+            var ids = await AggregateFromSpecimens(index => index.Id, criteria, exclusive);
 
-            if (criteria.Specimen.Id.Length == 0)
-                return new SearchResult<SmIndex>();
+            if (exclusive)
+            {
+                specimensToExclude.AddRange(ids);
+            }
+            else
+            {
+                if (ids.Length > 0)
+                    criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+                else if (!exclusive)
+                    return new SearchResult<SmIndex>();
+
+                if (criteria.Specimen.Id.Length == 0)
+                    return new SearchResult<SmIndex>();
+            }
         }
+
+        if (specimensToExclude.Count > 0)
+        {
+            criteria.Specimen = Set(criteria.Specimen, [.. specimensToExclude.Select(int.Parse)], true);
+        }
+        
 
         var filters = new SmFiltersCollection(criteria).All();
 

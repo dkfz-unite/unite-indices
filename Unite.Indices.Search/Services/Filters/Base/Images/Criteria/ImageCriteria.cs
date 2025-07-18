@@ -2,8 +2,4 @@
 
 public record ImageCriteria : ImagesCriteria
 {
-    public override bool IsNotEmpty()
-    {
-        return base.IsNotEmpty();
-    }
 }

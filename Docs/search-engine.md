@@ -16,76 +16,104 @@ There are different types of indices available, each has own structure most suit
 - [**Genes**](#genes-index) - genes centric index.
     - Allows to search for genes and their related information.
     - Index is populated by [Omics Feed](https://github.com/dkfz-unite/unite-omics-feed) service.
-- [**Variants**](#variants-index) - variants centric index.
-    - Allows to search for variants and their related information.
-    - All variants share the same index and can be of one of the following types: `SM`, `CNV`, or `SV`.
+- [**SMs**](#sms-index) - simple mutations centric index.
+    - Allows to search for simple mutations and their related information.
+    - Index is populated by [Omics Feed](https://github.com/dkfz-unite/unite-omics-feed) service.
+- [**CNVs**](#cnvs-index) - copy number variants centric index.
+    - Allows to search for copy number variants and their related information.
+    - Index is populated by [Omics Feed](https://github.com/dkfz-unite/unite-omics-feed) service.
+- [**SVs**](#svs-index) - structural variants centric index.
+    - Allows to search for structural variants and their related information.
     - Index is populated by [Omics Feed](https://github.com/dkfz-unite/unite-omics-feed) service.
 
 All the data in different indices can be filtered by cross reference search [criteria](./search-criteria.md).
 
 
 ## Donors Index
-Donors index does not iclude information about genes and variants. All gene and variant filters lead to subsequent aggregation query in corresponding indices, results are then merged with donors search results.
+Donors index has denormalized structure containing donor related information.  
+It also contains navigation fields to images and specimens associated with the donor, available data and statistics.  
+Specimens index contains information about related samples, their resources and available data.  
+Search requests containing other data types lead to subsequent aggregation queries in corresponding indices and merging of results.
 
 Index has the following structure:
-- [Donor](../Unite.Indices/Entities/Donors/DonorIndex.cs): [DonorBase](../Unite.Indices/Entities/Basic/Donors/DonorIndex.cs)
-    - Images - [ImageBase](../Unite.Indices/Entities/Basic/Images/ImageIndex.cs)[]
-    - Specimens - [SpecimenBase](../Unite.Indices/Entities/Basic/Specimens/SpecimenIndex.cs)[]
-    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs) availability fields
-    - Statistics - Statistics fields
-
-It means that a sigle donor can have multiple images and specimens associated with it. Data availability and statistics fields are pre-calculated during indexing process and depend on which data is assosiated with current donor. Donors can also have genes (expression data) and variants related to them, but they are in separate indices.
-
+- [Donor](../Unite.Indices/Entities/Donors/DonorIndex.cs)
+    - Images - [Image](../Unite.Indices/Entities/Donors/ImageIndex.cs)[]
+    - Specimens - [Specimen](../Unite.Indices/Entities/Donors/SpecimenIndex.cs)[]
+        - Samples - [Sample](../Unite.Indices/Entities/Donors/SampleIndex.cs)[]
+    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs)
+    - Statistics - [Stats](../Unite.Indices/Entities/Donors/StatsIndex.cs)
 
 ## Images Index
-Images index does not iclude information about genes and variants. All gene and variant filters lead to subsequent aggregation query in corresponding indices, results are then merged with images search results.
+Images index has denormalized structure containing image related information.  
+It also contains navigation fields to donor and specimens associated with the image, available data and statistics.  
+Specimens index contains information about related samples, their resources and available data.  
+Search requests containing other data types lead to subsequent aggregation queries in corresponding indices and merging of results.
 
 Index has the following structure:
-- [Image](../Unite.Indices/Entities/Images/ImageIndex.cs): [ImageBase](../Unite.Indices/Entities/Basic/Images/ImageIndex.cs)
-    - Donor - [DonorBase](../Unite.Indices/Entities/Basic/Donors/DonorIndex.cs)
-    - Specimens - [SpecimenBase](../Unite.Indices/Entities/Basic/Specimens/SpecimenIndex.cs)[]
-    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs) availability fields
-    - Statistics - Statistics fields
-
-It means that a sigle image can have single donor and multiple specimens associated with it. Data availability and statistics fields are pre-calculated during indexing process and depend on which data is assosiated with current image. Images can also have genes (expression data) and variants related to them, but they are in separate indices.
+- [Image](../Unite.Indices/Entities/Images/ImageIndex.cs)
+    - Donor - [Donor](../Unite.Indices/Entities/Images/DonorIndex.cs)
+    - Specimens - [Specimen](../Unite.Indices/Entities/Images/SpecimenIndex.cs)[]
+        - Samples - [Sample](../Unite.Indices/Entities/Images/SampleIndex.cs)[]
+    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs)
+    - Statistics - [Stats](../Unite.Indices/Entities/Images/StatsIndex.cs)
 
 ## Specimens Index
-Specimens index does not iclude information about genes and variants. All gene and variant filters lead to subsequent aggregation query in corresponding indices, results are then merged with specimens search results.
+Specimens index has denormalized structure containing specimen related information.  
+It also contains navigation fields to donor and images associated with the specimen, available data and statistics.  
+Specimens index contains information about related samples, their resources and available data.  
+Search requests containing other data types lead to subsequent aggregation queries in corresponding indices and merging of results.
 
 Index has the following structure:
-- [Specimen](../Unite.Indices/Entities/Specimens/SpecimenIndex.cs): [SpecimenBase](../Unite.Indices/Entities/Basic/Specimens/SpecimenIndex.cs)
-    - Donor - [DonorBase](../Unite.Indices/Entities/Basic/Donors/DonorIndex.cs)
-    - Images - [ImageBase](../Unite.Indices/Entities/Basic/Images/ImageIndex.cs)[]
-    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs) availability fields
-    - Statistics - Statistics fields
-
-It means that a sigle specimen can have single donor and multiple images associated with it. Data availability and statistics fields are pre-calculated during indexing process and depend on which data is assosiated with current specimen. Specimens can also have genes (expression data) and variants related to them, but they are in separate indices.
+- [Specimen](../Unite.Indices/Entities/Specimens/SpecimenIndex.cs)
+    - Donor - [Donor](../Unite.Indices/Entities/Specimens/DonorIndex.cs)
+    - Images - [Image](../Unite.Indices/Entities/Specimens/ImageIndex.cs)[]
+    - Samples - [Sample](../Unite.Indices/Entities/Specimens/SampleIndex.cs)[]
+    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs)
+    - Statistics - [Stats](../Unite.Indices/Entities/Specimens/StatsIndex.cs)
 
 ## Genes Index
-Genes index is self-contained and includes all information about associated entities. This is the most advanced index.
+Genes index has denormalized structure containing gene related information.  
+It also contains navigation fields to specimens having variants or expression data associated with the gene, available data and statistics.  
+Search requests containing other data types lead to subsequent aggregation queries in corresponding indices and merging of results.
 
 Index has the following structure:
-- [Gene](../Unite.Indices/Entities/Genes/GeneIndex.cs): [GeneBase](../Unite.Indices/Entities/Basic/Omics/GeneIndex.cs)
-    - Specimens - [SpecimenBase](../Unite.Indices/Entities/Basic/Specimens/SpecimenIndex.cs)[]
-        - Expression - [Expression](../Unite.Indices/Entities/Genes/BulkExpressionIndex.cs) data
-        - Donor - [DonorBase](../Unite.Indices/Entities/Basic/Donors/DonorIndex.cs)
-        - Images - [ImageBase](../Unite.Indices/Entities/Basic/Images/ImageIndex.cs)[]
-        - Variants - [VariantBase](../Unite.Indices/Entities/Basic/Omics/Variants/VariantIndex.cs)[]
-    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs) availability fields
-    - Statistics - Statistics fields
+- [Gene](../Unite.Indices/Entities/Genes/GeneIndex.cs)
+    - Specimens - [Specimen](../Unite.Indices/Entities/Genes/SpecimenIndex.cs)[]
+    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs)
+    - Statistics - [Stats](../Unite.Indices/Entities/Genes/StatisticsIndex.cs)
 
-It means that a sigle gene can be affected by multiple variants and have expression data in multiple specimens, where each specimen is associated with single donor and multiple images. Variants are associated with the gene during Ensembl VEP annotation process. Data availability and statistics fields are pre-calculated during indexing process and depend on which data is assosiated with current gene.
-
-## Variants Index
-Variants index is self-contained and includes information about associated entities (except gene expression data).
+## SMs Index
+SMs index has denormalized structure containing simple mutation related information.  
+It also contains navigation fields to specimens having variants associated with the simple mutation, available data and statistics.  
+SMs index includes information about affected genes.  
+Search requests containing other data types lead to subsequent aggregation queries in corresponding indices and merging of results.
 
 Index has the following structure:
-- [Variant](../Unite.Indices/Entities/Variants/VariantIndex.cs): [VariantBase](../Unite.Indices/Entities/Basic/Omics/Variants/VariantIndex.cs)
-    - Genes - [GeneBase](../Unite.Indices/Entities/Basic/Omics/GeneIndex.cs)[]
-    - Specimens - [SpecimenBase](../Unite.Indices/Entities/Basic/Specimens/SpecimenIndex.cs)[]
-        - Donor - [DonorBase](../Unite.Indices/Entities/Basic/Donors/DonorIndex.cs)
-        - Images - [ImageBase](../Unite.Indices/Entities/Basic/Images/ImageIndex.cs)[]
-    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs) availability fields
-    - Statistics - Statistics fields
+- [SM](../Unite.Indices/Entities/Variants/SmIndex.cs)
+    - Specimens - [Specimen](../Unite.Indices/Entities/Variants/SpecimenIndex.cs)[]
+    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs)
+    - Statistics - [Stats](../Unite.Indices/Entities/Variants/StatsIndex.cs)
 
-It means that a sigle variant can affect multiple genes and be present in multiple specimens, where each specimen is associated with single donor and multiple images. Genes are associated with the variant during Ensembl VEP annotation process as affected transcripts. Data availability and statistics fields are pre-calculated during indexing process and depend on which data is assosiated with current variant. 
+## CNVs Index
+CNVs index has denormalized structure containing copy number variant related information.  
+It also contains navigation fields to specimens having variants associated with the copy number variant, available data and statistics.  
+CNVs index includes information about affected genes.  
+Search requests containing other data types lead to subsequent aggregation queries in corresponding indices and merging of results.
+
+Index has the following structure:
+- [CNV](../Unite.Indices/Entities/Variants/CnvIndex.cs)
+    - Specimens - [Specimen](../Unite.Indices/Entities/Variants/SpecimenIndex.cs)[]
+    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs)
+    - Statistics - [Stats](../Unite.Indices/Entities/Variants/StatsIndex.cs)
+
+## SVs Index
+SVs index has denormalized structure containing structural variant related information.  
+It also contains navigation fields to specimens having variants associated with the structural variant, available data and statistics.  
+SVs index includes information about affected genes.  
+Search requests containing other data types lead to subsequent aggregation queries in corresponding indices and merging of results.
+
+Index has the following structure:
+- [SV](../Unite.Indices/Entities/Variants/SvIndex.cs)
+    - Specimens - [Specimen](../Unite.Indices/Entities/Variants/SpecimenIndex.cs)[]
+    - Data - [Data](../Unite.Indices/Entities/DataIndex.cs)
+    - Statistics - [Stats](../Unite.Indices/Entities/Variants/StatsIndex.cs)

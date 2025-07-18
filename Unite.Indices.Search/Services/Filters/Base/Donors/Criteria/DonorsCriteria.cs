@@ -1,27 +1,16 @@
+using Unite.Indices.Search.Services.Filters.Criteria;
+
 namespace Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 
-public record DonorsCriteria
+public record DonorsCriteria : CriteriaCollection
 {
-    public int[] Id { get; set; }
-    public string[] ReferenceId { get; set; }
+    public ValuesCriteria<int> Id { get; set; }
+    public ValuesCriteria<string> ReferenceId { get; set; }
 
-    public bool? HasExp { get; set; }
-    public bool? HasExpSc { get; set; }
-    public bool? HasSms { get; set; }
-    public bool? HasCnvs { get; set; }
-    public bool? HasSvs { get; set; }
-    public bool? HasMeth { get; set; }
-
-
-    public virtual bool IsNotEmpty()
-    {
-        return Id?.Length > 0
-            || ReferenceId?.Length > 0
-            || HasExp != null
-            || HasExpSc != null
-            || HasSms != null
-            || HasCnvs != null
-            || HasSvs != null
-            || HasMeth != null;
-    }
+    public BoolCriteria HasExp { get; set; }
+    public BoolCriteria HasExpSc { get; set; }
+    public BoolCriteria HasSms { get; set; }
+    public BoolCriteria HasCnvs { get; set; }
+    public BoolCriteria HasSvs { get; set; }
+    public BoolCriteria HasMeth { get; set; }
 }

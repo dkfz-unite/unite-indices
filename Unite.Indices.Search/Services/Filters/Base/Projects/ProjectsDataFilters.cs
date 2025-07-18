@@ -22,8 +22,9 @@ public class ProjectsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasExp,
+                criteria.HasExp.Not,
                 path.Join(data => data.Exp),
-                criteria.HasExp
+                criteria.HasExp.Value
             ));
         }
 
@@ -31,8 +32,9 @@ public class ProjectsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasExpSc,
+                criteria.HasExpSc.Not,
                 path.Join(data => data.ExpSc),
-                criteria.HasExpSc
+                criteria.HasExpSc.Value
             ));
         }
 
@@ -40,8 +42,9 @@ public class ProjectsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasSms,
+                criteria.HasSms.Not,
                 path.Join(data => data.Sms),
-                criteria.HasSms
+                criteria.HasSms.Value
             ));
         }
 
@@ -49,8 +52,9 @@ public class ProjectsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasCnvs,
+                criteria.HasCnvs.Not,
                 path.Join(data => data.Cnvs),
-                criteria.HasCnvs
+                criteria.HasCnvs.Value
             ));
         }
 
@@ -58,8 +62,9 @@ public class ProjectsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasSvs,
+                criteria.HasSvs.Not,
                 path.Join(data => data.Svs),
-                criteria.HasSvs
+                criteria.HasSvs.Value
             ));
         }
 
@@ -67,8 +72,9 @@ public class ProjectsDataFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.HasMeth,
+                criteria.HasMeth.Not,
                 path.Join(data => data.Meth),
-                criteria.HasMeth
+                criteria.HasMeth.Value
             ));
         }
     }

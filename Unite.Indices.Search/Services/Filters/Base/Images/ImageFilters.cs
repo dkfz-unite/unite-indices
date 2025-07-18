@@ -24,8 +24,9 @@ public abstract class ImageFilters<T, TModel> : FiltersCollection<T>
         {
             Add(new EqualityFilter<T, int>(
                 FilterNames.Id,
+                criteria.Id.Not,
                 path.Join(image => image.Id),
-                criteria.Id
+                criteria.Id.Value
             ));
         }
 
@@ -33,8 +34,9 @@ public abstract class ImageFilters<T, TModel> : FiltersCollection<T>
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.ReferenceId,
+                criteria.ReferenceId.Not,
                 path.Join(image => image.ReferenceId),
-                criteria.ReferenceId
+                criteria.ReferenceId.Value
             ));
         }
     }

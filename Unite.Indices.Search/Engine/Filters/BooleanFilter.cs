@@ -7,6 +7,8 @@ namespace Unite.Indices.Search.Engine.Filters;
 public class BooleanFilter<T> : IFilter<T> where T : class
 {
     public string Name { get; }
+    public bool Not { get; set; }
+    public bool IsEmpty => Value == null;
 
     public Expression<Func<T, bool?>> Property { get; }
     public bool? Value { get; }
@@ -15,14 +17,24 @@ public class BooleanFilter<T> : IFilter<T> where T : class
     public BooleanFilter(string name, Expression<Func<T, bool?>> property, bool? value)
     {
         Name = name;
+        Not = false;
+
+        Property = property;
+        Value = value;
+    }
+
+    public BooleanFilter(string name, bool? not, Expression<Func<T, bool?>> property, bool? value)
+    {
+        Name = name;
+        Not = not ?? false;
 
         Property = property;
         Value = value;
     }
 
 
-    public void Apply(ISearchRequest<T> request)
+    public QueryContainer CreateQuery()
     {
-        request.AddBoolQuery(Property, Value);
+        return !IsEmpty ? QueryExtensions.CreateBoolQuery(Property, Value) : null;
     }
 }

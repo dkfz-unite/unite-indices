@@ -23,8 +23,9 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.ReferenceId,
+                criteria.ReferenceId.Not,
                 path.Join(donor => donor.ReferenceId),
-                criteria.ReferenceId
+                criteria.ReferenceId.Value
             ));
         }
 
@@ -32,8 +33,9 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Diagnosis,
+                criteria.Diagnosis.Not,
                 path.Join(donor => donor.ClinicalData.Diagnosis),
-                criteria.Diagnosis
+                criteria.Diagnosis.Value
             ));
         }
 
@@ -41,8 +43,9 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.PrimarySite,
+                criteria.PrimarySite.Not,
                 path.Join(donor => donor.ClinicalData.PrimarySite),
-                criteria.PrimarySite
+                criteria.PrimarySite.Value
             ));
         }
 
@@ -50,8 +53,9 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, string>(
                 FilterNames.Localization,
+                criteria.Localization.Not,
                 path.Join(donor => donor.ClinicalData.Localization),
-                criteria.Localization
+                criteria.Localization.Value
             ));
         }
 
@@ -59,8 +63,9 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new EqualityFilter<T, object>(
                 FilterNames.Sex,
+                criteria.Sex.Not,
                 path.Join(donor => donor.ClinicalData.Sex.Suffix(_keywordSuffix)),
-                criteria.Sex
+                criteria.Sex.Value
             ));
         }
 
@@ -68,9 +73,10 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new RangeFilter<T, int?>(
                 FilterNames.Age,
+                criteria.Age.Not,
                 path.Join(donor => donor.ClinicalData.Age),
-                criteria.Age?.From,
-                criteria.Age?.To
+                criteria.Age.Value?.From,
+                criteria.Age.Value?.To
             ));
         }
 
@@ -78,8 +84,9 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.VitalStatus,
+                criteria.VitalStatus.Not,
                 path.Join(donor => donor.ClinicalData.VitalStatus),
-                criteria.VitalStatus
+                criteria.VitalStatus.Value
             ));
         }
 
@@ -87,9 +94,10 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new RangeFilter<T, int?>(
                 FilterNames.VitalStatusChangeDay,
+                criteria.VitalStatusChangeDay.Not,
                 path.Join(donor => donor.ClinicalData.VitalStatusChangeDay),
-                criteria.VitalStatusChangeDay?.From,
-                criteria.VitalStatusChangeDay?.To
+                criteria.VitalStatusChangeDay?.Value.From,
+                criteria.VitalStatusChangeDay?.Value.To
             ));
         }
 
@@ -97,8 +105,9 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.ProgressionStatus,
+                criteria.ProgressionStatus.Not,
                 path.Join(donor => donor.ClinicalData.ProgressionStatus),
-                criteria.ProgressionStatus
+                criteria.ProgressionStatus.Value
             ));
         }
 
@@ -106,9 +115,10 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new RangeFilter<T, int?>(
                 FilterNames.ProgressionStatusChangeDay,
+                criteria.ProgressionStatusChangeDay.Not,
                 path.Join(donor => donor.ClinicalData.ProgressionStatusChangeDay),
-                criteria.ProgressionStatusChangeDay?.From,
-                criteria.ProgressionStatusChangeDay?.To
+                criteria.ProgressionStatusChangeDay?.Value.From,
+                criteria.ProgressionStatusChangeDay?.Value.To
             ));
         }
 
@@ -116,8 +126,9 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new SimilarityFilter<T, object>(
                FilterNames.Therapy,
+               criteria.Therapy.Not,
                path.Join(donor => donor.Treatments.First().Therapy.Suffix(_keywordSuffix)),
-               criteria.Therapy
+               criteria.Therapy.Value
            ));
         }
 
@@ -125,26 +136,29 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
         {
             Add(new BooleanFilter<T>(
                 FilterNames.MtaProtected,
+                criteria.MtaProtected.Not,
                 path.Join(donor => donor.MtaProtected),
-                criteria.MtaProtected
+                criteria.MtaProtected.Value
             ));
         }
 
         if (IsNotEmpty(criteria.Project))
         {
             Add(new SimilarityFilter<T, object>(
-               FilterNames.Project,
-               path.Join(donor => donor.Projects.First().Name.Suffix(_keywordSuffix)),
-               criteria.Project
+                FilterNames.Project,
+                criteria.Project.Not,
+                path.Join(donor => donor.Projects.First().Name.Suffix(_keywordSuffix)),
+                criteria.Project.Value
            ));
         }
 
         if (IsNotEmpty(criteria.Study))
         {
             Add(new SimilarityFilter<T, object>(
-               FilterNames.Study,
-               path.Join(donor => donor.Studies.First().Name.Suffix(_keywordSuffix)),
-               criteria.Study
+                FilterNames.Study,
+                criteria.Study.Not,
+                path.Join(donor => donor.Studies.First().Name.Suffix(_keywordSuffix)),
+                criteria.Study.Value
            ));
         }
     }

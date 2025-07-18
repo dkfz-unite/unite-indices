@@ -4,9 +4,9 @@ Organoid filters criteria. Allows to filter the data by organoid specific criter
 ```jsonc
 {
     // Organoid specific filters
-    "medium": ["StemCult"],
-    "intervention": ["Metalisonib"],
-    "tumorigenicity": true
+    "medium": { "value": ["StemCult"] },
+    "intervention": { "value": ["Metalisonib"] },
+    "tumorigenicity": { "value": true }
 }
 ```
 
@@ -15,39 +15,35 @@ Organoid filters criteria. Allows to filter the data by organoid specific criter
 General organoid filters applicable to any type of the index.
 
 **`medium`** - Nutrient solution to support the growth and differentiation of organoid.
-- Type: String[].
-- Filter: **Like**.
-- Example: `["StemCult"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["StemCult"] }`
 
 **`intervention`** - Intervention type.
-- Type: String[].
-- Filter: **Like**.
-- Example: `["Metalisonib"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Metalisonib"] }`
 
 **`tumorigenicity`** - Does tumour grow in organoid or not.
-- Type: Boolean (`true` - yes, `false` - no).
-- Filter: **Equals**.
-- Example: `true`
+- Values: `true` - tumour grows, `false` - no tumour growth.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`
 
 
 ## Example 1
 Data, where organoid medium is `StemCult` **and** intervention type is `Metalisonib`.
-
 ```json
 {
-    "medium": ["StemCult"],
-    "intervention": ["Metalisonib"]
+    "medium": { "value": ["StemCult"] },
+    "intervention": { "value": ["Metalisonib"] }
 }
 ```
 
 ## Example 2
 Data, where organoid medium is `StemCult` **and** intervention type is `Metalisonib` **or** `Cloxinomab` **and** MGMT status is `Methylated`.
-
 ```json
 {
-    "medium": ["StemCult"],
-    "intervention": ["Metalisonib", "Cloxinomab"],
-    "mgmtStatus": ["Methylated"]
+    "medium": { "value": ["StemCult"] },
+    "intervention": { "value": ["Metalisonib", "Cloxinomab"] },
+    "mgmtStatus": { "value": ["Methylated"] }
 }
 ```
 

@@ -98,10 +98,7 @@ public static class RequestExtensions
         }
         else
         {
-            request.Sort = new List<ISort>
-            {
-                sort
-            };
+            request.Sort = [ sort ];
         }
     }
 }

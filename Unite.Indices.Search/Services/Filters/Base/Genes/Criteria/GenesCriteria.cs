@@ -1,19 +1,12 @@
+using Unite.Indices.Search.Services.Filters.Criteria;
+
 namespace Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
 
-public record GenesCriteria
+public record GenesCriteria : CriteriaCollection
 {
-    public int[] Id { get; set; }
+    public ValuesCriteria<int> Id { get; set; }
 
-    public bool? HasSms { get; set; }
-    public bool? HasCnvs { get; set; }
-    public bool? HasSvs { get; set; }
-
-
-    public virtual bool IsNotEmpty()
-    {
-        return Id?.Length > 0
-            || HasSms != null
-            || HasCnvs != null
-            || HasSvs != null;
-    }
+    public BoolCriteria HasSms { get; set; }
+    public BoolCriteria HasCnvs { get; set; }
+    public BoolCriteria HasSvs { get; set; }
 }

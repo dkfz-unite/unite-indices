@@ -1,5 +1,5 @@
 ﻿using Unite.Indices.Search.Engine.Filters;
-using Unite.Indices.Search.Services.Filters.Criteria.Models;
+using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base;
 
@@ -30,6 +30,22 @@ public abstract class FiltersCollection<T> where T : class
         }
     }
 
+    public virtual bool MakePositive()
+    {
+        var reverted = false;
+
+        foreach (var filter in _filters)
+        {
+            if (filter.Not == true)
+            {
+                filter.Not = false;
+                reverted = true;
+            }
+        }
+
+        return reverted;
+    }
+
     public virtual bool Any()
     {
         return _filters.Any();
@@ -45,59 +61,8 @@ public abstract class FiltersCollection<T> where T : class
         return _filters.Where(filter => !filterNames.Contains(filter.Name));
     }
 
-
-    protected virtual bool IsNotEmpty(params string[] values)
+    protected virtual bool IsNotEmpty<TProp>(Criteria<TProp> criteria)
     {
-        return values?.Any(value => !string.IsNullOrWhiteSpace(value)) == true;
-    }
-
-    protected virtual bool IsNotEmpty(params bool[] values)
-    {
-        return values?.Any() == true;
-    }
-
-    protected virtual bool IsNotEmpty(params bool?[] values)
-    {
-        return values?.Any(value => value.HasValue) == true;
-    }
-
-    protected virtual bool IsNotEmpty(params byte[] values)
-    {
-        return values?.Any() == true;
-    }
-
-    protected virtual bool IsNotEmpty(params byte?[] values)
-    {
-        return values?.Any(value => value.HasValue) == true;
-    }
-
-    protected virtual bool IsNotEmpty(params int[] values)
-    {
-        return values?.Any() == true;
-    }
-
-    protected virtual bool IsNotEmpty(params int?[] values)
-    {
-        return values?.Any(value => value.HasValue) == true;
-    }
-
-    protected virtual bool IsNotEmpty(params double[] values)
-    {
-        return values?.Any() == true;
-    }
-
-    protected virtual bool IsNotEmpty(params double?[] values)
-    {
-        return values?.Any(value => value.HasValue) == true;
-    }
-
-    protected virtual bool IsNotEmpty(Range<int?> range)
-    {
-        return range?.From.HasValue == true || range?.To.HasValue == true;
-    }
-
-    protected virtual bool IsNotEmpty(Range<double?> range)
-    {
-        return range?.From.HasValue == true || range?.To.HasValue == true;
+        return criteria?.IsNotEmpty() == true;
     }
 }

@@ -4,9 +4,11 @@ Material filters criteria. Allows to filter the data by material specific criter
 ```jsonc
 {
     // Material specific filters
-    "type": ["Normal", "Tumor"],
-    "tumorType": ["Primary", "Recurrent", "Metastasis"],
-    "source": ["Tissue"]
+    "type": { "value": ["Normal", "Tumor"] },
+    "tumorType": { "value": ["Primary", "Recurrent", "Metastasis"] },
+    "tumorGrade": { "value": { "from": 1, "to": 4 } },
+    "fixationType": { "value": ["FFPE", "Fresh Frozen"] },
+    "source": { "value": ["Tissue"] }
 }
 ```
 
@@ -16,41 +18,36 @@ General material filters applicable to any type of the index.
 
 **`type`** - Type of the material.
 - Options: `Normal`, `Tumor`.
-- Type: String[].
-- Filter: **Options**.
-- Example: `["Tumor"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Tumor"] }`
 
 **`tumorType`** - Type of the tumor.
 - Note: Can be set only if `type` is set to `Tumor`.
 - Options: `Primary`, `Recurrent`, `Metastasis`.
-- Type: String[].
-- Filter: **Options**.
-- Example: `["Primary"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Primary"] }`
 
 **`source`** - Source of the material.
-- Type: String[].
-- Filter: **Like**.
-- Example: `["Tissue"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Tissue"] }`
 
 
 ## Example 1
 Data, where material type is `Tumor` **and** tumor type is `Primary`.
-
 ```json
 {
-    "type": ["Tumor"],
-    "tumorType": ["Primary"]
+    "type": { "value": ["Tumor"] },
+    "tumorType": { "value": ["Primary"] }
 }
 ```
 
 ## Example 2
-Data, where material type is `Normal` **and** source is `Boold derived` **or** `Solid tissue` **and** MGMT status is `Methylated`.
-
+Data, where material type is `Normal` **and** source is `Blood derived` **or** `Solid tissue` **and** MGMT status is `Methylated`.
 ```json
 {
-    "type": ["Control"],
-    "source": ["Blood derived", "Solid tissue"],
-    "mgmtStatus": ["Methylated"]
+    "type": { "value": ["Control"] },
+    "source": { "value": ["Blood derived", "Solid tissue"] },
+    "mgmtStatus": { "value": ["Methylated"] }
 }
 ```
 
