@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unite.Indices.Context", "Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unite.Indices.Search", "Unite.Indices.Search\Unite.Indices.Search.csproj", "{193BC08C-C577-476A-B897-929D804E36A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unite.Indices.Tests", "Unite.Indices.Tests\Unite.Indices.Tests.csproj", "{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,18 +53,6 @@ Global
 		{193BC08C-C577-476A-B897-929D804E36A7}.Release|x64.Build.0 = Release|Any CPU
 		{193BC08C-C577-476A-B897-929D804E36A7}.Release|x86.ActiveCfg = Release|Any CPU
 		{193BC08C-C577-476A-B897-929D804E36A7}.Release|x86.Build.0 = Release|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Debug|x64.Build.0 = Debug|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Debug|x86.Build.0 = Debug|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Release|x64.ActiveCfg = Release|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Release|x64.Build.0 = Release|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Release|x86.ActiveCfg = Release|Any CPU
-		{ECFC70AA-43AD-4AA8-A9B5-D6BBE9B7DA97}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,14 +4,14 @@ Common specimen filters criteria. Allows to filter the data by general specimen 
 ```jsonc
 {
     // General filters
-    "id": [1, 2, 3],
-    "type": ["Tissue", "CellLine", "Organoid", "Xenograft"],
+    "id": { "value": [1, 2, 3] },
+    "type": { "value": ["Tissue", "CellLine", "Organoid", "Xenograft"] },
 
     // Data availability filters
-    "hasSms": true,
-    "hasCnvs": true,
-    "hasSvs": true,
-    "hasGeneExp": true
+    "hasSms": { "value": true },
+    "hasCnvs": { "value": true },
+    "hasSvs": { "value": true },
+    "hasGeneExp": { "value": true }
 }
 ```
 
@@ -21,15 +21,13 @@ General specimen filters applicable to any type of the index.
 
 **`id`** - Internal specimen identifier.
 - Description: Allows to filter specimens by internal identifiers.
-- Type: Integer[].
-- Filter: **Equals**.
-- Example: `[1, 2, 3]`.
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": [1, 2, 3] }`.
 
 **`type`** - Type of the specimen.
 - Options: `Tissue`, `CellLine`, `Organoid`, `Xenograft`.
-- Type: String[].
-- Filter: **Options**.
-- Example: `["Tissue"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Tissue"] }`
 
 ### Specimen Types
 - `Tissue` - Tissues.
@@ -42,45 +40,43 @@ General specimen filters applicable to any type of the index.
 Special filters applicable only to specimen-centric index.
 
 **`hasSms`** - Whether or not any specimen has simple mutations data available.
-- Type: Boolean (`true` - has data, `false` - no data).
-- Filter: **Equals**.
-- Example: `true`.
+- Values: `true` - has data, `false` - no data.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`.
 
 **`hasCnvs`** - Whether or not any specimen has copy number variations data available.
-- Type: Boolean (`true` - has data, `false` - no data).
-- Filter: **Equals**.
-- Example: `true`.
+- Values: `true` - has data, `false` - no data.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`.
 
 **`hasSvs`** - Whether or not any specimen has structural variants data available.
-- Type: Boolean (`true` - has data, `false` - no data).
-- Filter: **Equals**.
-- Example: `true`.
+- Values: `true` - has data, `false` - no data.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`.
 
 **`hasGeneExp`** - Whether or not any specimen has bulk gene expression data available.
-- Type: Boolean (`true` - has data, `false` - no data).
-- Filter: **Equals**.
-- Example: `true`.
+- Values: `true` - has data, `false` - no data.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`.
 
 
 ## Example 1
 Data, where specimens are `Tissue` specimens **and** they have all types of the variants data associated.
-
 ```json
 {
     "type": ["Tissue"],
-    "hasSms": true,
-    "hasCnvs": true,
-    "hasSvs": true,
-    "hasGeneExp": true
+    "hasSms": { "value": true },
+    "hasCnvs": { "value": true },
+    "hasSvs": { "value": true },
+    "hasGeneExp": { "value": true }
 }
 ```
 
 ## Example 2
 Data, where specimens have ID `1` **or** `2`.
-
 ```json
 {
-    "id": [1, 2]
+    "id": { "value": [1, 2] }
 }
 ```
 

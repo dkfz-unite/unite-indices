@@ -4,10 +4,10 @@ Cell line filters criteria. Allows to filter the data by cell line specific crit
 ```jsonc
 {
     // Cell line specific filters
-    "cellsSpecies": ["Human", "Mouse"],
-    "cellsType": ["Stem Cell", "Differentiated"],
-    "cultureType": ["Suspension", "Adherent", "Both"],
-    "name": ["A549"]
+    "cellsSpecies": { "value": ["Human", "Mouse"] },
+    "cellsType": { "value": ["Stem Cell", "Differentiated"] },
+    "cultureType": { "value": ["Suspension", "Adherent", "Both"] },
+    "name": { "value": ["A549"] }
 }
 ```
 
@@ -17,49 +17,42 @@ General cell line filters applicable to any type of the index.
 
 **`cellsSpecies`** - Whom the cell line was initially taken from.
 - Options: `Human`, `Mouse`.
-- Type: String[].
-- Filter: **Options**.
-- Example: `["Human"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Human"] }`
 
 **`cellsType`** - Type of the cell line.
 - Options: `Stem Cell`, `Differentiated`.
-- Type: String[].
-- Filter: **Options**.
-- Example: `["Stem Cell"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Stem Cell"] }`
 
 **`cultureType`** - Cells harvesting type.
 - Options: `Suspension`, `Adherent`, `Both`.
-- Type: String[].
-- Filter: **Options**.
-- Example: `["Suspension"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["Suspension"] }`
 
 **`name`** - Name of the cell line if it's publicly known.
-- Type: String[].
-- Filter: **Like**.
-- Example: `["A549"]`
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["A549"] }`
 
 
 ## Example 1
 Data, where cells species is `Human` **and** cells type is `Stem Cell`.
-
 ```json
 {
-    "cellsSpecies": ["Human"],
-    "cellsType": ["Stem Cell"]
+    "cellsSpecies": { "value": ["Human"] },
+    "cellsType": { "value": ["Stem Cell"] }
 }
 ```
 
 ## Example 2
 Data, where cells species is `Mouse` **and** culture type is `Suspension` **or** `Both` **and** MGMT status is `Methylated`.
-
 ```json
 {
-    "cellsSpecies": ["Mouse"],
-    "cultureType": ["Suspension", "Both"],
-    "mgmtStatus": ["Methylated"]
+    "cellsSpecies": { "value": ["Mouse"] },
+    "cultureType": { "value": ["Suspension", "Both"] },
+    "mgmtStatus": { "value": ["Methylated"] }
 }
 ```
-
 
 ##
 - All filters are optional and empty by default.

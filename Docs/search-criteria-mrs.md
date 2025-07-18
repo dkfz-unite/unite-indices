@@ -4,13 +4,13 @@ MR image filters criteria. Allows to filter the data by MR image specific criter
 ```jsonc
 {
     // General filters
-    "id": [1, 2, 3],
-    "referenceId": ["I01", "I02", "I03"],
+    "id": { "value": [1, 2, 3] },
+    "referenceId": { "value": ["I01", "I02", "I03"] },
 
     // MR specific filters
-    "wholeTumor": { "from": 40, "to": 50 },
-    "contrastEnhancing": { "from": 5, "to": 10 },
-    "nonContrastEnhancing": { "from": 5, "to": 10 }
+    "wholeTumor": { "value": { "from": 40, "to": 50 } },
+    "contrastEnhancing": { "value": { "from": 5, "to": 10 } },
+    "nonContrastEnhancing": { "value": { "from": 5, "to": 10 } }
 }
 ```
 
@@ -20,47 +20,41 @@ General MR image filters applicable to any type of the index.
 
 **`id`** - Internal image identifier.
 - Description: Allows to filter images by internal identifiers.
-- Type: Integer[].
-- Filter: Equals.
-- Example: `[1, 2, 3]`.
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": [1, 2, 3] }`.
 
 **`referenceId`** - External image identifier.
 - Description: Allows to filter images by external identifiers (Which were provided during the data submission).
-- Type: String[].
-- Filter: Equals.
-- Example: `["I01", "I02", "I03"]`.
+- Filter: [Values](./search-criteria.md#values-criteria).
+- Example: `{ "value": ["I01", "I02", "I03"] }`.
 
 **`wholeTumor`** - Whole tumor volume (cm3).
-- Type: Range\<Decimal\>.
-- Filter: Range.
-- Example: `{ "from": 40, "to": 50 }`.
+- Filter: [Range](./search-criteria.md#range-criteria).
+- Example: `{ "value": { "from": 40, "to": 50 } }`.
 
 **`contrastEnhancing`** - Contrast enhancing volume (cm3).
 - Type: Range\<Decimal\>.
-- Filter: Range.
-- Example: `{ "from": 5, "to": 10 }`.
+- Filter: [Range](./search-criteria.md#range-criteria).
+- Example: `{ "value": { "from": 5, "to": 10 } }`.
 
 **`nonContrastEnhancing`** - Non-contrast enhancing volume (cm3).
-- Type: Range\<Decimal\>.
-- Filter: Range.
-- Example: `{ "from": 5, "to": 10 }`.
+- Filter: [Range](./search-criteria.md#range-criteria).
+- Example: `{ "value": { "from": 5, "to": 10 } }`.
 
 
 ## Example 1
 Data, where images have voume between `40` and `50` cm3.
-
 ```json
 {
-    "wholeTumor": { "from": 40, "to": 50 }
+    "wholeTumor": { "value": { "from": 40, "to": 50 } }
 }
 ```
 
 ## Example 2
 Data, where image have ID `1` **or** `2`.
-
 ```json
 {
-    "id": [1, 2]
+    "id": { "value": [1, 2] }
 }
 ``` 
 
