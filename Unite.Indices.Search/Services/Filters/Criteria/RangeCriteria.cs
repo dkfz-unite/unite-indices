@@ -2,7 +2,7 @@ using Unite.Indices.Search.Services.Filters.Criteria.Models;
 
 namespace Unite.Indices.Search.Services.Filters.Criteria;
 
-public class RangeCriteria<T> : Criteria<Range<T>>
+public record RangeCriteria<T> : Criteria<Range<T>>
 {
     public override bool IsNotEmpty()
     {

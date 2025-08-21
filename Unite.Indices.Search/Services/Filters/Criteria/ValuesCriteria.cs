@@ -1,6 +1,6 @@
 namespace Unite.Indices.Search.Services.Filters.Criteria;
 
-public class ValuesCriteria<T> : Criteria<T[]>
+public record ValuesCriteria<T> : Criteria<T[]>
 {
     public override int Length => Value?.Length ?? 0;
 

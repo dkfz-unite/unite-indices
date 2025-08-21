@@ -1,13 +1,13 @@
 namespace Unite.Indices.Search.Services.Filters.Criteria;
 
-public abstract class CriteriaBase
+public abstract record CriteriaBase
 {
     public virtual bool? Not { get; set; }
 
     public abstract bool IsNotEmpty();
 }
 
-public abstract class Criteria<T> : CriteriaBase
+public abstract record Criteria<T> : CriteriaBase
 {
     public virtual T Value { get; set; }
 

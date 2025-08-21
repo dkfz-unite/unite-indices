@@ -62,7 +62,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
         for (var from = 0; from < lookupResult.Total; from += 499)
         {
-            criteria = criteria with { From = from, Size = 499 };
+            criteria = searchCriteria with { From = from, Size = 499 };
 
             var searchResult = await Search(criteria);
 
