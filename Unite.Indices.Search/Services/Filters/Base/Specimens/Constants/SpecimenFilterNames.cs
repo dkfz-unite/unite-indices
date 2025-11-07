@@ -13,6 +13,7 @@ public class SpecimenFilterNames
     public string GeneExpressionSubtype => $"{Prefix}.GeneExpressionSubtype";
     public string MethylationSubtype => $"{Prefix}.MethylationSubtype";
     public string GcimpMethylation => $"{Prefix}.GcimpMethylation";
+    public string GeneKnockout => $"{Prefix}.GeneKnockout";
 
     public string  Intervention => $"{Prefix}.Intervention";
 

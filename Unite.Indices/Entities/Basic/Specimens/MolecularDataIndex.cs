@@ -8,4 +8,5 @@ public class MolecularDataIndex
     public string GeneExpressionSubtype { get; set; }
     public string MethylationSubtype { get; set; }
     public bool? GcimpMethylation { get; set; }
+    public string[] GeneKnockouts { get; set; }
 }

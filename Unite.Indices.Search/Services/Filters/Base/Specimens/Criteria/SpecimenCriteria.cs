@@ -10,6 +10,7 @@ public record SpecimenCriteria : SpecimensCriteria
     public ValuesCriteria<string> GeneExpressionSubtype { get; set; }
     public ValuesCriteria<string> MethylationSubtype { get; set; }
     public BoolCriteria GcimpMethylation { get; set; }
+    public ValuesCriteria<string> GeneKnockout { get; set; }
 
     public ValuesCriteria<string> Intervention { get; set; }
 

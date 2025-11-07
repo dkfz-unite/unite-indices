@@ -78,5 +78,15 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
                 criteria.GcimpMethylation.Value
             ));
         }
+
+        if (IsNotEmpty(criteria.GeneKnockout))
+        {
+            Add(new EqualityFilter<T, object>(
+                FilterNames.GeneKnockout,
+                criteria.GeneKnockout.Not,
+                path.Join(molecularData => molecularData.GeneKnockouts.First().Suffix(_keywordSuffix)),
+                criteria.GeneKnockout.Value
+            ));
+        }
     }
 }
