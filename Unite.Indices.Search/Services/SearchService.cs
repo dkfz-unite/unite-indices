@@ -164,22 +164,22 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     protected static DonorCriteria Set(DonorCriteria criteria, int[] ids, bool? exclude = null)
     {
-        return (criteria ?? new DonorCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids), exclude) };
+        return (criteria ?? new DonorCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id?.Value, ids), exclude) };
     }
 
     protected static ImagesCriteria Set(ImagesCriteria criteria, int[] ids, bool? exclude = null)
     {
-        return (criteria ?? new ImagesCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids), exclude) };
+        return (criteria ?? new ImagesCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id?.Value, ids), exclude) };
     }
 
     protected static SpecimensCriteria Set(SpecimensCriteria criteria, int[] ids, bool? exclude = null)
     {
-        return (criteria ?? new SpecimensCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids), exclude) };
+        return (criteria ?? new SpecimensCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id?.Value, ids), exclude) };
     }
 
     protected static GeneCriteria Set(GeneCriteria criteria, int[] ids, bool? exclude = null)
     {
-        return (criteria ?? new GeneCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id.Value, ids), exclude) };
+        return (criteria ?? new GeneCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id?.Value, ids), exclude) };
     }
 
     protected static int[] Intersect(int[] a, int[] b)
