@@ -21,20 +21,20 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
 
         if (IsNotEmpty(criteria.MgmtStatus))
         {
-            Add(new EqualityFilter<T, object>(
+            Add(new BooleanFilter<T>(
                 FilterNames.MgmtStatus,
                 criteria.MgmtStatus.Not,
-                path.Join(molecularData => molecularData.MgmtStatus.Suffix(_keywordSuffix)),
+                path.Join(molecularData => molecularData.MgmtStatus),
                 criteria.MgmtStatus.Value
             ));
         }
 
         if (IsNotEmpty(criteria.IdhStatus))
         {
-            Add(new EqualityFilter<T, object>(
+            Add(new BooleanFilter<T>(
                 FilterNames.IdhStatus,
                 criteria.IdhStatus.Not,
-                path.Join(molecularData => molecularData.IdhStatus.Suffix(_keywordSuffix)),
+                path.Join(molecularData => molecularData.IdhStatus),
                 criteria.IdhStatus.Value
             ));
         }
@@ -49,13 +49,33 @@ public class MolecularDataFilters<T> : FiltersCollection<T> where T : class
             ));
         }
 
-        if (IsNotEmpty(criteria.GeneExpressionSubtype))
+        if (IsNotEmpty(criteria.TertStatus))
+        {
+            Add(new BooleanFilter<T>(
+                FilterNames.TertStatus,
+                criteria.TertStatus.Not,
+                path.Join(molecularData => molecularData.TertStatus),
+                criteria.TertStatus.Value
+            ));
+        }
+
+        if (IsNotEmpty(criteria.TertMutation))
         {
             Add(new EqualityFilter<T, object>(
-                FilterNames.GeneExpressionSubtype,
-                criteria.GeneExpressionSubtype.Not,
-                path.Join(molecularData => molecularData.GeneExpressionSubtype.Suffix(_keywordSuffix)),
-                criteria.GeneExpressionSubtype.Value
+                FilterNames.TertMutation,
+                criteria.TertMutation.Not,
+                path.Join(molecularData => molecularData.TertMutation.Suffix(_keywordSuffix)),
+                criteria.TertMutation.Value
+            ));
+        }
+
+        if (IsNotEmpty(criteria.ExpressionSubtype))
+        {
+            Add(new EqualityFilter<T, object>(
+                FilterNames.ExpressionSubtype,
+                criteria.ExpressionSubtype.Not,
+                path.Join(molecularData => molecularData.ExpressionSubtype.Suffix(_keywordSuffix)),
+                criteria.ExpressionSubtype.Value
             ));
         }
 

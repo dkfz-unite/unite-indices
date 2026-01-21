@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Nest;
 using Unite.Essentials.Extensions;
 using Unite.Indices.Entities.Basic.Specimens;
 using Unite.Indices.Search.Engine.Filters;
@@ -13,6 +14,7 @@ public abstract class SpecimenFilters<T, TModel> : FiltersCollection<T>
 {
     protected abstract SpecimenFilterNames FilterNames { get; }
 
+    protected virtual bool IncludeTumorClassification => true;
     protected virtual bool IncludeMolecularData => true;
     protected virtual bool IncludeInterventions => true;
     protected virtual bool IncludeDrugScreenings => true;
@@ -43,6 +45,45 @@ public abstract class SpecimenFilters<T, TModel> : FiltersCollection<T>
                 path.Join(specimen => specimen.ReferenceId),
                 criteria.ReferenceId.Value
             ));
+        }
+
+        if (IsNotEmpty(criteria.Condition))
+        {
+            Add(new EqualityFilter<T, object>(
+                FilterNames.Condition,
+                criteria.Condition.Not,
+                path.Join(specimen => specimen.Condition.Suffix(_keywordSuffix)),
+                criteria.Condition.Value
+            ));
+        }
+
+        if (IsNotEmpty(criteria.TumorType))
+        {
+            Add(new EqualityFilter<T, object>(
+                FilterNames.TumorType,
+                criteria.TumorType.Not,
+                path.Join(specimen => specimen.TumorType.Suffix(_keywordSuffix)),
+                criteria.TumorType.Value
+            ));
+        }
+
+        if (IsNotEmpty(criteria.TumorGrade))
+        {
+            Add(new RangeFilter<T, double?>(
+                FilterNames.TumorGrade,
+                criteria.TumorGrade.Not,
+                path.Join(specimen => specimen.TumorGrade),
+                criteria.TumorGrade.Value?.From,
+                criteria.TumorGrade.Value?.To
+            ));
+        }
+
+        
+        if (IncludeTumorClassification)
+        {
+            var tumorClassificationFilters = new TumorClassificationFilters<T>(criteria, path.Join(specimen => specimen.TumorClassification));
+        
+            Add(tumorClassificationFilters.All());
         }
 
         if (IncludeMolecularData)
