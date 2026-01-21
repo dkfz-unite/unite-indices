@@ -22,16 +22,6 @@ public class MaterialFilters<T> : SpecimenFilters<T, MaterialIndex> where T : cl
         {
             return;
         }
-        
-        if (IsNotEmpty(criteria.Type))
-        {
-            Add(new EqualityFilter<T, object>(
-                FilterNames.Type,
-                criteria.Type.Not,
-                path.Join(specimen => specimen.Type.Suffix(_keywordSuffix)),
-                criteria.Type.Value
-            ));
-        }
 
         if (IsNotEmpty(criteria.FixationType))
         {
@@ -40,27 +30,6 @@ public class MaterialFilters<T> : SpecimenFilters<T, MaterialIndex> where T : cl
                 criteria.FixationType.Not,
                 path.Join(specimen => specimen.FixationType.Suffix(_keywordSuffix)),
                 criteria.FixationType.Value
-            ));
-        }
-
-        if (IsNotEmpty(criteria.TumorType))
-        {
-            Add(new EqualityFilter<T, object>(
-                FilterNames.TumorType,
-                criteria.TumorType.Not,
-                path.Join(specimen => specimen.TumorType.Suffix(_keywordSuffix)),
-                criteria.TumorType.Value
-            ));
-        }
-
-        if (IsNotEmpty(criteria.TumorGrade))
-        {
-            Add(new RangeFilter<T, double?>(
-                FilterNames.TumorGrade,
-                criteria.TumorGrade.Not,
-                path.Join(specimen => specimen.TumorGrade),
-                criteria.TumorGrade.Value?.From,
-                criteria.TumorGrade.Value?.To
             ));
         }
 

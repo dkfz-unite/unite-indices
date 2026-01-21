@@ -8,6 +8,14 @@ public class SpecimenIndex : SpecimenNavIndex
     public XenograftIndex Xenograft { get; set; }
 
 
+    public TumorClassificationIndex GetTumorClassification()
+    {
+        return Material?.TumorClassification ?? 
+               Line?.TumorClassification ?? 
+               Organoid?.TumorClassification ??
+               Xenograft?.TumorClassification;
+    }
+
     public MolecularDataIndex GetMolecularData()
     {
         return Material?.MolecularData ?? 
