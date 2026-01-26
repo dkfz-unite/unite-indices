@@ -7,7 +7,7 @@ public abstract class SpecimenBaseIndex
     public int Id { get; set; }
     public string ReferenceId { get; set; }
     public int? CreationDay { get; set; }
-    public string Condition { get; set; }
+    public string Category { get; set; }
     public string TumorType { get; set; }
     public double? TumorGrade { get; set; }
 

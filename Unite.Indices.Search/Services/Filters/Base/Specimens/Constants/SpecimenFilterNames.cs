@@ -7,7 +7,7 @@ public class SpecimenFilterNames
     public string Id => $"{Prefix}.Id";
     public string ReferenceId => $"{Prefix}.ReferenceId";
 
-    public string Condition => $"{Prefix}.Condition";
+    public string Category => $"{Prefix}.Category";
     public string TumorType => $"{Prefix}.TumorType";
     public string TumorGrade => $"{Prefix}.TumorGrade";
     public string TumorSuperfamily => $"{Prefix}.TumorSuperfamily";

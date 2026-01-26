@@ -47,13 +47,13 @@ public abstract class SpecimenFilters<T, TModel> : FiltersCollection<T>
             ));
         }
 
-        if (IsNotEmpty(criteria.Condition))
+        if (IsNotEmpty(criteria.Category))
         {
             Add(new EqualityFilter<T, object>(
-                FilterNames.Condition,
-                criteria.Condition.Not,
-                path.Join(specimen => specimen.Condition.Suffix(_keywordSuffix)),
-                criteria.Condition.Value
+                FilterNames.Category,
+                criteria.Category.Not,
+                path.Join(specimen => specimen.Category.Suffix(_keywordSuffix)),
+                criteria.Category.Value
             ));
         }
 

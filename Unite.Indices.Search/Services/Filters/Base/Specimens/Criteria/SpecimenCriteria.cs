@@ -4,7 +4,7 @@ namespace Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 public record SpecimenCriteria : SpecimensCriteria
 {
-    public ValuesCriteria<string> Condition { get; set; }
+    public ValuesCriteria<string> Category { get; set; }
     public ValuesCriteria<string> TumorType { get; set; }
     public RangeCriteria<double?> TumorGrade { get; set; }
     public ValuesCriteria<string> TumorSuperfamily { get; set; }
