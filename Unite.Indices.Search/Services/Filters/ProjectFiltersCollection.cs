@@ -14,19 +14,19 @@ public class ProjectFiltersCollection : FiltersCollection<ProjectIndex>
     {
         var projectFilters = new ProjectFilters<ProjectIndex>(criteria.Project, project => project);
 
-        var projectsFilters = new ProjectsFilters<ProjectIndex>(criteria.Project, project => project);
-        var projectsDataFilters = new ProjectsDataFilters<ProjectIndex>(criteria.Project, project => project.Data);
-        var donorsFilters = new DonorsFilters<ProjectIndex>(criteria.Donor, project => project.Donors.First());
-        var imagesFilters = new ImagesFilters<ProjectIndex>(criteria.Image, project => project.Donors.First().Images.First());
-        var specimensFilters = new SpecimensFilters<ProjectIndex>(criteria.Specimen, project => project.Donors.First().Specimens.First());
+        var projectsNavFilters = new ProjectsNavFilters<ProjectIndex>(criteria.Project, project => project);
+        var projectsDataFilters = new DataFilters<ProjectIndex>(criteria.Project, project => project.Data);
+        var donorsNavFilters = new DonorsNavFilters<ProjectIndex>(criteria.Donor, project => project.Donors.First());
+        var imagesNavFilters = new ImagesNavFilters<ProjectIndex>(criteria.Image, project => project.Donors.First().Images.First());
+        var specimensNavFilters = new SpecimensNavFilters<ProjectIndex>(criteria.Specimen, project => project.Donors.First().Specimens.First());
 
 
         Add(projectFilters.All());
         
-        Add(projectsFilters.All());
+        Add(projectsNavFilters.All());
         Add(projectsDataFilters.All());
-        Add(donorsFilters.All());
-        Add(imagesFilters.All());
-        Add(specimensFilters.All());
+        Add(donorsNavFilters.All());
+        Add(imagesNavFilters.All());
+        Add(specimensNavFilters.All());
     }
 }

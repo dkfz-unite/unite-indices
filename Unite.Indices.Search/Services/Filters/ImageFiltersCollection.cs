@@ -13,17 +13,17 @@ public class ImageFiltersCollection : FiltersCollection<ImageIndex>
     {
         var mriFilters = new MrImageFilters<ImageIndex>(criteria.Mr, image => image.Mr);
 
-        var donorsFilters = new DonorsFilters<ImageIndex>(criteria.Donor, image => image.Donor);
-        var imagesFilters = new ImagesFilters<ImageIndex>(criteria.Image, image => image);
-        var imagesDataFilters = new ImagesDataFilters<ImageIndex>(criteria.Image, image => image.Data);
-        var specimensFilters = new SpecimensFilters<ImageIndex>(criteria.Specimen, image => image.Specimens.First());
+        var donorsNavFilters = new DonorsNavFilters<ImageIndex>(criteria.Donor, image => image.Donor);
+        var imagesNavFilters = new ImagesNavFilters<ImageIndex>(criteria.Image, image => image);
+        var imagesDataFilters = new DataFilters<ImageIndex>(criteria.Image, image => image.Data);
+        var specimensNavFilters = new SpecimensNavFilters<ImageIndex>(criteria.Specimen, image => image.Specimens.First());
 
 
         Add(mriFilters.All());
 
-        Add(donorsFilters.All());
-        Add(imagesFilters.All());
+        Add(donorsNavFilters.All());
+        Add(imagesNavFilters.All());
         Add(imagesDataFilters.All());
-        Add(specimensFilters.All());
+        Add(specimensNavFilters.All());
     }
 }

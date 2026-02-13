@@ -2,16 +2,14 @@ using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
 using Unite.Indices.Entities;
 using Unite.Indices.Search.Engine.Filters;
-using Unite.Indices.Search.Services.Filters.Base.Specimens.Constants;
-using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
-namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
+namespace Unite.Indices.Search.Services.Filters.Base;
 
-public class SpecimensDataFilters<T> : FiltersCollection<T> where T : class
+public class DataFilters<T> : FiltersCollection<T> where T : class
 {
-    protected SpecimensFilterNames FilterNames = new();
+    protected DataFilterNames FilterNames = new();
 
-    public SpecimensDataFilters(SpecimensCriteria criteria, Expression<Func<T, DataIndex>> path)
+    public DataFilters(DataCriteria criteria, Expression<Func<T, DataIndex>> path)
     {
         if (criteria == null)
         {
@@ -75,6 +73,16 @@ public class SpecimensDataFilters<T> : FiltersCollection<T> where T : class
                 criteria.HasMeth.Not,
                 path.Join(data => data.Meth),
                 criteria.HasMeth.Value
+            ));
+        }
+
+        if (IsNotEmpty(criteria.HasProt))
+        {
+            Add(new BooleanFilter<T>(
+                FilterNames.HasProt,
+                criteria.HasProt.Not,
+                path.Join(data => data.Prot),
+                criteria.HasProt.Value
             ));
         }
     }

@@ -13,17 +13,17 @@ public class DonorFiltersCollection : FiltersCollection<DonorIndex>
     {
         var donorFilters = new DonorFilters<DonorIndex>(criteria.Donor, donor => donor);
 
-        var donorsFilters = new DonorsFilters<DonorIndex>(criteria.Donor, donor => donor);
-        var donorsDataFilters = new DonorsDataFilters<DonorIndex>(criteria.Donor, donor => donor.Data);
-        var imagesFilters = new ImagesFilters<DonorIndex>(criteria.Image, donor => donor.Images.First());
-        var specimensFilters = new SpecimensFilters<DonorIndex>(criteria.Specimen, donor => donor.Specimens.First());
+        var donorsNavFilters = new DonorsNavFilters<DonorIndex>(criteria.Donor, donor => donor);
+        var donorsDataFilters = new DataFilters<DonorIndex>(criteria.Donor, donor => donor.Data);
+        var imagesNavFilters = new ImagesNavFilters<DonorIndex>(criteria.Image, donor => donor.Images.First());
+        var specimensNavFilters = new SpecimensNavFilters<DonorIndex>(criteria.Specimen, donor => donor.Specimens.First());
 
 
         Add(donorFilters.All());
 
-        Add(donorsFilters.All());
+        Add(donorsNavFilters.All());
         Add(donorsDataFilters.All());
-        Add(imagesFilters.All());
-        Add(specimensFilters.All());
+        Add(imagesNavFilters.All());
+        Add(specimensNavFilters.All());
     }
 }

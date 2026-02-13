@@ -1,16 +1,9 @@
 namespace Unite.Indices.Search.Services.Filters.Base.Donors.Constants;
 
-public class DonorsFilterNames
+public class DonorsFilterNames : DataFilterNames
 {
-    protected string Prefix => "Donors";
+    protected override string Prefix => "Donors";
 
     public string Id => $"{Prefix}.Id";
     public string ReferenceId => $"{Prefix}.ReferenceId";
-
-    public string HasExp => $"{Prefix}.HasExp";
-    public string HasExpSc => $"{Prefix}.HasExpSc";
-    public string HasSms => $"{Prefix}.HasSms";
-    public string HasCnvs => $"{Prefix}.HasCnvs";
-    public string HasSvs => $"{Prefix}.HasSvs";
-    public string HasMeth => $"{Prefix}.HasMeth";
 }

@@ -8,11 +8,11 @@ using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Specimens;
 
-public class SpecimensFilters<T> : FiltersCollection<T> where T : class
+public class SpecimensNavFilters<T> : FiltersCollection<T> where T : class
 {
     protected SpecimensFilterNames FilterNames = new();
 
-    public SpecimensFilters(SpecimensCriteria criteria, Expression<Func<T, SpecimenNavIndex>> path)
+    public SpecimensNavFilters(SpecimensCriteria criteria, Expression<Func<T, SpecimenNavIndex>> path)
     {
         if (criteria == null)
         {

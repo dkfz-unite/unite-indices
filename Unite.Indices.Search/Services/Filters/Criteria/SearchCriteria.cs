@@ -2,6 +2,7 @@
 using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Projects.Criteria;
+using Unite.Indices.Search.Services.Filters.Base.Proteins.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 
@@ -23,6 +24,7 @@ public record SearchCriteria
     public OrganoidCriteria Organoid { get; set; }
     public XenograftCriteria Xenograft { get; set; }
     public GeneCriteria Gene { get; set; }
+    public ProteinCriteria Protein { get; set; }
     public SmCriteria Sm { get; set; }
     public CnvCriteria Cnv { get; set; }
     public SvCriteria Sv { get; set; }
@@ -44,6 +46,9 @@ public record SearchCriteria
 
     public bool HasGeneFilters =>
         Gene?.IsNotEmpty() == true;
+
+    public bool HasProteinFilters =>
+        Protein?.IsNotEmpty() == true;
 
     public bool HasVariantFilters =>
         Sm?.IsNotEmpty() == true ||
@@ -73,6 +78,9 @@ public record SearchCriteria
 
     public bool AreGeneFiltersNegative =>
         Gene?.IsNegative() == true;
+
+    public bool AreProteinFiltersNegative =>
+        Protein?.IsNegative() == true;
 
     public bool AreSmFiltersNegative =>
         Sm?.IsNegative() == true;

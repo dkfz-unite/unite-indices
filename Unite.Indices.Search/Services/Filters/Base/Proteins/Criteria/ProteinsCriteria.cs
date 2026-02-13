@@ -1,13 +1,12 @@
 using Unite.Indices.Search.Services.Filters.Criteria;
 
-namespace Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
+namespace Unite.Indices.Search.Services.Filters.Base.Proteins.Criteria;
 
-public record GenesCriteria : CriteriaCollection
+public record class ProteinsCriteria : CriteriaCollection
 {
     public ValuesCriteria<int> Id { get; set; }
-
-    public RangeCriteria<double?> TPM { get; set; }
-    public RangeCriteria<double?> FPKM { get; set; }
+    
+    public RangeCriteria<double?> Intensity { get; set; }
 
     public BoolCriteria HasSms { get; set; }
     public BoolCriteria HasCnvs { get; set; }
