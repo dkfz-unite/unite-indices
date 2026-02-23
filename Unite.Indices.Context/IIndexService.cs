@@ -35,6 +35,12 @@ public interface IIndexService<T>
     Task DeleteRange(IEnumerable<string> keys);
 
     /// <summary>
+    /// Create index collection if it does not exist.
+    /// </summary>
+    /// <returns>Task.</returns>
+    Task CreateIndex();
+
+    /// <summary>
     /// Update index collection mapping.
     /// </summary>
     /// <returns>Task.</returns> 

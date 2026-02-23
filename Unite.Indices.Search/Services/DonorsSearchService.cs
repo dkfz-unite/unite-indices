@@ -1,5 +1,4 @@
-﻿using Unite.Essentials.Extensions;
-using Unite.Indices.Context.Configuration.Options;
+﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Donors;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
@@ -26,6 +25,10 @@ public class DonorsSearchService : SearchService<DonorIndex>
         var criteria = searchCriteria;
 
         var imagesToExclude = new HashSet<string>();
+        var specimensToExclude = new HashSet<string>();
+        var genesToExclude = new HashSet<string>();
+        var proteinsToExclude = new HashSet<string>();
+
 
         if (criteria.HasImageFilters)
         {
@@ -33,19 +36,13 @@ public class DonorsSearchService : SearchService<DonorIndex>
 
             var ids = await AggregateFromImages(index => index.Id, criteria, exclusive);
 
-            var stop = HandleFoundImages(exclusive, ids, ref imagesToExclude, ref criteria);
-
-            if (stop)
+            if (HandleFoundImages(exclusive, ids, ref imagesToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
         }
 
         if (imagesToExclude.Count > 0)
-        {
             criteria.Image = Set(criteria.Image, [.. imagesToExclude.Select(int.Parse)], true);
-        }
 
-
-        var specimensToExclude = new HashSet<string>();
 
         if (criteria.HasSpecimenFilters)
         {
@@ -53,23 +50,48 @@ public class DonorsSearchService : SearchService<DonorIndex>
 
             var ids = await AggregateFromSpecimens(index => index.Id, criteria, exclusive);
 
-            var stop = HandleFoudSpecimens(exclusive, ids, ref specimensToExclude, ref criteria);
-
-            if (stop)
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
         }
 
-        if (criteria.HasGeneFilters && !criteria.HasVariantFilters)
+
+        if (criteria.HasGeneFilters)
         {
             var exclusive = criteria.AreGeneFiltersNegative;
 
-            var ids = await AggregateFromGenes(index => index.Specimens.First().Id, criteria, exclusive);
+            var specimenIds = await AggregateFromGenes(index => index.Specimens.First().Id, criteria, exclusive);
 
-            var stop = HandleFoudSpecimens(exclusive, ids, ref specimensToExclude, ref criteria);
+            if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
+                return new SearchResult<DonorIndex>();
 
-            if (stop)
+            var gneIds = await AggregateFromGenes(index => index.Id, criteria, exclusive);
+
+            if (HandleFoundGenes(exclusive, gneIds, ref genesToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
         }
+
+        if (genesToExclude.Count > 0)
+            criteria.Gene = Set(criteria.Gene, [.. genesToExclude.Select(int.Parse)], true);
+
+        
+        if (criteria.HasProteinFilters)
+        {
+            var exclusive = criteria.AreProteinFiltersNegative;
+
+            var specimenIds = await AggregateFromProteins(index => index.Specimens.First().Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
+                return new SearchResult<DonorIndex>();
+
+            var proteinIds = await AggregateFromProteins(index => index.Id, criteria, exclusive);
+
+            if (HandleFoundProteins(exclusive, proteinIds, ref proteinsToExclude, ref criteria))
+                return new SearchResult<DonorIndex>();
+        }
+
+        if (proteinsToExclude.Count > 0)
+            criteria.Protein = Set(criteria.Protein, [.. proteinsToExclude.Select(int.Parse)], true);
+
 
         if (criteria.HasSmFilters)
         {
@@ -77,9 +99,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
 
             var ids = await AggregateFromSms(index => index.Specimens.First().Id, criteria, exclusive);
 
-            var stop = HandleFoudSpecimens(exclusive, ids, ref specimensToExclude, ref criteria);
-
-            if (stop)
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
         }
 
@@ -89,9 +109,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
 
             var ids = await AggregateFromCnvs(index => index.Specimens.First().Id, criteria, exclusive);
 
-            var stop = HandleFoudSpecimens(exclusive, ids, ref specimensToExclude, ref criteria);
-
-            if (stop)
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
         }
 
@@ -101,16 +119,12 @@ public class DonorsSearchService : SearchService<DonorIndex>
 
             var ids = await AggregateFromSvs(index => index.Specimens.First().Id, criteria, exclusive);
 
-            var stop = HandleFoudSpecimens(exclusive, ids, ref specimensToExclude, ref criteria);
-
-            if (stop)
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
         }
 
         if (specimensToExclude.Count > 0)
-        {
             criteria.Specimen = Set(criteria.Specimen, [.. specimensToExclude.Select(int.Parse)], true);
-        }
 
 
         var filters = new DonorFiltersCollection(criteria).All();
@@ -128,45 +142,5 @@ public class DonorsSearchService : SearchService<DonorIndex>
     protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, DonorIndex index)
     {
         stats.Add(index.Id, index.Data);
-    }
-
-    private static bool HandleFoundImages(in bool exclusive, in string[] ids, ref HashSet<string> idsToExclude, ref SearchCriteria criteria)
-    {
-        if (exclusive)
-        {
-            idsToExclude.AddRange(ids);
-        }
-        else
-        {
-            if (ids.Length > 0)
-                criteria.Image = Set(criteria.Image, [.. ids.Select(int.Parse)]);
-            else
-                return true;
-
-            if (criteria.Image.Id.Length == 0)
-                return true;
-        }
-
-        return false;
-    }
-
-    private static bool HandleFoudSpecimens(in bool exclusive, in string[] ids, ref HashSet<string> idsToExclude, ref SearchCriteria criteria)
-    {
-        if (exclusive)
-        {
-            idsToExclude.AddRange(ids);
-        }
-        else
-        {
-            if (ids.Length > 0)
-                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
-            else
-                return true;
-
-            if (criteria.Specimen.Id.Length == 0)
-                return true;
-        }
-
-        return false;
     }
 }

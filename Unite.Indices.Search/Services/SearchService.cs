@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Unite.Essentials.Extensions;
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities;
 using Unite.Indices.Search.Engine;
@@ -7,6 +8,7 @@ using Unite.Indices.Search.Services.Filters;
 using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
+using Unite.Indices.Search.Services.Filters.Base.Proteins.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
@@ -15,10 +17,10 @@ using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
 using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
 using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
+using ProteinIndex = Unite.Indices.Entities.Proteins.ProteinIndex;
 using SmIndex = Unite.Indices.Entities.Variants.SmIndex;
 using CnvIndex = Unite.Indices.Entities.Variants.CnvIndex;
 using SvIndex = Unite.Indices.Entities.Variants.SvIndex;
-
 
 namespace Unite.Indices.Search.Services;
 
@@ -30,6 +32,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected readonly IIndexService<ImageIndex> _imagesIndexService;
     protected readonly IIndexService<SpecimenIndex> _specimensIndexService;
     protected readonly IIndexService<GeneIndex> _genesIndexService;
+    protected readonly IIndexService<ProteinIndex> _proteinsIndexService;
     protected readonly IIndexService<SmIndex> _smsIndexService;
     protected readonly IIndexService<CnvIndex> _cnvsIndexService;
     protected readonly IIndexService<SvIndex> _svsIndexService;
@@ -42,6 +45,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         _imagesIndexService = new ImagesIndexService(options);
         _specimensIndexService = new SpecimensIndexService(options);
         _genesIndexService = new GenesIndexService(options);
+        _proteinsIndexService = new ProteinsIndexService(options);
         _smsIndexService = new SmsIndexService(options);
         _cnvsIndexService = new CnvsIndexService(options);
         _svsIndexService = new SvsIndexService(options);
@@ -126,6 +130,18 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return aggregation.Keys.ToArray();
     }
 
+    protected async Task<string[]> AggregateFromProteins<TProp>(Expression<Func<ProteinIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
+    {
+        var filters = new ProteinFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
+
+        var aggregation = await AggregateFromProteins(property, criteria.Term, filters);
+
+        return aggregation.Keys.ToArray();
+    }
+
     protected async Task<string[]> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new SmFiltersCollection(criteria);
@@ -162,6 +178,106 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return aggregation.Keys.ToArray();
     }
 
+    protected static bool HandleFoundDonors(in bool exclusive, in string[] ids, ref HashSet<string> idsToExclude, ref SearchCriteria criteria)
+    {
+        if (exclusive)
+        {
+            idsToExclude.AddRange(ids);
+        }
+        else
+        {
+            if (ids.Length > 0)
+                criteria.Donor = Set(criteria.Donor, [.. ids.Select(int.Parse)]);
+            else
+                return true;
+
+            if (criteria.Donor.Id.Length == 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    protected static bool HandleFoundImages(in bool exclusive, in string[] ids, ref HashSet<string> idsToExclude, ref SearchCriteria criteria)
+    {
+        if (exclusive)
+        {
+            idsToExclude.AddRange(ids);
+        }
+        else
+        {
+            if (ids.Length > 0)
+                criteria.Image = Set(criteria.Image, [.. ids.Select(int.Parse)]);
+            else
+                return true;
+
+            if (criteria.Image.Id.Length == 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    protected static bool HandleFoundSpecimens(in bool exclusive, in string[] ids, ref HashSet<string> idsToExclude, ref SearchCriteria criteria)
+    {
+        if (exclusive)
+        {
+            idsToExclude.AddRange(ids);
+        }
+        else
+        {
+            if (ids.Length > 0)
+                criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
+            else
+                return true;
+
+            if (criteria.Specimen.Id.Length == 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    protected static bool HandleFoundGenes(in bool exclusive, in string[] ids, ref HashSet<string> idsToExclude, ref SearchCriteria criteria)
+    {
+        if (exclusive)
+        {
+            idsToExclude.AddRange(ids);
+        }
+        else
+        {
+            if (ids.Length > 0)
+                criteria.Gene = Set(criteria.Gene, [.. ids.Select(int.Parse)]);
+            else
+                return true;
+
+            if (criteria.Gene.Id.Length == 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    protected static bool HandleFoundProteins(in bool exclusive, in string[] ids, ref HashSet<string> idsToExclude, ref SearchCriteria criteria)
+    {
+        if (exclusive)
+        {
+            idsToExclude.AddRange(ids);
+        }
+        else
+        {
+            if (ids.Length > 0)
+                criteria.Protein = Set(criteria.Protein, [.. ids.Select(int.Parse)]);
+            else
+                return true;
+
+            if (criteria.Protein.Id.Length == 0)
+                return true;
+        }
+
+        return false;
+    }
+
     protected static DonorCriteria Set(DonorCriteria criteria, int[] ids, bool? exclude = null)
     {
         return (criteria ?? new DonorCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id?.Value, ids), exclude) };
@@ -180,6 +296,11 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected static GeneCriteria Set(GeneCriteria criteria, int[] ids, bool? exclude = null)
     {
         return (criteria ?? new GeneCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id?.Value, ids), exclude) };
+    }
+
+    protected static ProteinCriteria Set(ProteinCriteria criteria, int[] ids, bool? exclude = null)
+    {
+        return (criteria ?? new ProteinCriteria()) with { Id = new ValuesCriteria<int>(Intersect(criteria?.Id?.Value, ids), exclude) };
     }
 
     protected static int[] Intersect(int[] a, int[] b)
@@ -271,6 +392,24 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddExclusion(index => index.Data);
 
         var result = await _genesIndexService.Search(query);
+
+        return result.Aggregations[aggregationName];
+    }
+
+    private async Task<IDictionary<string, long>> AggregateFromProteins<TProp>(Expression<Func<ProteinIndex, TProp>> property, string term, ProteinFiltersCollection filters)
+    {
+        var aggregationName = Guid.NewGuid().ToString();
+
+        var query = new SearchQuery<ProteinIndex>()
+            .AddPagination(0, 0)
+            .AddFullTextSearch(term)
+            .AddFilters(filters.All())
+            .AddAggregation(aggregationName, property)
+            .AddExclusion(index => index.Specimens)
+            .AddExclusion(index => index.Stats)
+            .AddExclusion(index => index.Data);
+
+        var result = await _proteinsIndexService.Search(query);
 
         return result.Aggregations[aggregationName];
     }

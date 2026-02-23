@@ -1,5 +1,4 @@
-﻿using Unite.Essentials.Extensions;
-using Unite.Indices.Context.Configuration.Options;
+﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Variants;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
@@ -27,27 +26,17 @@ public class SmsSearchService : SearchService<SmIndex>
 
         var specimensToExclude = new HashSet<string>();
 
+
         if (criteria.HasDonorFilters)
         {
             var exclusive = criteria.AreDonorFiltersNegative;
 
             var ids = await AggregateFromDonors(index => index.Specimens.First().Id, criteria, exclusive);
 
-            if (exclusive)
-            {
-                specimensToExclude.AddRange(ids);
-            }
-            else
-            {
-                if (ids.Length > 0)
-                    criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
-                else if (!exclusive)
-                    return new SearchResult<SmIndex>();
-
-                if (criteria.Specimen.Id.Length == 0)
-                    return new SearchResult<SmIndex>();
-            }
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
+                return new SearchResult<SmIndex>();
         }
+
 
         if (criteria.HasImageFilters)
         {
@@ -55,21 +44,10 @@ public class SmsSearchService : SearchService<SmIndex>
 
             var ids = await AggregateFromImages(index => index.Specimens.First().Id, criteria with { Specimen = null }, exclusive);
 
-            if (exclusive)
-            {
-                specimensToExclude.AddRange(ids);
-            }
-            else
-            {
-                if (ids.Length > 0)
-                    criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
-                else if (!exclusive)
-                    return new SearchResult<SmIndex>();
-
-                if (criteria.Specimen.Id.Length == 0)
-                    return new SearchResult<SmIndex>();
-            }
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
+                return new SearchResult<SmIndex>();
         }
+
 
         if (criteria.HasSpecimenFilters)
         {
@@ -77,27 +55,18 @@ public class SmsSearchService : SearchService<SmIndex>
 
             var ids = await AggregateFromSpecimens(index => index.Id, criteria, exclusive);
 
-            if (exclusive)
-            {
-                specimensToExclude.AddRange(ids);
-            }
-            else
-            {
-                if (ids.Length > 0)
-                    criteria.Specimen = Set(criteria.Specimen, [.. ids.Select(int.Parse)]);
-                else if (!exclusive)
-                    return new SearchResult<SmIndex>();
-
-                if (criteria.Specimen.Id.Length == 0)
-                    return new SearchResult<SmIndex>();
-            }
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
+                return new SearchResult<SmIndex>();
         }
+
 
         if (specimensToExclude.Count > 0)
-        {
             criteria.Specimen = Set(criteria.Specimen, [.. specimensToExclude.Select(int.Parse)], true);
-        }
         
+
+        // TODO: Add gene expression filters integration
+        // TODO: Add protein expression filters integration
+
 
         var filters = new SmFiltersCollection(criteria).All();
 

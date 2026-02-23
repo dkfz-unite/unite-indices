@@ -9,4 +9,24 @@ public class CnvsIndexService(IElasticOptions options) : IndexService<CnvIndex>(
 {
     protected override string Collection => IndexNames.Cnvs;
     protected override Expression<Func<CnvIndex, object>> Identifier => index => index.Id;
+
+    public override async Task CreateIndex()
+    {
+        var existsResponse = await _client.Indices.ExistsAsync(Collection);
+
+        if (existsResponse.Exists)
+            return;
+
+        var createResponse = await _client.Indices.CreateAsync(Collection, c => c
+            .Map<CnvIndex>(m => m
+                .AutoMap()
+                .Properties(p => p
+                    .Nested<SpecimenIndex>(np => np
+                        .Name(i => i.Specimens)
+                        .AutoMap()
+                    )
+                )
+            )
+        );
+    }
 }
