@@ -5,20 +5,21 @@ using Unite.Indices.Entities.Genes;
 
 namespace Unite.Indices.Context;
 
-public class GenesIndexService(IElasticOptions options) : IndexService<GeneIndex>(options)
+public class GeneExpressionsIndexService(IElasticOptions options) : IndexService<GeneExpressionIndex>(options)
 {
-    protected override string Collection => IndexNames.Genes;
-    protected override Expression<Func<GeneIndex, object>> Identifier => index => index.Id;
+    protected override string Collection => IndexNames.GeneExpressions;
+
+    protected override Expression<Func<GeneExpressionIndex, object>> Identifier => index => index.Id;
 
     public override async Task CreateIndex()
     {
-        var existsResponse = await _client.Indices.ExistsAsync(Collection);
+        var existsResponse = _client.Indices.Exists(Collection);
 
         if (existsResponse.Exists)
             return;
 
         var createResponse = await _client.Indices.CreateAsync(Collection, c => c
-            .Map<GeneIndex>(m => m
+            .Map<GeneExpressionIndex>(m => m
                 .AutoMap()
             )
         );

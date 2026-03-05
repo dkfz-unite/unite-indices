@@ -25,6 +25,8 @@ public class SvsSearchService : SearchService<SvIndex>
         var criteria = searchCriteria;
 
         var specimensToExclude = new HashSet<string>();
+        var genesToExclude = new HashSet<string>();
+        var proteinsToExclude = new HashSet<string>();
 
 
         if (criteria.HasDonorFilters)
@@ -64,8 +66,62 @@ public class SvsSearchService : SearchService<SvIndex>
             criteria.Specimen = Set(criteria.Specimen, [.. specimensToExclude.Select(int.Parse)], true);
 
 
-        // TODO: Add gene expression filters integration
-        // TODO: Add protein expression filters integration
+        if (criteria.HasGeneFilters)
+        {
+            var exclusive = criteria.AreGeneFiltersNegative;
+
+            var specimenIds = await AggregateFromGenes(index => index.Specimens.First().Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
+                return new SearchResult<SvIndex>();
+
+            var gneIds = await AggregateFromGenes(index => index.Id, criteria, exclusive);
+
+            if (HandleFoundGenes(exclusive, gneIds, ref genesToExclude, ref criteria))
+                return new SearchResult<SvIndex>();
+        }
+
+        if (genesToExclude.Count > 0)
+            criteria.Gene = Set(criteria.Gene, [.. genesToExclude.Select(int.Parse)], true);
+
+        if (criteria.HasGeneExpressionFilters)
+        {
+            var exclusive = criteria.AreGeneFiltersNegative;
+
+            var specimenIds = await AggregateFromGeneExpressions(index => index.Specimen.Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
+                return new SearchResult<SvIndex>();
+        }
+
+
+        if (criteria.HasProteinFilters)
+        {
+            var exclusive = criteria.AreProteinFiltersNegative;
+
+            var specimenIds = await AggregateFromProteins(index => index.Specimens.First().Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
+                return new SearchResult<SvIndex>();
+
+            var proteinIds = await AggregateFromProteins(index => index.Id, criteria, exclusive);
+
+            if (HandleFoundProteins(exclusive, proteinIds, ref proteinsToExclude, ref criteria))
+                return new SearchResult<SvIndex>();
+        }
+
+        if (proteinsToExclude.Count > 0)
+            criteria.Protein = Set(criteria.Protein, [.. proteinsToExclude.Select(int.Parse)], true);
+
+        if (criteria.HasProteinExpressionFilters)
+        {
+            var exclusive = criteria.AreProteinFiltersNegative;
+
+            var specimenIds = await AggregateFromProteinExpressions(index => index.Specimen.Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
+                return new SearchResult<SvIndex>();
+        }
 
 
         var filters = new SvFiltersCollection(criteria).All();

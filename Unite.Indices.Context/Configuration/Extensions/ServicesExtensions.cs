@@ -11,7 +11,9 @@ public static class ServicesExtensions
         services.AddTransient<IIndexService<Entities.Images.ImageIndex>, ImagesIndexService>();
         services.AddTransient<IIndexService<Entities.Specimens.SpecimenIndex>, SpecimensIndexService>();
         services.AddTransient<IIndexService<Entities.Genes.GeneIndex>, GenesIndexService>();
+        services.AddTransient<IIndexService<Entities.Genes.GeneExpressionIndex>, GeneExpressionsIndexService>();
         services.AddTransient<IIndexService<Entities.Proteins.ProteinIndex>, ProteinsIndexService>();
+        services.AddTransient<IIndexService<Entities.Proteins.ProteinExpressionIndex>, ProteinExpressionsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.SmIndex>, SmsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.CnvIndex>, CnvsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.SvIndex>, SvsIndexService>();

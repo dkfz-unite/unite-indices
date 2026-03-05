@@ -20,12 +20,6 @@ public class CnvsIndexService(IElasticOptions options) : IndexService<CnvIndex>(
         var createResponse = await _client.Indices.CreateAsync(Collection, c => c
             .Map<CnvIndex>(m => m
                 .AutoMap()
-                .Properties(p => p
-                    .Nested<SpecimenIndex>(np => np
-                        .Name(i => i.Specimens)
-                        .AutoMap()
-                    )
-                )
             )
         );
     }

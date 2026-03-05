@@ -20,12 +20,6 @@ public class SpecimensIndexService(IElasticOptions options) : IndexService<Speci
         var createResponse = await _client.Indices.CreateAsync(Collection, c => c
             .Map<SpecimenIndex>(m => m
                 .AutoMap()
-                .Properties(p => p
-                    .Nested<ImageIndex>(np => np
-                        .Name(i => i.Images)
-                        .AutoMap()
-                    )
-                )
             )
         );
     }

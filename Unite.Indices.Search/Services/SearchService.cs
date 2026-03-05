@@ -17,7 +17,9 @@ using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
 using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
 using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
+using GeneExpressionIndex = Unite.Indices.Entities.Genes.GeneExpressionIndex;
 using ProteinIndex = Unite.Indices.Entities.Proteins.ProteinIndex;
+using ProteinExpressionIndex = Unite.Indices.Entities.Proteins.ProteinExpressionIndex;
 using SmIndex = Unite.Indices.Entities.Variants.SmIndex;
 using CnvIndex = Unite.Indices.Entities.Variants.CnvIndex;
 using SvIndex = Unite.Indices.Entities.Variants.SvIndex;
@@ -32,7 +34,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected readonly IIndexService<ImageIndex> _imagesIndexService;
     protected readonly IIndexService<SpecimenIndex> _specimensIndexService;
     protected readonly IIndexService<GeneIndex> _genesIndexService;
+    protected readonly IIndexService<GeneExpressionIndex> _geneExpressionsIndexService;
     protected readonly IIndexService<ProteinIndex> _proteinsIndexService;
+    protected readonly IIndexService<ProteinExpressionIndex> _proteinExpressionsIndexService;
     protected readonly IIndexService<SmIndex> _smsIndexService;
     protected readonly IIndexService<CnvIndex> _cnvsIndexService;
     protected readonly IIndexService<SvIndex> _svsIndexService;
@@ -45,7 +49,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         _imagesIndexService = new ImagesIndexService(options);
         _specimensIndexService = new SpecimensIndexService(options);
         _genesIndexService = new GenesIndexService(options);
+        _geneExpressionsIndexService = new GeneExpressionsIndexService(options);
         _proteinsIndexService = new ProteinsIndexService(options);
+        _proteinExpressionsIndexService = new ProteinExpressionsIndexService(options);
         _smsIndexService = new SmsIndexService(options);
         _cnvsIndexService = new CnvsIndexService(options);
         _svsIndexService = new SvsIndexService(options);
@@ -130,6 +136,18 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return aggregation.Keys.ToArray();
     }
 
+    protected async Task<string[]> AggregateFromGeneExpressions<TProp>(Expression<Func<GeneExpressionIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
+    {
+        var filters = new GeneExpressionFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
+
+        var aggregation = await AggregateFromGeneExpressions(property, criteria.Term, filters);
+
+        return aggregation.Keys.ToArray();
+    }
+
     protected async Task<string[]> AggregateFromProteins<TProp>(Expression<Func<ProteinIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new ProteinFiltersCollection(criteria);
@@ -138,6 +156,18 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             filters.MakePositive();
 
         var aggregation = await AggregateFromProteins(property, criteria.Term, filters);
+
+        return aggregation.Keys.ToArray();
+    }
+
+    protected async Task<string[]> AggregateFromProteinExpressions<TProp>(Expression<Func<ProteinExpressionIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
+    {
+        var filters = new ProteinExpressionFiltersCollection(criteria);
+
+        if (exclusive)
+            filters.MakePositive();
+
+        var aggregation = await AggregateFromProteinExpressions(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
     }
@@ -396,6 +426,23 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
+    private async Task<IDictionary<string, long>> AggregateFromGeneExpressions<TProp>(Expression<Func<GeneExpressionIndex, TProp>> property, string term, GeneExpressionFiltersCollection filters)
+    {
+        var aggregationName = Guid.NewGuid().ToString();
+
+        var query = new SearchQuery<GeneExpressionIndex>()
+            .AddPagination(0, 0)
+            .AddFullTextSearch(term)
+            .AddFilters(filters.All())
+            .AddAggregation(aggregationName, property)
+            .AddExclusion(index => index.Gene)
+            .AddExclusion(index => index.Specimen);
+
+        var result = await _geneExpressionsIndexService.Search(query);
+
+        return result.Aggregations[aggregationName];
+    }
+
     private async Task<IDictionary<string, long>> AggregateFromProteins<TProp>(Expression<Func<ProteinIndex, TProp>> property, string term, ProteinFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
@@ -410,6 +457,23 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             .AddExclusion(index => index.Data);
 
         var result = await _proteinsIndexService.Search(query);
+
+        return result.Aggregations[aggregationName];
+    }
+
+    private async Task<IDictionary<string, long>> AggregateFromProteinExpressions<TProp>(Expression<Func<ProteinExpressionIndex, TProp>> property, string term, ProteinExpressionFiltersCollection filters)
+    {
+        var aggregationName = Guid.NewGuid().ToString();
+
+        var query = new SearchQuery<ProteinExpressionIndex>()
+            .AddPagination(0, 0)
+            .AddFullTextSearch(term)
+            .AddFilters(filters.All())
+            .AddAggregation(aggregationName, property)
+            .AddExclusion(index => index.Protein)
+            .AddExclusion(index => index.Specimen);
+
+        var result = await _proteinExpressionsIndexService.Search(query);
 
         return result.Aggregations[aggregationName];
     }

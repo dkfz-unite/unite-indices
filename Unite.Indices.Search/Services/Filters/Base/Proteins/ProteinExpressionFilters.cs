@@ -5,25 +5,25 @@ using Unite.Indices.Search.Services.Filters.Base.Proteins.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Proteins;
 
-public class ProteinsFilters<T> : FiltersCollection<T> where T : ProteinIndex
+public class ProteinExpressionFilters<T> : FiltersCollection<T> where T : ProteinExpressionIndex
 {
     protected ProteinsFilterNames FilterNames = new();
 
-    public ProteinsFilters(ProteinsCriteria criteria)
+    public ProteinExpressionFilters(ProteinsCriteria criteria)
     {
         if (criteria == null)
         {
             return;
         }
 
-        if (IsNotEmpty(criteria.Intensity))
+        if (IsNotEmpty(criteria.Expression))
         {
             Add(new RangeFilter<T, double?>(
-                FilterNames.Intensity,
-                criteria.Intensity.Not,
-                protein => protein.Specimens.First().Intensity,
-                criteria.Intensity.Value?.From,
-                criteria.Intensity.Value?.To
+                FilterNames.Expression,
+                criteria.Expression.Not,
+                protein => protein.Expression,
+                criteria.Expression.Value?.From,
+                criteria.Expression.Value?.To
             ));
         }
     }

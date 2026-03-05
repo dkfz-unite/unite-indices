@@ -6,7 +6,7 @@ public record class ProteinsCriteria : CriteriaCollection
 {
     public ValuesCriteria<int> Id { get; set; }
     
-    public RangeCriteria<double?> Intensity { get; set; }
+    public RangeCriteria<double?> Expression { get; set; }
 
     public BoolCriteria HasSms { get; set; }
     public BoolCriteria HasCnvs { get; set; }

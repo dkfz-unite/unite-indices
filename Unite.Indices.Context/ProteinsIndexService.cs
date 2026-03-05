@@ -20,12 +20,6 @@ public class ProteinsIndexService(IElasticOptions options) : IndexService<Protei
         var createResponse = await _client.Indices.CreateAsync(Collection, c => c
             .Map<ProteinIndex>(m => m
                 .AutoMap()
-                .Properties(p => p
-                    .Nested<SpecimenIndex>(np => np
-                        .Name(i => i.Specimens)
-                        .AutoMap()
-                    )
-                )
             )
         );
     }

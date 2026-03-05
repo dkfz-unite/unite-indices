@@ -47,8 +47,14 @@ public record SearchCriteria
     public bool HasGeneFilters =>
         Gene?.IsNotEmpty() == true;
 
+    public bool HasGeneExpressionFilters =>
+        Gene?.Expression?.IsNotEmpty() == true;
+
     public bool HasProteinFilters =>
         Protein?.IsNotEmpty() == true;
+
+    public bool HasProteinExpressionFilters =>
+        Protein?.Expression?.IsNotEmpty() == true;
 
     public bool HasVariantFilters =>
         Sm?.IsNotEmpty() == true ||

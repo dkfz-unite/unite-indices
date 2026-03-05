@@ -20,16 +20,6 @@ public class DonorsIndexService(IElasticOptions options) : IndexService<DonorInd
         var createResponse = await _client.Indices.CreateAsync(Collection, c => c
             .Map<DonorIndex>(m => m
                 .AutoMap()
-                .Properties(p => p
-                    .Nested<ImageIndex>(np => np
-                        .Name(i => i.Images)
-                        .AutoMap()
-                    )
-                    .Nested<SpecimenIndex>(np => np
-                        .Name(i => i.Specimens)
-                        .AutoMap()
-                    )
-                )
             )
         );
     }

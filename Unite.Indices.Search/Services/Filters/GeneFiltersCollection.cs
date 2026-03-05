@@ -11,7 +11,6 @@ public class GeneFiltersCollection : FiltersCollection<GeneIndex>
     public GeneFiltersCollection(SearchCriteria criteria) : base()
     {
         var geneFilters = new GeneFilters<GeneIndex>(criteria.Gene, gene => gene);
-        var genesFilters = new GenesFilters<GeneIndex>(criteria.Gene);
 
         var specimensNavFilters = new SpecimensNavFilters<GeneIndex>(criteria.Specimen, gene => gene.Specimens.First());
         var genesNavFilters = new GenesNavFilters<GeneIndex>(criteria.Gene, gene => gene);
@@ -19,7 +18,6 @@ public class GeneFiltersCollection : FiltersCollection<GeneIndex>
         
         
         Add(geneFilters.All());
-        Add(genesFilters.All());
 
         Add(specimensNavFilters.All());
         Add(genesNavFilters.All());
