@@ -7,11 +7,11 @@ using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Genes;
 
-public class GenesFilters<T> : FiltersCollection<T> where T : class
+public class GenesNavFilters<T> : FiltersCollection<T> where T : class
 {
     protected GenesFilterNames FilterNames = new();
 
-    public GenesFilters(GenesCriteria criteria, Expression<Func<T, GeneNavIndex>> path)
+    public GenesNavFilters(GenesCriteria criteria, Expression<Func<T, GeneNavIndex>> path)
     {
         if (criteria == null)
         {

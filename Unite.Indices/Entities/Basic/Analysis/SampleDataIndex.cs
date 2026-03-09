@@ -25,10 +25,15 @@ public class SampleDataIndex
     /// <summary>
     /// Bulk RNA gene expressions data availability.
     /// </summary>
-    public bool Exp { get; set; }
+    public bool Exp { get; set; } // TODO: change to GeneExp
 
     /// <summary>
     /// Single-cell RNA gene expressions data availability.
     /// </summary>
-    public bool ExpSc { get; set; }
+    public bool ExpSc { get; set; } // TODO: change to GeneExpSc
+
+    /// <summary>
+    /// Protein expressions data availability.
+    /// </summary>
+    public bool Prot { get; set; } // TODO: change to ProtExp
 }

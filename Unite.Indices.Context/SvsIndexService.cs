@@ -9,4 +9,18 @@ public class SvsIndexService(IElasticOptions options) : IndexService<SvIndex>(op
 {
     protected override string Collection => IndexNames.Svs;
     protected override Expression<Func<SvIndex, object>> Identifier => index => index.Id;
+
+    public override async Task CreateIndex()
+    {
+        var existsResponse = await _client.Indices.ExistsAsync(Collection);
+
+        if (existsResponse.Exists)
+            return;
+
+        var createResponse = await _client.Indices.CreateAsync(Collection, c => c
+            .Map<SvIndex>(m => m
+                .AutoMap()
+            )
+        );
+    }
 }

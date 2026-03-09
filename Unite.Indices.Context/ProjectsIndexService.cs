@@ -9,4 +9,18 @@ public class ProjectsIndexService(IElasticOptions options) : IndexService<Projec
 {
     protected override string Collection => IndexNames.Projects;
     protected override Expression<Func<ProjectIndex, object>> Identifier => index => index.Id;
+
+    public override async Task CreateIndex()
+    {
+        var existsResponse = await _client.Indices.ExistsAsync(Collection);
+
+        if (existsResponse.Exists)
+            return;
+
+        var createResponse = await _client.Indices.CreateAsync(Collection, c => c
+            .Map<ProjectIndex>(m => m
+                .AutoMap()
+            )
+        );
+    }
 }

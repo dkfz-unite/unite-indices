@@ -9,4 +9,18 @@ public class DonorsIndexService(IElasticOptions options) : IndexService<DonorInd
 {
     protected override string Collection => IndexNames.Donors;
     protected override Expression<Func<DonorIndex, object>> Identifier => index => index.Id;
+
+    public override async Task CreateIndex()
+    {
+        var existsResponse = await _client.Indices.ExistsAsync(Collection);
+
+        if (existsResponse.Exists)
+            return;
+
+        var createResponse = await _client.Indices.CreateAsync(Collection, c => c
+            .Map<DonorIndex>(m => m
+                .AutoMap()
+            )
+        );
+    }
 }

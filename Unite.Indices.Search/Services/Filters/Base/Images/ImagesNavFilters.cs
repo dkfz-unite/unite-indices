@@ -8,11 +8,11 @@ using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Images;
 
-public class ImagesFilters<T> : FiltersCollection<T> where T : class
+public class ImagesNavFilters<T> : FiltersCollection<T> where T : class
 {
     protected ImagesFilterNames FilterNames = new();
 
-    public ImagesFilters(ImagesCriteria criteria, Expression<Func<T, ImageNavIndex>> path)
+    public ImagesNavFilters(ImagesCriteria criteria, Expression<Func<T, ImageNavIndex>> path)
     {
         if (criteria == null)
         {

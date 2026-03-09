@@ -7,6 +7,9 @@ public static class IndexNames
     public const string Images = "images";
     public const string Specimens = "specimens";
     public const string Genes = "genes";
+    public const string GeneExpressions = "gene_expressions";
+    public const string Proteins = "proteins";
+    public const string ProteinExpressions = "protein_expressions";
     public const string Sms = "sms";
     public const string Cnvs = "cnvs";
     public const string Svs = "svs";

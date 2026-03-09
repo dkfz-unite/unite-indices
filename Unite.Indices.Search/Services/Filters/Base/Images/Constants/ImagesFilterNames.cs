@@ -1,17 +1,10 @@
 namespace Unite.Indices.Search.Services.Filters.Base.Images.Constants;
 
-public class ImagesFilterNames
+public class ImagesFilterNames : DataFilterNames
 {
-    protected string Prefix => "Images";
+    protected override string Prefix => "Images";
 
     public string Id => $"{Prefix}.Id";
     public string ReferenceId => $"{Prefix}.ReferenceId";
     public string ImageType => $"{Prefix}.ImageType";
-
-    public string HasExp => $"{Prefix}.HasExp";
-    public string HasExpSc => $"{Prefix}.HasExpSc";
-    public string HasSms => $"{Prefix}.HasSms";
-    public string HasCnvs => $"{Prefix}.HasCnvs";
-    public string HasSvs => $"{Prefix}.HasSvs";
-    public string HasMeth => $"{Prefix}.HasMeth";
 }

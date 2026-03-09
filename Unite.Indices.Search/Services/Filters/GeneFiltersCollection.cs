@@ -12,15 +12,15 @@ public class GeneFiltersCollection : FiltersCollection<GeneIndex>
     {
         var geneFilters = new GeneFilters<GeneIndex>(criteria.Gene, gene => gene);
 
-        var specimensFilters = new SpecimensFilters<GeneIndex>(criteria.Specimen, gene => gene.Specimens.First());
-        var genesFilters = new GenesFilters<GeneIndex>(criteria.Gene, gene => gene);
+        var specimensNavFilters = new SpecimensNavFilters<GeneIndex>(criteria.Specimen, gene => gene.Specimens.First());
+        var genesNavFilters = new GenesNavFilters<GeneIndex>(criteria.Gene, gene => gene);
         var genesDataFilters = new GenesDataFilters<GeneIndex>(criteria.Gene, gene => gene.Data);
         
         
         Add(geneFilters.All());
 
-        Add(specimensFilters.All());
-        Add(genesFilters.All());
+        Add(specimensNavFilters.All());
+        Add(genesNavFilters.All());
         Add(genesDataFilters.All());
     }
 }

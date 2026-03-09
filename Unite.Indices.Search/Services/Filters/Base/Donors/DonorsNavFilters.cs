@@ -7,11 +7,11 @@ using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Donors;
 
-public class DonorsFilters<T> : FiltersCollection<T> where T : class
+public class DonorsNavFilters<T> : FiltersCollection<T> where T : class
 {
     protected DonorsFilterNames FilterNames = new();
 
-    public DonorsFilters(DonorsCriteria criteria, Expression<Func<T, DonorNavIndex>> path)
+    public DonorsNavFilters(DonorsCriteria criteria, Expression<Func<T, DonorNavIndex>> path)
     {
         if (criteria == null)
         {

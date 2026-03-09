@@ -7,11 +7,11 @@ using Unite.Indices.Search.Services.Filters.Base.Projects.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Projects;
 
-public class ProjectsFilters<T> : FiltersCollection<T> where T : class
+public class ProjectsNavFilters<T> : FiltersCollection<T> where T : class
 {
     protected ProjectsFilterNames FilterNames = new();
 
-    public ProjectsFilters(ProjectsCriteria criteria, Expression<Func<T, ProjectNavIndex>> path)
+    public ProjectsNavFilters(ProjectsCriteria criteria, Expression<Func<T, ProjectNavIndex>> path)
     {
         if (criteria == null)
         {

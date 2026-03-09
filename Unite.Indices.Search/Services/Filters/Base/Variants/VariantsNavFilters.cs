@@ -7,12 +7,12 @@ using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 
 namespace Unite.Indices.Search.Services.Filters.Base.Variants;
 
-public class VariantsFilters<T> : FiltersCollection<T> 
+public class VariantsNavFilters<T> : FiltersCollection<T> 
     where T : class
 {
     protected VariantsFilterNames FilterNames = new();
 
-    public VariantsFilters(VariantsCriteria criteria, Expression<Func<T, VariantNavIndex>> path)
+    public VariantsNavFilters(VariantsCriteria criteria, Expression<Func<T, VariantNavIndex>> path)
     {
         if (criteria == null)
         {

@@ -6,6 +6,8 @@ public record GenesCriteria : CriteriaCollection
 {
     public ValuesCriteria<int> Id { get; set; }
 
+    public RangeCriteria<double?> Expression { get; set; }
+
     public BoolCriteria HasSms { get; set; }
     public BoolCriteria HasCnvs { get; set; }
     public BoolCriteria HasSvs { get; set; }

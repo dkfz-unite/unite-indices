@@ -5,6 +5,7 @@ public class GenesFilterNames
     protected string Prefix => "Genes";
 
     public string Id => $"{Prefix}.Id";
+    public string Expression => $"{Prefix}.Expression";
 
     public string HasSms => $"{Prefix}.HasSms";
     public string HasCnvs => $"{Prefix}.HasCnvs";

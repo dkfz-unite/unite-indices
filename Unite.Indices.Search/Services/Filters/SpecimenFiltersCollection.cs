@@ -16,10 +16,10 @@ public class SpecimenFiltersCollection : FiltersCollection<SpecimenIndex>
         var organoidFilters = new OrganoidFilters<SpecimenIndex>(criteria.Organoid, specimen => specimen.Organoid);
         var xenograftFilters = new XenograftFilters<SpecimenIndex>(criteria.Xenograft, specimen => specimen.Xenograft);
 
-        var donorsFilters = new DonorsFilters<SpecimenIndex>(criteria.Donor, specimen => specimen.Donor);
-        var imagesFilters = new ImagesFilters<SpecimenIndex>(criteria.Image, specimen => specimen.Images.First());
-        var specimensFilters = new SpecimensFilters<SpecimenIndex>(criteria.Specimen, specimen => specimen);
-        var specimensDataFilters = new SpecimensDataFilters<SpecimenIndex>(criteria.Specimen, specimen => specimen.Data);
+        var donorsNavFilters = new DonorsNavFilters<SpecimenIndex>(criteria.Donor, specimen => specimen.Donor);
+        var imagesNavFilters = new ImagesNavFilters<SpecimenIndex>(criteria.Image, specimen => specimen.Images.First());
+        var specimensNavFilters = new SpecimensNavFilters<SpecimenIndex>(criteria.Specimen, specimen => specimen);
+        var specimensDataFilters = new DataFilters<SpecimenIndex>(criteria.Specimen, specimen => specimen.Data);
         
         
         Add(materialFilters.All());
@@ -27,9 +27,9 @@ public class SpecimenFiltersCollection : FiltersCollection<SpecimenIndex>
         Add(organoidFilters.All());
         Add(xenograftFilters.All());
 
-        Add(donorsFilters.All());
-        Add(imagesFilters.All());
-        Add(specimensFilters.All());
+        Add(donorsNavFilters.All());
+        Add(imagesNavFilters.All());
+        Add(specimensNavFilters.All());
         Add(specimensDataFilters.All());
     }
 }
