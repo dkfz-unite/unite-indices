@@ -17,6 +17,7 @@ public static class ServicesExtensions
         services.AddTransient<IIndexService<Entities.Variants.SmIndex>, SmsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.CnvIndex>, CnvsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.SvIndex>, SvsIndexService>();
+        services.AddTransient<IIndexService<Entities.CnvProfiles.CnvProfileIndex>, CnvProfilesIndexService>();
         
         return services;
     }

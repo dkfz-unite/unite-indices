@@ -13,4 +13,5 @@ public static class IndexNames
     public const string Sms = "sms";
     public const string Cnvs = "cnvs";
     public const string Svs = "svs";
+    public const string CnvProfiles = "cnv-profiles";
 }
