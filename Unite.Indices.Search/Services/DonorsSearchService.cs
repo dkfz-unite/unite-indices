@@ -69,11 +69,21 @@ public class DonorsSearchService : SearchService<DonorIndex>
             if (HandleFoundGenes(exclusive, gneIds, ref genesToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
         }
-
+        
         if (genesToExclude.Count > 0)
             criteria.Gene = Set(criteria.Gene, [.. genesToExclude.Select(int.Parse)], true);
 
-        
+        if (criteria.HasGeneExpressionFilters)
+        {
+            var exclusive = criteria.AreGeneFiltersNegative;
+
+            var specimenIds = await AggregateFromGeneExpressions(index => index.Specimen.Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
+                return new SearchResult<DonorIndex>();
+        }
+
+
         if (criteria.HasProteinFilters)
         {
             var exclusive = criteria.AreProteinFiltersNegative;
@@ -91,6 +101,16 @@ public class DonorsSearchService : SearchService<DonorIndex>
 
         if (proteinsToExclude.Count > 0)
             criteria.Protein = Set(criteria.Protein, [.. proteinsToExclude.Select(int.Parse)], true);
+
+        if (criteria.HasProteinExpressionFilters)
+        {
+            var exclusive = criteria.AreProteinFiltersNegative;
+
+            var specimenIds = await AggregateFromProteinExpressions(index => index.Specimen.Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
+                return new SearchResult<DonorIndex>();
+        }
 
 
         if (criteria.HasSmFilters)

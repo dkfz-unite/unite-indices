@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace Unite.Indices.Context;
 
 /// <summary>
@@ -33,6 +35,15 @@ public interface IIndexService<T>
     /// <param name="elements">Document ids.</param>
     /// <returns>Task.</returns>
     Task DeleteRange(IEnumerable<string> keys);
+
+    /// <summary>
+    /// Deletes documents where given property equals any of the given values.
+    /// </summary>
+    /// <typeparam name="TProp">Property type.</typeparam>
+    /// <param name="property">Property selector.</param>
+    /// <param name="values">Property values.</param>
+    /// <returns>Task.</returns>
+    Task DeleteWhereEquals<TProp>(Expression<Func<T, TProp>> property, params TProp[] values);
 
     /// <summary>
     /// Create index collection if it does not exist.

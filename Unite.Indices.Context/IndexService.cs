@@ -69,6 +69,20 @@ public abstract class IndexService<T> : IIndexService<T>
         HandleResponseErrors(response);
     }
 
+    public virtual async Task DeleteWhereEquals<TProp>(Expression<Func<T, TProp>> property, params TProp[] values)
+    {
+        var response = await _client.DeleteByQueryAsync<T>(query => query
+            .Query(q => q
+                .Terms(t => t
+                    .Field(property)
+                    .Terms(values)
+                )
+            )
+        );
+
+        HandleResponseErrors(response);
+    }
+
     public abstract Task CreateIndex();
 
     public virtual async Task UpdateIndex()

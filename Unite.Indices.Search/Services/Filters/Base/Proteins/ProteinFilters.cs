@@ -19,6 +19,16 @@ public class ProteinFilters<T>: FiltersCollection<T> where T : class
             return;
         }
 
+        if (IsNotEmpty(criteria.Accession))
+        {
+            Add(new SimilarityFilter<T, string>(
+                FilterNames.Accession,
+                criteria.Accession.Not,
+                path.Join(protein => protein.AccessionId),
+                criteria.Accession.Value
+            ));
+        }
+
         if (IsNotEmpty(criteria.Symbol))
         {
             Add(new SimilarityFilter<T, string>(

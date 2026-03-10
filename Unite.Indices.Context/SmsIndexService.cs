@@ -20,12 +20,6 @@ public class SmsIndexService(IElasticOptions options) : IndexService<SmIndex>(op
         var createResponse = await _client.Indices.CreateAsync(Collection, c => c
             .Map<SmIndex>(m => m
                 .AutoMap()
-                .Properties(p => p
-                    .Nested<SpecimenIndex>(np => np
-                        .Name(i => i.Specimens)
-                        .AutoMap()
-                    )
-                )
             )
         );
     }

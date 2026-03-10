@@ -5,7 +5,7 @@ public class ProteinsFilterNames
     protected string Prefix => "Proteins";
 
     public string Id => $"{Prefix}.Id";
-    public string Intensity => $"{Prefix}.Intensity";
+    public string Expression => $"{Prefix}.Expression";
 
     public string HasSms => $"{Prefix}.HasSms";
     public string HasCnvs => $"{Prefix}.HasCnvs";
