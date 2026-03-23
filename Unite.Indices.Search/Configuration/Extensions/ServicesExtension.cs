@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Unite.Indices.Entities.CnvProfiles;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Services;
 
@@ -19,6 +20,7 @@ public static class ServicesExtension
         services.AddTransient<IIndexService<Entities.Variants.SmIndex>, SmsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.CnvIndex>, CnvsIndexService>();
         services.AddTransient<IIndexService<Entities.Variants.SvIndex>, SvsIndexService>();
+        services.AddTransient<IIndexService<CnvProfileIndex>, CnvProfileIndexService>();
 
         return services;
     }

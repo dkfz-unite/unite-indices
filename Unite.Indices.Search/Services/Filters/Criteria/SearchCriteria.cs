@@ -28,6 +28,7 @@ public record SearchCriteria
     public SmCriteria Sm { get; set; }
     public CnvCriteria Cnv { get; set; }
     public SvCriteria Sv { get; set; }
+    public CnvProfileCriteria CnvProfileCriteria { get; set; }
 
 
     public bool HasDonorFilters =>

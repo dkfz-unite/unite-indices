@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities;
+using Unite.Indices.Entities.CnvProfiles;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
@@ -40,6 +41,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected readonly IIndexService<SmIndex> _smsIndexService;
     protected readonly IIndexService<CnvIndex> _cnvsIndexService;
     protected readonly IIndexService<SvIndex> _svsIndexService;
+    protected readonly IIndexService<CnvProfileIndex> _cnvProfileIndexService;
 
 
     protected SearchService(IElasticOptions options)
@@ -55,6 +57,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         _smsIndexService = new SmsIndexService(options);
         _cnvsIndexService = new CnvsIndexService(options);
         _svsIndexService = new SvsIndexService(options);
+        _cnvProfileIndexService = new CnvProfileIndexService(options);
     }
 
 
