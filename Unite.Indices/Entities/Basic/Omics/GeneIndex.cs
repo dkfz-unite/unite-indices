@@ -7,6 +7,7 @@ public class GeneIndex : GeneNavIndex
     public string Description { get; set; }
     public string Biotype { get; set; }
     public string Chromosome { get; set; }
+    public string ChromosomeArm { get; set; }
     public int? Start { get; set; }
     public int? End { get; set; }
     public bool? Strand { get; set; }
