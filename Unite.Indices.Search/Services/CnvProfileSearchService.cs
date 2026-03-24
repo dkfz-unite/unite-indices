@@ -23,12 +23,11 @@ public class CnvProfileSearchService: SearchService<CnvProfileIndex>
         var criteria = searchCriteria ?? new SearchCriteria();
 
         var filters = new CnvProfileFilters(criteria.CnvProfileCriteria).All();
-        
+
         var query = new SearchQuery<CnvProfileIndex>()
             .AddPagination(criteria.From, criteria.Size)
             .AddFullTextSearch(criteria.Term)
-            .AddFilters(filters)
-            .AddOrdering(cnvProfile => cnvProfile.Chromosome);
+            .AddFilters(filters);
         
         return await _cnvProfileIndexService.Search(query);
     }

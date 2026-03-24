@@ -15,7 +15,7 @@ public class CnvProfileFilters : FiltersCollection<CnvProfileIndex>
         
         if (IsNotEmpty(criteria.Chromosome))
         {
-            Add(new EqualityFilter<CnvProfileIndex, object>(
+            Add(new SimilarityFilter<CnvProfileIndex, object>(
                 "cnvp.chromosome",
                 criteria.Chromosome.Not,
                 cnvProfile => cnvProfile.Chromosome,

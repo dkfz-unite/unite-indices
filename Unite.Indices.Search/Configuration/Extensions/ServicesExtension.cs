@@ -36,6 +36,7 @@ public static class ServicesExtension
         services.AddTransient<ISearchService<Entities.Variants.SmIndex>, SmsSearchService>();
         services.AddTransient<ISearchService<Entities.Variants.CnvIndex>, CnvsSearchService>();
         services.AddTransient<ISearchService<Entities.Variants.SvIndex>, SvsSearchService>();
+        services.AddTransient<ISearchService<CnvProfileIndex>, CnvProfileSearchService>();
 
         return services;
     }
