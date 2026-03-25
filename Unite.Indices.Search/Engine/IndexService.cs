@@ -22,6 +22,7 @@ public abstract class IndexService<T> : IIndexService<T>
             .BasicAuthentication(options.User, options.Password)
             .DisableAutomaticProxyDetection()
             .DefaultIndex(Collection)
+#if DEBUG
             .PrettyJson()
             .DisableDirectStreaming()
             .OnRequestCompleted(details =>
@@ -42,6 +43,7 @@ public abstract class IndexService<T> : IIndexService<T>
 
                 Console.WriteLine(new string('-', 80));
             });
+    #endif
 
         _client = new ElasticClient(settings);
     }
