@@ -146,6 +146,16 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<SpecimenIndex>();
         }
+        
+        if (criteria.HasCnvProfileFilters)
+        {
+            var exclusive = criteria.AreCnvProfileFiltersNegative;
+
+            var ids = await AggregateFromCnvProfiles(index => index.Specimen.Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
+                return new SearchResult<SpecimenIndex>();
+        }
 
         if (specimensToExclude.Count > 0)
             criteria.Specimen = Set(criteria.Specimen, [.. specimensToExclude.Select(int.Parse)], true);
