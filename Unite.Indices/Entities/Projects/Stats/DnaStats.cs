@@ -23,9 +23,9 @@ public class DnaStats
 public class SmStats
 {
     /// <summary>
-    /// Donors with SM variants.
+    /// Donors / specimens with SM variants.
     /// </summary>
-    public int Number { get; set; }
+    public int[] Number { get; set; }
 
 
     /// <summary>
@@ -67,9 +67,9 @@ public class SmStats
 public class CnvStats
 {
     /// <summary>
-    /// Donors with CNV variants.
+    /// Donors / specimens with CNV variants.
     /// </summary>
-    public int Number { get; set; }
+    public int[] Number { get; set; }
 
 
     /// <summary>
@@ -86,9 +86,9 @@ public class CnvStats
 public class SvStats
 {
     /// <summary>
-    /// Donors with SV variants.
+    /// Donors / specimens with SV variants.
     /// </summary>
-    public int Number { get; set; }
+    public int[] Number { get; set; }
 
 
     /// <summary>

@@ -5,9 +5,9 @@ namespace Unite.Indices.Entities.Projects.Stats;
 public class RnaStats
 {
     /// <summary>
-    /// Donors with the data.
+    /// Donors / specimens with the data.
     /// </summary>
-    public int Number { get; set; }
+    public int[] Number { get; set; }
 
 
     /// <summary>
