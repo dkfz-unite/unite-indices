@@ -22,7 +22,7 @@ public class CnvProfileSearchService: SearchService<CnvProfileIndex>
     {
         var criteria = searchCriteria ?? new SearchCriteria();
 
-        var filters = new CnvProfileFilters<CnvProfileIndex>(criteria.CnvProfileCriteria, cnvProfile => cnvProfile).All();
+        var filters = new CnvProfileFilters<CnvProfileIndex>(criteria.CnvProfile, cnvProfile => cnvProfile).All();
 
         var query = new SearchQuery<CnvProfileIndex>()
             .AddPagination(criteria.From, criteria.Size)

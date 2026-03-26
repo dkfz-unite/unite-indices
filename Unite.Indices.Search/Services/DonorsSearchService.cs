@@ -142,6 +142,16 @@ public class DonorsSearchService : SearchService<DonorIndex>
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
         }
+        
+        if (criteria.HasCnvProfileFilters)
+        {
+            var exclusive = criteria.AreCnvProfileFiltersNegative;
+
+            var ids = await AggregateFromCnvProfiles(index => index.Specimen.Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
+                return new SearchResult<DonorIndex>();
+        }
 
         if (specimensToExclude.Count > 0)
             criteria.Specimen = Set(criteria.Specimen, [.. specimensToExclude.Select(int.Parse)], true);
