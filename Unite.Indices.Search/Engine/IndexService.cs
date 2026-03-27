@@ -1,4 +1,5 @@
-﻿using Nest;
+﻿using System.Text;
+using Nest;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Search.Engine.Extensions;
@@ -20,7 +21,29 @@ public abstract class IndexService<T> : IIndexService<T>
         var settings = new ConnectionSettings(host)
             .BasicAuthentication(options.User, options.Password)
             .DisableAutomaticProxyDetection()
-            .DefaultIndex(Collection);
+            .DefaultIndex(Collection)
+#if DEBUG
+            .PrettyJson()
+            .DisableDirectStreaming()
+            .OnRequestCompleted(details =>
+            {
+                Console.WriteLine($"{details.HttpMethod} {details.Uri}");
+
+                if (details.RequestBodyInBytes != null)
+                {
+                    Console.WriteLine("REQUEST:");
+                    Console.WriteLine(Encoding.UTF8.GetString(details.RequestBodyInBytes));
+                }
+
+                if (details.ResponseBodyInBytes != null)
+                {
+                    Console.WriteLine("RESPONSE:");
+                    Console.WriteLine(Encoding.UTF8.GetString(details.ResponseBodyInBytes));
+                }
+
+                Console.WriteLine(new string('-', 80));
+            });
+    #endif
 
         _client = new ElasticClient(settings);
     }

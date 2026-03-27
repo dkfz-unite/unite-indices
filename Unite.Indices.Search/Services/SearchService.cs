@@ -10,6 +10,7 @@ using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Proteins.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
+using Unite.Indices.Search.Services.Filters.Base.Variants;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 using ProjectIndex = Unite.Indices.Entities.Projects.ProjectIndex;
@@ -40,6 +41,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected readonly IIndexService<SmIndex> _smsIndexService;
     protected readonly IIndexService<CnvIndex> _cnvsIndexService;
     protected readonly IIndexService<SvIndex> _svsIndexService;
+    protected readonly IIndexService<Entities.CnvProfiles.CnvProfileIndex> _cnvProfileIndexService;
 
 
     protected SearchService(IElasticOptions options)
@@ -55,6 +57,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         _smsIndexService = new SmsIndexService(options);
         _cnvsIndexService = new CnvsIndexService(options);
         _svsIndexService = new SvsIndexService(options);
+        _cnvProfileIndexService = new CnvProfileIndexService(options);
     }
 
 
@@ -206,6 +209,26 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         var aggregation = await AggregateFromSvs(property, criteria.Term, filters);
 
         return aggregation.Keys.ToArray();
+    }
+    
+    protected async Task<string[]> AggregateFromCnvProfiles<TProp>(Expression<Func<Entities.CnvProfiles.CnvProfileIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
+    {
+        var filters = new CnvProfileFilters<Entities.CnvProfiles.CnvProfileIndex>(criteria.CnvProfile, cnvProfile => cnvProfile);
+
+        if (exclusive)
+            filters.MakePositive();
+
+        var aggregationName = Guid.NewGuid().ToString();
+
+        var query = new SearchQuery<Entities.CnvProfiles.CnvProfileIndex>()
+            .AddPagination(0, 0)
+            .AddFullTextSearch(criteria.Term)
+            .AddFilters(filters.All())
+            .AddAggregation(aggregationName, property);
+
+        var result = await _cnvProfileIndexService.Search(query);
+
+        return result.Aggregations[aggregationName].Keys.ToArray();
     }
 
     protected static bool HandleFoundDonors(in bool exclusive, in string[] ids, ref HashSet<string> idsToExclude, ref SearchCriteria criteria)
