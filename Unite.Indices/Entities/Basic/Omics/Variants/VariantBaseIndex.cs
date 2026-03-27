@@ -3,6 +3,7 @@ namespace Unite.Indices.Entities.Basic.Omics.Variants;
 public abstract class VariantBaseIndex : VariantNavIndex
 {
     public string Chromosome { get; set; }
+    public string ChromosomeArm { get; set; }
     public int ChromosomeI => GetIndex(Chromosome);
     public int Start { get; set; }
     public int End { get; set; }
