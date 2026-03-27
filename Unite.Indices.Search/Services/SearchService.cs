@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities;
-using Unite.Indices.Entities.CnvProfiles;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
@@ -42,7 +41,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected readonly IIndexService<SmIndex> _smsIndexService;
     protected readonly IIndexService<CnvIndex> _cnvsIndexService;
     protected readonly IIndexService<SvIndex> _svsIndexService;
-    protected readonly IIndexService<CnvProfileIndex> _cnvProfileIndexService;
+    protected readonly IIndexService<Entities.CnvProfiles.CnvProfileIndex> _cnvProfileIndexService;
 
 
     protected SearchService(IElasticOptions options)
@@ -212,16 +211,16 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return aggregation.Keys.ToArray();
     }
     
-    protected async Task<string[]> AggregateFromCnvProfiles<TProp>(Expression<Func<CnvProfileIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromCnvProfiles<TProp>(Expression<Func<Entities.CnvProfiles.CnvProfileIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new CnvProfileFilters<CnvProfileIndex>(criteria.CnvProfile, cnvProfile => cnvProfile);
+        var filters = new CnvProfileFilters<Entities.CnvProfiles.CnvProfileIndex>(criteria.CnvProfile, cnvProfile => cnvProfile);
 
         if (exclusive)
             filters.MakePositive();
 
         var aggregationName = Guid.NewGuid().ToString();
 
-        var query = new SearchQuery<CnvProfileIndex>()
+        var query = new SearchQuery<Entities.CnvProfiles.CnvProfileIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters.All())
