@@ -28,6 +28,7 @@ public record SearchCriteria
     public SmCriteria Sm { get; set; }
     public CnvCriteria Cnv { get; set; }
     public SvCriteria Sv { get; set; }
+    public CnvProfileCriteria CnvProfile { get; set; }
 
 
     public bool HasDonorFilters =>
@@ -69,6 +70,9 @@ public record SearchCriteria
 
     public bool HasSvFilters =>
         Sv?.IsNotEmpty() == true;
+    
+    public bool HasCnvProfileFilters =>
+        CnvProfile?.IsNotEmpty() == true;
 
     public bool AreDonorFiltersNegative =>
         Donor?.IsNegative() == true;
@@ -96,6 +100,9 @@ public record SearchCriteria
 
     public bool AreSvFiltersNegative =>
         Sv?.IsNegative() == true;
+    
+    public bool AreCnvProfileFiltersNegative =>
+        CnvProfile?.IsNegative() == true;
         
 
     public SearchCriteria()
