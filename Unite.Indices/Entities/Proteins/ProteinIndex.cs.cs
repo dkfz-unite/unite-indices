@@ -13,5 +13,7 @@ public class ProteinIndex : Basic.Omics.ProteinIndex
     public DataIndex Data { get; set; }
 
 
+    public GeneIndex Gene { get; set; }
+    public TranscriptIndex Transcript { get; set; }
     public SpecimenIndex[] Specimens { get; set; }
 }
