@@ -19,31 +19,32 @@ public abstract class IndexService<T> : IIndexService<T>
         var host = new Uri(options.Host);
 
         var settings = new ConnectionSettings(host)
-            .BasicAuthentication(options.User, options.Password)
-            .DisableAutomaticProxyDetection()
-            .DefaultIndex(Collection)
+                .BasicAuthentication(options.User, options.Password)
+                .DisableAutomaticProxyDetection()
+                .DefaultIndex(Collection)
 #if DEBUG
-            .PrettyJson()
-            .DisableDirectStreaming()
-            .OnRequestCompleted(details =>
-            {
-                Console.WriteLine($"{details.HttpMethod} {details.Uri}");
-
-                if (details.RequestBodyInBytes != null)
+                .PrettyJson()
+                .DisableDirectStreaming()
+                .OnRequestCompleted(details =>
                 {
-                    Console.WriteLine("REQUEST:");
-                    Console.WriteLine(Encoding.UTF8.GetString(details.RequestBodyInBytes));
-                }
+                    Console.WriteLine($"{details.HttpMethod} {details.Uri}");
 
-                if (details.ResponseBodyInBytes != null)
-                {
-                    Console.WriteLine("RESPONSE:");
-                    Console.WriteLine(Encoding.UTF8.GetString(details.ResponseBodyInBytes));
-                }
+                    if (details.RequestBodyInBytes != null)
+                    {
+                        Console.WriteLine("REQUEST:");
+                        Console.WriteLine(Encoding.UTF8.GetString(details.RequestBodyInBytes));
+                    }
 
-                Console.WriteLine(new string('-', 80));
-            });
-    #endif
+                    if (details.ResponseBodyInBytes != null)
+                    {
+                        Console.WriteLine("RESPONSE:");
+                        Console.WriteLine(Encoding.UTF8.GetString(details.ResponseBodyInBytes));
+                    }
+
+                    Console.WriteLine(new string('-', 80));
+                })
+#endif
+            ;
 
         _client = new ElasticClient(settings);
     }
