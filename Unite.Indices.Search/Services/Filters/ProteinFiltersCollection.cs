@@ -1,5 +1,6 @@
 using Unite.Indices.Entities.Proteins;
 using Unite.Indices.Search.Services.Filters.Base;
+using Unite.Indices.Search.Services.Filters.Base.Genes;
 using Unite.Indices.Search.Services.Filters.Base.Proteins;
 using Unite.Indices.Search.Services.Filters.Base.Specimens;
 using Unite.Indices.Search.Services.Filters.Criteria;
@@ -13,11 +14,13 @@ public class ProteinFiltersCollection : FiltersCollection<ProteinIndex>
         var proteinFilters = new ProteinFilters<ProteinIndex>(criteria.Protein, protein => protein);
 
         var specimensNavFilters = new SpecimensNavFilters<ProteinIndex>(criteria.Specimen, protein => protein.Specimens.First());
+        var genesNavFilters = new GenesNavFilters<ProteinIndex>(criteria.Gene, protein => protein.Gene);
         var proteinsNavFilters = new ProteinsNavFilters<ProteinIndex>(criteria.Protein, protein => protein);        
         
         Add(proteinFilters.All());
 
         Add(specimensNavFilters.All());
+        Add(genesNavFilters.All());
         Add(proteinsNavFilters.All());
     }
 }
