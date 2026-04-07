@@ -38,4 +38,9 @@ public class StatsIndex
     /// Single-cell RNA data.
     /// </summary>
     public RnascStats Rnasc { get; set; } = new();
+
+    /// <summary>
+    /// Proteomics data.
+    /// </summary>
+    public ProtStats Prot { get; set; } = new();
 }

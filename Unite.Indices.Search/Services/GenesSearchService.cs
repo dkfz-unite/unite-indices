@@ -66,7 +66,15 @@ public class GenesSearchService : SearchService<GeneIndex>
             criteria.Specimen = Set(criteria.Specimen, [.. specimensToExclude.Select(int.Parse)], true);
 
 
-        // TODO: Add protein expression filters integration
+        if (criteria.HasProteinFilters)
+        {
+            var exclusive = criteria.AreProteinFiltersNegative;
+
+            var ids = await AggregateFromProteins(index => index.Gene.Id, criteria, exclusive);
+
+            if (HandleFoundGenes(exclusive, ids, ref genesToExclude, ref criteria))
+                return new SearchResult<GeneIndex>();
+        }
 
 
         if (criteria.HasSmFilters)
