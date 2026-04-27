@@ -108,6 +108,16 @@ public class ProteinsSearchService : SearchService<ProteinIndex>
             if (HandleFoundProteins(exclusive, ids, ref proteinsToExclude, ref criteria))
                 return new SearchResult<ProteinIndex>();
         }
+        
+        if (criteria.HasCnvProfileFilters)
+        {
+            var exclusive = criteria.AreCnvProfileFiltersNegative;
+
+            var ids = await AggregateFromCnvProfiles(index => index.Specimen.Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
+                return new SearchResult<ProteinIndex>();
+        }
 
         if (proteinsToExclude.Count > 0)
             criteria.Protein = Set(criteria.Protein, [.. proteinsToExclude.Select(int.Parse)], true);
