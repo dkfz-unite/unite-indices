@@ -18,6 +18,11 @@ public class DnaStats
     /// SV variants data.
     /// </summary>
     public SvStats Sv { get; set; } = new();
+
+    /// <summary>
+    /// CNV profile data.
+    /// </summary>
+    public CnvpStats Cnvp { get; set; } = new();
 }
 
 public class SmStats
@@ -100,4 +105,23 @@ public class SvStats
     /// Breakdown per type.
     /// </summary>
     public Stat<string, int>[] PerType { get; set; }
+}
+
+public class CnvpStats
+{
+    /// <summary>
+    /// Donors / specimens with CNV profile data.
+    /// </summary>
+    public int[] Number { get; set; }
+
+    /// <summary>
+    /// Breakdown of donors per analysis type.
+    /// </summary>
+    public Stat<string, int>[] PerAnalysis { get; set; }
+
+    /// <summary>
+    /// Breakdown per chromosome arm, wher ekey is the chromosome arm name and value is the array of stats per CNV type:
+    /// [0] - Loss count, [1] - Neutral count, [2] - Gain count.
+    /// </summary>
+    public Stat<string, int[]> PerChromosomeArm { get; set; }
 }

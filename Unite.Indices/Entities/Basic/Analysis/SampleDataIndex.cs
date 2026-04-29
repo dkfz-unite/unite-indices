@@ -18,6 +18,11 @@ public class SampleDataIndex
     public bool Sv { get; set; }
 
     /// <summary>
+    /// DNA Copy Number Variant (CNV) profiles data availability.
+    /// </summary>
+    public bool Cnvp { get; set; }
+
+    /// <summary>
     /// DNA Methylation data availability.
     /// </summary>
     public bool Meth { get; set; }
