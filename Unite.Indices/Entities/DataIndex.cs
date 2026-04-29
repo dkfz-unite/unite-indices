@@ -3,6 +3,7 @@ namespace Unite.Indices.Entities;
 /// <summary>
 /// Shows which data is available for given entity.
 /// TODO: this information and it's structure has to be completely revised.
+/// TODO: Eliminate plural forms in property names.
 /// </summary>
 public class DataIndex
 {
@@ -29,6 +30,7 @@ public class DataIndex
     public virtual bool? ExpSc { get; set; }
     public virtual bool? Sms { get; set; }
     public virtual bool? Cnvs { get; set; }
+    public virtual bool? Cnvps { get; set; }
     public virtual bool? Svs { get; set; }
     public virtual bool? Meth { get; set; }
     public virtual bool? Prot { get; set; }

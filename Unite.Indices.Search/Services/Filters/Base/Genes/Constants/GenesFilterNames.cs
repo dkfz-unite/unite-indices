@@ -9,5 +9,6 @@ public class GenesFilterNames
 
     public string HasSms => $"{Prefix}.HasSms";
     public string HasCnvs => $"{Prefix}.HasCnvs";
+    public string HasCnvps => $"{Prefix}.HasCnvps";
     public string HasSvs => $"{Prefix}.HasSvs";
 }

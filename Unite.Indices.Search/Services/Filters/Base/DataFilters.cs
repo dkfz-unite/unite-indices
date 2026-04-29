@@ -56,6 +56,16 @@ public class DataFilters<T> : FiltersCollection<T> where T : class
             ));
         }
 
+        if (IsNotEmpty(criteria.HasCnvps))
+        {
+            Add(new BooleanFilter<T>(
+                FilterNames.HasCnvps,
+                criteria.HasCnvps.Not,
+                path.Join(data => data.Cnvps),
+                criteria.HasCnvps.Value
+            ));
+        }
+
         if (IsNotEmpty(criteria.HasSvs))
         {
             Add(new BooleanFilter<T>(

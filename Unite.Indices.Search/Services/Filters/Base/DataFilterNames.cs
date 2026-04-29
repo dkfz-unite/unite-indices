@@ -8,6 +8,7 @@ public class DataFilterNames
     public string HasExpSc => $"{Prefix}.HasExpSc";
     public string HasSms => $"{Prefix}.HasSms";
     public string HasCnvs => $"{Prefix}.HasCnvs";
+    public string HasCnvps => $"{Prefix}.HasCnvps";
     public string HasSvs => $"{Prefix}.HasSvs";
     public string HasMeth => $"{Prefix}.HasMeth";
     public string HasProt => $"{Prefix}.HasProt";

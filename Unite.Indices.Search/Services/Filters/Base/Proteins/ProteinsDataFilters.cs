@@ -2,16 +2,16 @@ using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
 using Unite.Indices.Entities;
 using Unite.Indices.Search.Engine.Filters;
-using Unite.Indices.Search.Services.Filters.Base.Genes.Constants;
-using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
+using Unite.Indices.Search.Services.Filters.Base.Proteins.Constants;
+using Unite.Indices.Search.Services.Filters.Base.Proteins.Criteria;
 
-namespace Unite.Indices.Search.Services.Filters.Base.Genes;
+namespace Unite.Indices.Search.Services.Filters.Base.Proteins;
 
-public class GenesDataFilters<T> : FiltersCollection<T> where T : class
+public class ProteinsDataFilters<T> : FiltersCollection<T> where T : class
 {
-    protected GenesFilterNames FilterNames = new();
+    protected ProteinsFilterNames FilterNames = new();
 
-    public GenesDataFilters(GenesCriteria criteria, Expression<Func<T, DataIndex>> path)
+    public ProteinsDataFilters(ProteinsCriteria criteria, Expression<Func<T, DataIndex>> path)
     {
         if (criteria == null)
         {

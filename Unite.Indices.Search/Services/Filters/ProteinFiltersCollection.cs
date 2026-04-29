@@ -15,12 +15,14 @@ public class ProteinFiltersCollection : FiltersCollection<ProteinIndex>
 
         var specimensNavFilters = new SpecimensNavFilters<ProteinIndex>(criteria.Specimen, protein => protein.Specimens.First());
         var genesNavFilters = new GenesNavFilters<ProteinIndex>(criteria.Gene, protein => protein.Gene);
-        var proteinsNavFilters = new ProteinsNavFilters<ProteinIndex>(criteria.Protein, protein => protein);        
+        var proteinsNavFilters = new ProteinsNavFilters<ProteinIndex>(criteria.Protein, protein => protein);
+        var proteinsDataFilters = new ProteinsDataFilters<ProteinIndex>(criteria.Protein, protein => protein.Data);   
         
         Add(proteinFilters.All());
 
         Add(specimensNavFilters.All());
         Add(genesNavFilters.All());
         Add(proteinsNavFilters.All());
+        Add(proteinsDataFilters.All());
     }
 }

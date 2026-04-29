@@ -10,5 +10,6 @@ public record GenesCriteria : CriteriaCollection
 
     public BoolCriteria HasSms { get; set; }
     public BoolCriteria HasCnvs { get; set; }
+    public BoolCriteria HasCnvps { get; set; }
     public BoolCriteria HasSvs { get; set; }
 }
