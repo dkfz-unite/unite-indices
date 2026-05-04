@@ -107,6 +107,16 @@ public class GenesSearchService : SearchService<GeneIndex>
                 return new SearchResult<GeneIndex>();
         }
 
+        if (criteria.HasCnvProfileFilters)
+        {
+            var exclusive = criteria.AreCnvProfileFiltersNegative;
+
+            var ids = await AggregateFromCnvProfiles(index => index.Specimen.Id, criteria, exclusive);
+
+            if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
+                return new SearchResult<GeneIndex>();
+        }
+
 
         if (genesToExclude.Count > 0)
             criteria.Gene = Set(criteria.Gene, [.. genesToExclude.Select(int.Parse)], true);
