@@ -1,3 +1,5 @@
+using Unite.Indices.Entities.Basic.DataUser;
+
 namespace Unite.Indices.Entities.Projects;
 
 public class ProjectIndex : Basic.Projects.ProjectIndex
@@ -14,4 +16,5 @@ public class ProjectIndex : Basic.Projects.ProjectIndex
 
 
     public DonorIndex[] Donors { get; set; }
+    public DataUserNavIndex[] Users { get; set; }
 }
