@@ -1,4 +1,4 @@
-using Unite.Indices.Entities.Basic.DataUser;
+using Unite.Indices.Entities.Basic;
 
 namespace Unite.Indices.Entities.Projects;
 
