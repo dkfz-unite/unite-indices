@@ -1,4 +1,4 @@
-namespace Unite.Indices.Entities.Basic.DataUser;
+namespace Unite.Indices.Entities.Basic;
 
 public class DataUserNavIndex
 {
