@@ -1,5 +1,6 @@
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Projects;
+using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
 using Unite.Indices.Search.Services.Filters.Criteria;
@@ -20,9 +21,9 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         return await _projectsIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<ProjectIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<ProjectIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria;
+        var criteria = personalSearchCriteria.SearchCriteria;
 
         var donorsToExclude = new HashSet<string>();
         var imagesToExclude = new HashSet<string>();
@@ -35,7 +36,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreDonorFiltersNegative;
 
-            var ids = await AggregateFromDonors(index => index.Id, criteria, exclusive);
+            var ids = await AggregateFromDonors(index => index.Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundDonors(exclusive, ids, ref donorsToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -49,7 +50,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreImageFiltersNegative;
 
-            var ids = await AggregateFromImages(index => index.Id, criteria, exclusive);
+            var ids = await AggregateFromImages(index => index.Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundImages(exclusive, ids, ref imagesToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -63,7 +64,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreSpecimenFiltersNegative;
 
-            var ids = await AggregateFromSpecimens(index => index.Id, criteria, exclusive);
+            var ids = await AggregateFromSpecimens(index => index.Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -74,12 +75,12 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreGeneFiltersNegative;
 
-            var specimenIds = await AggregateFromGenes(index => index.Specimens.First().Id, criteria, exclusive);
+            var specimenIds = await AggregateFromGenes(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
 
-            var gneIds = await AggregateFromGenes(index => index.Id, criteria, exclusive);
+            var gneIds = await AggregateFromGenes(index => index.Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundGenes(exclusive, gneIds, ref genesToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -92,7 +93,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreGeneFiltersNegative;
 
-            var specimenIds = await AggregateFromGeneExpressions(index => index.Specimen.Id, criteria, exclusive);
+            var specimenIds = await AggregateFromGeneExpressions(index => index.Specimen.Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -103,12 +104,12 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreProteinFiltersNegative;
 
-            var specimenIds = await AggregateFromProteins(index => index.Specimens.First().Id, criteria, exclusive);
+            var specimenIds = await AggregateFromProteins(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
 
-            var proteinIds = await AggregateFromProteins(index => index.Id, criteria, exclusive);
+            var proteinIds = await AggregateFromProteins(index => index.Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundProteins(exclusive, proteinIds, ref proteinsToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -121,7 +122,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreProteinFiltersNegative;
 
-            var specimenIds = await AggregateFromProteinExpressions(index => index.Specimen.Id, criteria, exclusive);
+            var specimenIds = await AggregateFromProteinExpressions(index => index.Specimen.Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -132,7 +133,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreSmFiltersNegative;
 
-            var ids = await AggregateFromSms(index => index.Specimens.First().Id, criteria, exclusive);
+            var ids = await AggregateFromSms(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -142,7 +143,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreCnvFiltersNegative;
 
-            var ids = await AggregateFromCnvs(index => index.Specimens.First().Id, criteria, exclusive);
+            var ids = await AggregateFromCnvs(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -152,7 +153,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         {
             var exclusive = criteria.AreSvFiltersNegative;
 
-            var ids = await AggregateFromSvs(index => index.Specimens.First().Id, criteria, exclusive);
+            var ids = await AggregateFromSvs(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<ProjectIndex>();
@@ -173,6 +174,20 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         return await _projectsIndexService.Search(query);
     }
 
+    public async Task<SearchResult<ProjectIndex>> GetAccessibleProjects(PersonalSearchCriteria personalSearchCriteria)
+    {
+        var criteria = personalSearchCriteria.SearchCriteria;
+        
+        var query = new SearchQuery<ProjectIndex>()
+            //.AddPagination(criteria.From, criteria.Size)
+            //.AddFullTextSearch(criteria.Term)
+            .AddFilters([
+                new CompoundFilter<ProjectIndex>("UserFilter", false, new BooleanFilter<ProjectIndex>("IsPublic", x => x.IsPublic, true), new BooleanFilter<ProjectIndex>("IsPublic", x => x.IsPublic, true), LogicalOperator.Or)
+            ])
+            .AddOrdering(project => project.Stats.Donors.Number);
+        
+        return await _projectsIndexService.Search(query);
+    }
 
     protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, ProjectIndex index)
     {
