@@ -28,6 +28,7 @@ public class GenesSearchService : SearchService<GeneIndex>
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
 
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {

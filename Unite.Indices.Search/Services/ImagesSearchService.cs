@@ -29,6 +29,7 @@ public class ImagesSearchService : SearchService<ImageIndex>
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
 
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {

@@ -174,21 +174,6 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         return await _projectsIndexService.Search(query);
     }
 
-    public async Task<SearchResult<ProjectIndex>> GetAccessibleProjects(PersonalSearchCriteria personalSearchCriteria)
-    {
-        var criteria = personalSearchCriteria.SearchCriteria;
-        
-        var query = new SearchQuery<ProjectIndex>()
-            //.AddPagination(criteria.From, criteria.Size)
-            //.AddFullTextSearch(criteria.Term)
-            .AddFilters([
-                new CompoundFilter<ProjectIndex>("UserFilter", false, new BooleanFilter<ProjectIndex>("IsPublic", x => x.IsPublic, true), new BooleanFilter<ProjectIndex>("IsPublic", x => x.IsPublic, true), LogicalOperator.Or)
-            ])
-            .AddOrdering(project => project.Stats.Donors.Number);
-        
-        return await _projectsIndexService.Search(query);
-    }
-
     protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, ProjectIndex index)
     {
         stats.Add(index.Id, index.Data);

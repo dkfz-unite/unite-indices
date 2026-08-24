@@ -28,6 +28,7 @@ public class SvsSearchService : SearchService<SvIndex>
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
 
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {

@@ -32,7 +32,7 @@ namespace Unite.Indices.Search.Services;
 
 public abstract class SearchService<T> : ISearchService<T> where T : class
 {
-    protected readonly IIndexService<ProjectIndex> _projectsIndexService;
+    protected readonly ProjectsIndexService _projectsIndexService;
     protected readonly IIndexService<DonorIndex> _donorsIndexService;
     protected readonly IIndexService<ImageIndex> _imagesIndexService;
     protected readonly IIndexService<SpecimenIndex> _specimensIndexService;
@@ -379,6 +379,47 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             return [];
         else
             return a.Except(b).ToArray();
+    }
+
+    protected void PersonalizeDonorsCriteria(PersonalSearchCriteria criteria)
+    {
+        var projectList = new List<string>();
+        var task = _projectsIndexService.GetAccessibleProjects(criteria.UserId);
+        task.Wait();
+        var accessibleProjects = task.Result;
+        
+        var donorsCriteria = criteria.SearchCriteria.Donor ?? (criteria.SearchCriteria.Donor = new DonorCriteria());
+        var projects = donorsCriteria.Project ?? (donorsCriteria.Project = new ValuesCriteria<string>());
+
+        foreach (var accessibleProject in accessibleProjects.Rows)
+        {
+            var accepted = false;
+            if (projects.Length > 0)
+            {
+                foreach (var project in projects.Value)
+                {
+                    if (accessibleProject.Name == project)
+                    {
+                        accepted = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                accepted = true;
+            }
+
+            if (accepted)
+            {
+                projectList.Add(accessibleProject.Name);
+            }
+        }
+
+        if (projectList.Count == 0)
+            projectList.Add("-"); //force no matches
+        
+        donorsCriteria.Project = new ValuesCriteria<string>(projectList.ToArray());
     }
     
     private async Task<IDictionary<string, long>> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, PersonalSearchCriteria personalCriteria, DonorFiltersCollection filters)

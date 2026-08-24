@@ -28,7 +28,8 @@ public class CnvsSearchService : SearchService<CnvIndex>
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
 
-
+        PersonalizeDonorsCriteria(personalSearchCriteria);
+        
         if (criteria.HasDonorFilters)
         {
             var exclusive = criteria.AreDonorFiltersNegative;

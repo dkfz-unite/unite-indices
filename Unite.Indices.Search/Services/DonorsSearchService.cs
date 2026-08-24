@@ -28,7 +28,8 @@ public class DonorsSearchService : SearchService<DonorIndex>
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
-
+        
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasImageFilters)
         {

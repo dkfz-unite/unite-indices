@@ -29,6 +29,7 @@ public class ProteinsSearchService : SearchService<ProteinIndex>
         var specimensToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
 
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {
