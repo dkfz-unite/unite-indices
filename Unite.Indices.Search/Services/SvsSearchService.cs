@@ -20,14 +20,15 @@ public class SvsSearchService : SearchService<SvIndex>
         return await _svsIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<SvIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<SvIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria;
+        var criteria = personalSearchCriteria.SearchCriteria;
 
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
 
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {

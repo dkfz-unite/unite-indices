@@ -21,13 +21,14 @@ public class GenesSearchService : SearchService<GeneIndex>
         return await _genesIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<GeneIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<GeneIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria ?? new SearchCriteria();
+        var criteria = personalSearchCriteria?.SearchCriteria ?? new SearchCriteria();
 
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
 
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {

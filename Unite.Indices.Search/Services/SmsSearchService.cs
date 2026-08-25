@@ -20,14 +20,15 @@ public class SmsSearchService : SearchService<SmIndex>
         return await _smsIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<SmIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<SmIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria;
+        var criteria = personalSearchCriteria.SearchCriteria;
 
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
-
+        
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {

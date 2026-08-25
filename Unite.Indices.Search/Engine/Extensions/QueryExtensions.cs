@@ -6,6 +6,26 @@ namespace Unite.Indices.Search.Engine.Extensions;
 public static class QueryExtensions
 {
     /// <summary>
+    /// Creates a compound query by combining two queries with the given logical operator.
+    /// </summary>
+    /// <param name="queries">Queries.</param>
+    /// <param name="logicalOperator">Logical operator used to combine the queries.</param>
+    /// <returns>QueryContainer with both queries combined via the given operator.</returns>
+    public static QueryContainer CreateCompoundQuery(
+        IEnumerable<QueryContainer> queries,
+        Operator logicalOperator)
+    {
+        var query = logicalOperator switch
+        {
+            Operator.And => queries.Aggregate((left, right) => left && right),
+            Operator.Or => queries.Aggregate((left, right) => left || right),
+            _ => throw new ArgumentOutOfRangeException(nameof(logicalOperator), logicalOperator, null)
+        };
+
+        return query;
+    }
+    
+    /// <summary>
     /// Creates 'MultiMatch' query if filter value is set.
     /// </summary>
     /// <typeparam name="T">Index type'</typeparam>

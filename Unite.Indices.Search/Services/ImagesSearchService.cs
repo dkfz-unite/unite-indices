@@ -20,15 +20,16 @@ public class ImagesSearchService : SearchService<ImageIndex>
         return await _imagesIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<ImageIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<ImageIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria;
+        var criteria = personalSearchCriteria.SearchCriteria;
 
         var donorsToExclude = new HashSet<string>();
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
 
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {

@@ -20,15 +20,16 @@ public class DonorsSearchService : SearchService<DonorIndex>
         return await _donorsIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<DonorIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<DonorIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria;
+        var criteria = personalSearchCriteria.SearchCriteria;
 
         var imagesToExclude = new HashSet<string>();
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
-
+        
+        PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasImageFilters)
         {

@@ -20,9 +20,9 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
         return await _specimensIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<SpecimenIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<SpecimenIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria;
+        var criteria = personalSearchCriteria.SearchCriteria;
 
         var donorsToExclude = new HashSet<string>();
         var imagesToExclude = new HashSet<string>();
@@ -30,7 +30,8 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
 
-
+        PersonalizeDonorsCriteria(personalSearchCriteria);
+        
         if (criteria.HasDonorFilters)
         {
             var exclusive = criteria.AreDonorFiltersNegative;

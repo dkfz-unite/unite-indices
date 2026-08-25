@@ -1,5 +1,6 @@
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Projects;
+using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
 using Unite.Indices.Search.Services.Filters.Criteria;
@@ -20,9 +21,9 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         return await _projectsIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<ProjectIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<ProjectIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria;
+        var criteria = personalSearchCriteria.SearchCriteria;
 
         var donorsToExclude = new HashSet<string>();
         var imagesToExclude = new HashSet<string>();
@@ -172,7 +173,6 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
 
         return await _projectsIndexService.Search(query);
     }
-
 
     protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, ProjectIndex index)
     {

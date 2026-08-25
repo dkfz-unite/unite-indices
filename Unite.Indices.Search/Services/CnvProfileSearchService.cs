@@ -18,8 +18,9 @@ public class CnvProfileSearchService: SearchService<CnvProfileIndex>
         throw new NotImplementedException();
     }
 
-    public override async Task<SearchResult<CnvProfileIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<CnvProfileIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
+        var searchCriteria = personalSearchCriteria?.SearchCriteria;
         var criteria = searchCriteria ?? new SearchCriteria();
 
         var filters = new CnvProfileFilters<CnvProfileIndex>(criteria.CnvProfile, cnvProfile => cnvProfile).All();

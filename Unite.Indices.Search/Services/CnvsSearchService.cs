@@ -20,15 +20,16 @@ public class CnvsSearchService : SearchService<CnvIndex>
         return await _cnvsIndexService.Get(query);
     }
 
-    public override async Task<SearchResult<CnvIndex>> Search(SearchCriteria searchCriteria)
+    public override async Task<SearchResult<CnvIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
-        var criteria = searchCriteria;
+        var criteria = personalSearchCriteria.SearchCriteria;
 
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
 
-
+        PersonalizeDonorsCriteria(personalSearchCriteria);
+        
         if (criteria.HasDonorFilters)
         {
             var exclusive = criteria.AreDonorFiltersNegative;
@@ -44,7 +45,7 @@ public class CnvsSearchService : SearchService<CnvIndex>
         {
             var exclusive = criteria.AreImageFiltersNegative;
 
-            var ids = await AggregateFromImages(index => index.Specimens.First().Id, criteria with { Specimen = null }, exclusive);
+            var ids = await AggregateFromImages(index => index.Specimens.First().Id,  criteria with { Specimen = null }, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<CnvIndex>();
