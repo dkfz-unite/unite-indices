@@ -69,12 +69,10 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     public virtual async Task<IReadOnlyDictionary<object, DataIndex>> Stats(PersonalSearchCriteria personalSearchCriteria)
     {
-        var tempPersonalSearchCriteria = new PersonalSearchCriteria
-        {
-            UserId = personalSearchCriteria.UserId
-        };
-        
-        tempPersonalSearchCriteria.SearchCriteria = personalSearchCriteria.SearchCriteria with { From = 0, Size = 0 };
+        var tempPersonalSearchCriteria = new PersonalSearchCriteria(personalSearchCriteria.UserId,
+            personalSearchCriteria.IsRoot, 
+            personalSearchCriteria.SearchCriteria with { From = 0, Size = 0 }
+        );
 
         var lookupResult = await Search(tempPersonalSearchCriteria);
 
@@ -382,7 +380,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     protected void PersonalizeDonorsCriteria(PersonalSearchCriteria criteria)
     {
         var projectList = new List<string>();
-        var task = _projectsIndexService.GetAccessibleProjects(criteria.UserId);
+        var task = _projectsIndexService.GetAccessibleProjects(criteria.UserId, criteria.IsRoot);
         task.Wait();
         var accessibleProjects = task.Result;
         

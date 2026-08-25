@@ -8,19 +8,17 @@ public static class QueryExtensions
     /// <summary>
     /// Creates a compound query by combining two queries with the given logical operator.
     /// </summary>
-    /// <param name="queryA">First query.</param>
-    /// <param name="queryB">Second query.</param>
+    /// <param name="queries">Queries.</param>
     /// <param name="logicalOperator">Logical operator used to combine the queries.</param>
     /// <returns>QueryContainer with both queries combined via the given operator.</returns>
     public static QueryContainer CreateCompoundQuery(
-        QueryContainer queryA,
-        QueryContainer queryB,
+        IEnumerable<QueryContainer> queries,
         Operator logicalOperator)
     {
         var query = logicalOperator switch
         {
-            Operator.And => queryA && queryB,
-            Operator.Or => queryA || queryB,
+            Operator.And => queries.Aggregate((left, right) => left && right),
+            Operator.Or => queries.Aggregate((left, right) => left || right),
             _ => throw new ArgumentOutOfRangeException(nameof(logicalOperator), logicalOperator, null)
         };
 

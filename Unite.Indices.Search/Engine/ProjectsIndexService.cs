@@ -10,26 +10,32 @@ public class ProjectsIndexService(IElasticOptions options) : IndexService<Projec
 {
     protected override string Collection => IndexNames.Projects;
     
-    public async Task<SearchResult<ProjectIndex>> GetAccessibleProjects(int? userId)
+    public async Task<SearchResult<ProjectIndex>> GetAccessibleProjects(int? userId, bool? isRoot)
     {
-        if(userId == null)
+        if (userId == null)
             return new SearchResult<ProjectIndex>();
-    
+
         var query = new SearchQuery<ProjectIndex>()
             .AddPagination(0, 10_000)
-            .AddFilters([
-                new CompoundFilter<ProjectIndex>("UserFilter", false, 
-                    new BooleanFilter<ProjectIndex>("IsPublic", x => x.IsPublic, true), 
-                    new EqualityFilter<ProjectIndex, int>(
-                        "UserId",
-                        false,
-                        x => x.Users.First().UserId,
-                        [ userId.Value ]
-                    ),
-                    LogicalOperator.Or)
-            ])
             .AddOrdering(project => project.Stats.Donors.Number);
-    
+
+        if (isRoot != true)
+        {
+            query = query.AddFilters([
+                new CompoundFilter<ProjectIndex>("UserFilter", false,
+                    [
+                        new BooleanFilter<ProjectIndex>("IsPublic", x => x.IsPublic, true),
+                        new EqualityFilter<ProjectIndex, int>(
+                            "UserId",
+                            false,
+                            x => x.Users.First().UserId,
+                            [ userId.Value ]
+                        )
+                    ],
+                    LogicalOperator.Or)
+            ]);
+        }
+
         return await Search(query);
     }
 }
