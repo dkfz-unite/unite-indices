@@ -98,130 +98,128 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     protected abstract void AddToStats(ref Dictionary<object, DataIndex> stats, T index);
 
-    protected async Task<string[]> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new DonorFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new DonorFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromDonors(property, personalCriteria, filters);
+        var aggregation = await AggregateFromDonors(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    public async Task<string[]> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    public async Task<string[]> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new ImageFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new ImageFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromImages(property, personalCriteria, filters);
+        var aggregation = await AggregateFromImages(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new SpecimenFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new SpecimenFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromSpecimens(property, personalCriteria, filters);
+        var aggregation = await AggregateFromSpecimens(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new GeneFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new GeneFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromGenes(property, personalCriteria, filters);
+        var aggregation = await AggregateFromGenes(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromGeneExpressions<TProp>(Expression<Func<GeneExpressionIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromGeneExpressions<TProp>(Expression<Func<GeneExpressionIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new GeneExpressionFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new GeneExpressionFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromGeneExpressions(property, personalCriteria, filters);
+        var aggregation = await AggregateFromGeneExpressions(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromProteins<TProp>(Expression<Func<ProteinIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromProteins<TProp>(Expression<Func<ProteinIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new ProteinFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new ProteinFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromProteins(property, personalCriteria, filters);
+        var aggregation = await AggregateFromProteins(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromProteinExpressions<TProp>(Expression<Func<ProteinExpressionIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromProteinExpressions<TProp>(Expression<Func<ProteinExpressionIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new ProteinExpressionFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new ProteinExpressionFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromProteinExpressions(property, personalCriteria, filters);
+        var aggregation = await AggregateFromProteinExpressions(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new SmFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new SmFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromSms(property, personalCriteria, filters);
+        var aggregation = await AggregateFromSms(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new CnvFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new CnvFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromCnvs(property, personalCriteria, filters);
+        var aggregation = await AggregateFromCnvs(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
 
-    protected async Task<string[]> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var filters = new SvFiltersCollection(personalCriteria.SearchCriteria);
+        var filters = new SvFiltersCollection(criteria);
 
         if (exclusive)
             filters.MakePositive();
 
-        var aggregation = await AggregateFromSvs(property, personalCriteria, filters);
+        var aggregation = await AggregateFromSvs(property, criteria, filters);
 
         return aggregation.Keys.ToArray();
     }
     
-    protected async Task<string[]> AggregateFromCnvProfiles<TProp>(Expression<Func<Entities.CnvProfiles.CnvProfileIndex, TProp>> property, PersonalSearchCriteria personalCriteria, bool exclusive = false)
+    protected async Task<string[]> AggregateFromCnvProfiles<TProp>(Expression<Func<Entities.CnvProfiles.CnvProfileIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
-        var criteria = personalCriteria.SearchCriteria;
-        
         var filters = new CnvProfileFilters<Entities.CnvProfiles.CnvProfileIndex>(criteria.CnvProfile, cnvProfile => cnvProfile);
 
         if (exclusive)
@@ -390,17 +388,18 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         
         var donorsCriteria = criteria.SearchCriteria.Donor ?? (criteria.SearchCriteria.Donor = new DonorCriteria());
         var projects = donorsCriteria.Project ?? (donorsCriteria.Project = new ValuesCriteria<string>());
+        var excludeProjects = projects.Not ?? false;
 
         foreach (var accessibleProject in accessibleProjects.Rows)
         {
-            var accepted = false;
+            var accepted = excludeProjects;
             if (projects.Length > 0)
             {
                 foreach (var project in projects.Value)
                 {
                     if (accessibleProject.Name == project)
                     {
-                        accepted = true;
+                        accepted = !excludeProjects;
                         break;
                     }
                 }
@@ -422,11 +421,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         donorsCriteria.Project = new ValuesCriteria<string>(projectList.ToArray());
     }
     
-    private async Task<IDictionary<string, long>> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, PersonalSearchCriteria personalCriteria, DonorFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, SearchCriteria criteria, DonorFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<DonorIndex>()
             .AddPagination(0, 0)
@@ -443,11 +440,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, PersonalSearchCriteria personalCriteria, ImageFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, SearchCriteria criteria, ImageFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<ImageIndex>()
             .AddPagination(0, 0)
@@ -464,11 +459,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, PersonalSearchCriteria personalCriteria, SpecimenFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, SearchCriteria criteria, SpecimenFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<SpecimenIndex>()
             .AddPagination(0, 0)
@@ -486,11 +479,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, PersonalSearchCriteria personalCriteria, GeneFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria, GeneFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<GeneIndex>()
             .AddPagination(0, 0)
@@ -506,11 +497,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromGeneExpressions<TProp>(Expression<Func<GeneExpressionIndex, TProp>> property, PersonalSearchCriteria personalCriteria, GeneExpressionFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromGeneExpressions<TProp>(Expression<Func<GeneExpressionIndex, TProp>> property, SearchCriteria criteria, GeneExpressionFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<GeneExpressionIndex>()
             .AddPagination(0, 0)
@@ -525,11 +514,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromProteins<TProp>(Expression<Func<ProteinIndex, TProp>> property, PersonalSearchCriteria personalCriteria, ProteinFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromProteins<TProp>(Expression<Func<ProteinIndex, TProp>> property, SearchCriteria criteria, ProteinFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
-        var criteria = personalCriteria.SearchCriteria;
 
         var query = new SearchQuery<ProteinIndex>()
             .AddPagination(0, 0)
@@ -545,11 +532,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromProteinExpressions<TProp>(Expression<Func<ProteinExpressionIndex, TProp>> property, PersonalSearchCriteria personalCriteria, ProteinExpressionFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromProteinExpressions<TProp>(Expression<Func<ProteinExpressionIndex, TProp>> property, SearchCriteria criteria, ProteinExpressionFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<ProteinExpressionIndex>()
             .AddPagination(0, 0)
@@ -564,11 +549,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, PersonalSearchCriteria personalCriteria, SmFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, SearchCriteria criteria, SmFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<SmIndex>()
             .AddPagination(0, 0)
@@ -584,11 +567,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, PersonalSearchCriteria personalCriteria, CnvFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, SearchCriteria criteria, CnvFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<CnvIndex>()
             .AddPagination(0, 0)
@@ -604,11 +585,9 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return result.Aggregations[aggregationName];
     }
 
-    private async Task<IDictionary<string, long>> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, PersonalSearchCriteria personalCriteria, SvFiltersCollection filters)
+    private async Task<IDictionary<string, long>> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, SearchCriteria criteria, SvFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-
-        var criteria = personalCriteria.SearchCriteria;
         
         var query = new SearchQuery<SvIndex>()
             .AddPagination(0, 0)

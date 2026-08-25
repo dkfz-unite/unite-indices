@@ -27,14 +27,14 @@ public class SmsSearchService : SearchService<SmIndex>
         var specimensToExclude = new HashSet<string>();
         var genesToExclude = new HashSet<string>();
         var proteinsToExclude = new HashSet<string>();
-
+        
         PersonalizeDonorsCriteria(personalSearchCriteria);
 
         if (criteria.HasDonorFilters)
         {
             var exclusive = criteria.AreDonorFiltersNegative;
 
-            var ids = await AggregateFromDonors(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
+            var ids = await AggregateFromDonors(index => index.Specimens.First().Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<SmIndex>();
@@ -45,13 +45,7 @@ public class SmsSearchService : SearchService<SmIndex>
         {
             var exclusive = criteria.AreImageFiltersNegative;
 
-            var ids = await AggregateFromImages(index => index.Specimens.First().Id, 
-                new PersonalSearchCriteria
-                {
-                    UserId =  personalSearchCriteria.UserId,
-                    SearchCriteria = criteria with { Specimen = null }
-                }, 
-                exclusive);
+            var ids = await AggregateFromImages(index => index.Specimens.First().Id, criteria with { Specimen = null }, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<SmIndex>();
@@ -62,7 +56,7 @@ public class SmsSearchService : SearchService<SmIndex>
         {
             var exclusive = criteria.AreSpecimenFiltersNegative;
 
-            var ids = await AggregateFromSpecimens(index => index.Id, personalSearchCriteria, exclusive);
+            var ids = await AggregateFromSpecimens(index => index.Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<SmIndex>();
@@ -77,12 +71,12 @@ public class SmsSearchService : SearchService<SmIndex>
         {
             var exclusive = criteria.AreGeneFiltersNegative;
 
-            var specimenIds = await AggregateFromGenes(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
+            var specimenIds = await AggregateFromGenes(index => index.Specimens.First().Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<SmIndex>();
 
-            var gneIds = await AggregateFromGenes(index => index.Id, personalSearchCriteria, exclusive);
+            var gneIds = await AggregateFromGenes(index => index.Id, criteria, exclusive);
 
             if (HandleFoundGenes(exclusive, gneIds, ref genesToExclude, ref criteria))
                 return new SearchResult<SmIndex>();
@@ -95,7 +89,7 @@ public class SmsSearchService : SearchService<SmIndex>
         {
             var exclusive = criteria.AreGeneFiltersNegative;
 
-            var specimenIds = await AggregateFromGeneExpressions(index => index.Specimen.Id, personalSearchCriteria, exclusive);
+            var specimenIds = await AggregateFromGeneExpressions(index => index.Specimen.Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<SmIndex>();
@@ -106,12 +100,12 @@ public class SmsSearchService : SearchService<SmIndex>
         {
             var exclusive = criteria.AreProteinFiltersNegative;
 
-            var specimenIds = await AggregateFromProteins(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
+            var specimenIds = await AggregateFromProteins(index => index.Specimens.First().Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<SmIndex>();
 
-            var proteinIds = await AggregateFromProteins(index => index.Id, personalSearchCriteria, exclusive);
+            var proteinIds = await AggregateFromProteins(index => index.Id, criteria, exclusive);
 
             if (HandleFoundProteins(exclusive, proteinIds, ref proteinsToExclude, ref criteria))
                 return new SearchResult<SmIndex>();
@@ -124,7 +118,7 @@ public class SmsSearchService : SearchService<SmIndex>
         {
             var exclusive = criteria.AreProteinFiltersNegative;
 
-            var specimenIds = await AggregateFromProteinExpressions(index => index.Specimen.Id, personalSearchCriteria, exclusive);
+            var specimenIds = await AggregateFromProteinExpressions(index => index.Specimen.Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<SmIndex>();

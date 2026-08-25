@@ -35,7 +35,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreImageFiltersNegative;
 
-            var ids = await AggregateFromImages(index => index.Id, personalSearchCriteria, exclusive);
+            var ids = await AggregateFromImages(index => index.Id, criteria, exclusive);
 
             if (HandleFoundImages(exclusive, ids, ref imagesToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -49,7 +49,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreSpecimenFiltersNegative;
 
-            var ids = await AggregateFromSpecimens(index => index.Id, personalSearchCriteria, exclusive);
+            var ids = await AggregateFromSpecimens(index => index.Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -60,12 +60,12 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreGeneFiltersNegative;
 
-            var specimenIds = await AggregateFromGenes(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
+            var specimenIds = await AggregateFromGenes(index => index.Specimens.First().Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
 
-            var gneIds = await AggregateFromGenes(index => index.Id, personalSearchCriteria, exclusive);
+            var gneIds = await AggregateFromGenes(index => index.Id, criteria, exclusive);
 
             if (HandleFoundGenes(exclusive, gneIds, ref genesToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -78,7 +78,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreGeneFiltersNegative;
 
-            var specimenIds = await AggregateFromGeneExpressions(index => index.Specimen.Id, personalSearchCriteria, exclusive);
+            var specimenIds = await AggregateFromGeneExpressions(index => index.Specimen.Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -89,12 +89,12 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreProteinFiltersNegative;
 
-            var specimenIds = await AggregateFromProteins(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
+            var specimenIds = await AggregateFromProteins(index => index.Specimens.First().Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
 
-            var proteinIds = await AggregateFromProteins(index => index.Id, personalSearchCriteria, exclusive);
+            var proteinIds = await AggregateFromProteins(index => index.Id, criteria, exclusive);
 
             if (HandleFoundProteins(exclusive, proteinIds, ref proteinsToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -107,7 +107,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreProteinFiltersNegative;
 
-            var specimenIds = await AggregateFromProteinExpressions(index => index.Specimen.Id, personalSearchCriteria, exclusive);
+            var specimenIds = await AggregateFromProteinExpressions(index => index.Specimen.Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, specimenIds, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -118,7 +118,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreSmFiltersNegative;
 
-            var ids = await AggregateFromSms(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
+            var ids = await AggregateFromSms(index => index.Specimens.First().Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -128,7 +128,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreCnvFiltersNegative;
 
-            var ids = await AggregateFromCnvs(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
+            var ids = await AggregateFromCnvs(index => index.Specimens.First().Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -138,7 +138,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreSvFiltersNegative;
 
-            var ids = await AggregateFromSvs(index => index.Specimens.First().Id, personalSearchCriteria, exclusive);
+            var ids = await AggregateFromSvs(index => index.Specimens.First().Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
@@ -148,7 +148,7 @@ public class DonorsSearchService : SearchService<DonorIndex>
         {
             var exclusive = criteria.AreCnvProfileFiltersNegative;
 
-            var ids = await AggregateFromCnvProfiles(index => index.Specimen.Id, personalSearchCriteria, exclusive);
+            var ids = await AggregateFromCnvProfiles(index => index.Specimen.Id, criteria, exclusive);
 
             if (HandleFoundSpecimens(exclusive, ids, ref specimensToExclude, ref criteria))
                 return new SearchResult<DonorIndex>();
