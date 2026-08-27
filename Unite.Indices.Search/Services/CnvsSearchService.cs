@@ -14,6 +14,12 @@ public class CnvsSearchService : SearchService<CnvIndex>
     {
     }
 
+    protected override GetQuery<CnvIndex> BuildGetQuery(string key)
+    {
+        return base.BuildGetQuery(key)
+            .AddExclusion(variant => variant.Specimens);;
+    }
+
     protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
     {
         searchCriteria.Cnv = new CnvCriteria
