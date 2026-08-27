@@ -1,8 +1,10 @@
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities;
 using Unite.Indices.Entities.Proteins;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Proteins.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -13,13 +15,23 @@ public class ProteinsSearchService : SearchService<ProteinIndex>
     {
     }
 
-
-    public override Task<ProteinIndex> Get(string key)
+    protected override GetQuery<ProteinIndex> BuildGetQuery(string key)
     {
-        var query = new GetQuery<ProteinIndex>(key)
+        return base.BuildGetQuery(key)
             .AddExclusion(protein => protein.Specimens);
+    }
 
-        return _proteinsIndexService.Get(query);
+    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    {
+        searchCriteria.Protein = new ProteinCriteria
+        {
+            Id = new ValuesCriteria<int>([ id ])
+        };
+    }
+
+    protected override IIndexService<ProteinIndex> GetIndexService()
+    {
+        return _proteinsIndexService;
     }
 
     public override async Task<SearchResult<ProteinIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

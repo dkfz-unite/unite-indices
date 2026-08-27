@@ -1,7 +1,9 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Variants;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -12,12 +14,23 @@ public class SmsSearchService : SearchService<SmIndex>
     {
     }
 
-    public override async Task<SmIndex> Get(string key)
+    protected override GetQuery<SmIndex> BuildGetQuery(string key)
     {
-        var query = new GetQuery<SmIndex>(key)
+        return base.BuildGetQuery(key)
             .AddExclusion(variant => variant.Specimens);
+    }
 
-        return await _smsIndexService.Get(query);
+    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    {
+        searchCriteria.Sm = new SmCriteria
+        {
+            Id = new ValuesCriteria<int>([ id ])
+        };
+    }
+
+    protected override IIndexService<SmIndex> GetIndexService()
+    {
+        return _smsIndexService;
     }
 
     public override async Task<SearchResult<SmIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

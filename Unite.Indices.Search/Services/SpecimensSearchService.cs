@@ -1,7 +1,9 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Specimens;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -12,12 +14,17 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
     {
     }
 
-
-    public override async Task<SpecimenIndex> Get(string key)
+    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
     {
-        var query = new GetQuery<SpecimenIndex>(key);
+        searchCriteria.Specimen = new SpecimensCriteria
+        {
+            Id = new ValuesCriteria<int>([ id ])
+        };
+    }
 
-        return await _specimensIndexService.Get(query);
+    protected override IIndexService<SpecimenIndex> GetIndexService()
+    {
+        return _specimensIndexService;
     }
 
     public override async Task<SearchResult<SpecimenIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

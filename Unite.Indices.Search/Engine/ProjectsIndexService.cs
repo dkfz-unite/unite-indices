@@ -19,9 +19,16 @@ public class ProjectsIndexService(IElasticOptions options) : IndexService<Projec
             .AddPagination(0, 10_000)
             .AddOrdering(project => project.Stats.Donors.Number);
 
+        PersonalizeQuery(query, userId, isRoot);
+
+        return await Search(query);
+    }
+
+    public void PersonalizeQuery(SearchQuery<ProjectIndex> query, int? userId, bool? isRoot)
+    {
         if (isRoot != true)
         {
-            query = query.AddFilters([
+            query.AddFilters([
                 new CompoundFilter<ProjectIndex>("UserFilter", false,
                     [
                         new BooleanFilter<ProjectIndex>("IsPublic", x => x.IsPublic, true),
@@ -35,7 +42,5 @@ public class ProjectsIndexService(IElasticOptions options) : IndexService<Projec
                     LogicalOperator.Or)
             ]);
         }
-
-        return await Search(query);
     }
 }

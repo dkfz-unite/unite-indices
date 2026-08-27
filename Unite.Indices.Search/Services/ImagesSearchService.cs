@@ -1,7 +1,9 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Images;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -11,13 +13,18 @@ public class ImagesSearchService : SearchService<ImageIndex>
     public ImagesSearchService(IElasticOptions options) : base(options)
     {
     }
-
-
-    public override async Task<ImageIndex> Get(string key)
+    
+    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
     {
-        var query = new GetQuery<ImageIndex>(key);
+        searchCriteria.Image = new ImageCriteria
+        {
+            Id = new ValuesCriteria<int>([ id ])
+        };
+    }
 
-        return await _imagesIndexService.Get(query);
+    protected override IIndexService<ImageIndex> GetIndexService()
+    {
+        return _imagesIndexService;
     }
 
     public override async Task<SearchResult<ImageIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

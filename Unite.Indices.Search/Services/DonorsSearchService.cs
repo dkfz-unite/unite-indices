@@ -1,7 +1,9 @@
 ﻿using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Donors;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -13,11 +15,17 @@ public class DonorsSearchService : SearchService<DonorIndex>
     }
 
 
-    public override async Task<DonorIndex> Get(string key)
+    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
     {
-        var query = new GetQuery<DonorIndex>(key);
+        searchCriteria.Donor = new DonorCriteria
+        {
+            Id = new ValuesCriteria<int>([ id ])
+        };
+    }
 
-        return await _donorsIndexService.Get(query);
+    protected override IIndexService<DonorIndex> GetIndexService()
+    {
+        return _donorsIndexService;
     }
 
     public override async Task<SearchResult<DonorIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

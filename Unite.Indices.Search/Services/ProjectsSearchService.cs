@@ -1,8 +1,9 @@
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Projects;
-using Unite.Indices.Search.Engine.Filters;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Projects.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -12,13 +13,18 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
     public ProjectsSearchService(IElasticOptions options) : base(options)
     {
     }
-
-
-    public override async Task<ProjectIndex> Get(string key)
+    
+    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
     {
-        var query = new GetQuery<ProjectIndex>(key);
+        searchCriteria.Project = new ProjectCriteria
+        {
+            Id = new ValuesCriteria<int>([ id ])
+        };
+    }
 
-        return await _projectsIndexService.Get(query);
+    protected override IIndexService<ProjectIndex> GetIndexService()
+    {
+        return _projectsIndexService;
     }
 
     public override async Task<SearchResult<ProjectIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
@@ -171,6 +177,8 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
             .AddFilters(filters)
             .AddOrdering(project => project.Stats.Donors.Number);
 
+        _projectsIndexService.PersonalizeQuery(query, personalSearchCriteria.UserClaims.UserId, personalSearchCriteria.UserClaims.IsRoot);
+        
         return await _projectsIndexService.Search(query);
     }
 

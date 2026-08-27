@@ -1,7 +1,9 @@
 ﻿using Unite.Indices.Entities.Genes;
 using Unite.Indices.Context.Configuration.Options;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -12,13 +14,23 @@ public class GenesSearchService : SearchService<GeneIndex>
     {
     }
 
-
-    public override async Task<GeneIndex> Get(string key)
+    protected override GetQuery<GeneIndex> BuildGetQuery(string key)
     {
-        var query = new GetQuery<GeneIndex>(key)
+        return base.BuildGetQuery(key)
             .AddExclusion(gene => gene.Specimens);
+    }
 
-        return await _genesIndexService.Get(query);
+    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    {
+        searchCriteria.Gene = new GeneCriteria
+        {
+            Id = new ValuesCriteria<int>([ id ])
+        };
+    }
+
+    protected override IIndexService<GeneIndex> GetIndexService()
+    {
+        return _genesIndexService;
     }
 
     public override async Task<SearchResult<GeneIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

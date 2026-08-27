@@ -2,11 +2,9 @@ using System.Linq.Expressions;
 using Unite.Essentials.Extensions;
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities;
-using Unite.Indices.Entities.CnvProfiles;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
-using Unite.Indices.Search.Services.Filters.Base;
 using Unite.Indices.Search.Services.Filters.Base.Donors.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Genes.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Images.Criteria;
@@ -15,7 +13,6 @@ using Unite.Indices.Search.Services.Filters.Base.Specimens.Criteria;
 using Unite.Indices.Search.Services.Filters.Base.Variants;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
-using ProjectIndex = Unite.Indices.Entities.Projects.ProjectIndex;
 using DonorIndex = Unite.Indices.Entities.Donors.DonorIndex;
 using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
 using SpecimenIndex = Unite.Indices.Entities.Specimens.SpecimenIndex;
@@ -61,16 +58,41 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         _svsIndexService = new SvsIndexService(options);
         _cnvProfileIndexService = new CnvProfileIndexService(options);
     }
-
-
-    public abstract Task<T> Get(string key);
+    
 
     public abstract Task<SearchResult<T>> Search(PersonalSearchCriteria personalSearchCriteria);
+    
+    protected abstract void BuildSearchCriteria(SearchCriteria searchCriteria, int id);
+    protected abstract IIndexService<T> GetIndexService();
+    
+    protected virtual GetQuery<T> BuildGetQuery(string key)
+    {
+        return new GetQuery<T>(key);
+    }
+    
+    public async Task<T> Get(PersonalGetCriteria personalCriteria)
+    {
+        var personalSearchCriteria = new PersonalSearchCriteria(personalCriteria.UserClaims.UserId,
+            personalCriteria.UserClaims.IsRoot, new SearchCriteria());
+
+        if(!int.TryParse(personalCriteria.Key,  out int id))
+            return null;
+        
+        BuildSearchCriteria(personalSearchCriteria.SearchCriteria, id);
+        
+        var result = await Search(personalSearchCriteria);
+        if (result.Rows.ToList().Count == 0)
+            return null;
+        
+        var query = BuildGetQuery(personalCriteria.Key);
+
+        return await GetIndexService().Get(query);
+    }
 
     public virtual async Task<IReadOnlyDictionary<object, DataIndex>> Stats(PersonalSearchCriteria personalSearchCriteria)
     {
-        var tempPersonalSearchCriteria = new PersonalSearchCriteria(personalSearchCriteria.UserId,
-            personalSearchCriteria.IsRoot, 
+        var tempPersonalSearchCriteria = new PersonalSearchCriteria(personalSearchCriteria.UserClaims.UserId,
+            personalSearchCriteria.UserClaims.IsRoot, 
             personalSearchCriteria.SearchCriteria with { From = 0, Size = 0 }
         );
 
@@ -377,14 +399,14 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             return a.Except(b).ToArray();
     }
 
-    protected void PersonalizeDonorsCriteria(PersonalSearchCriteria criteria)
+    protected void PersonalizeDonorsCriteria(PersonalSearchCriteria persdonalCriteria)
     {
         var projectList = new List<string>();
-        var task = _projectsIndexService.GetAccessibleProjects(criteria.UserId, criteria.IsRoot);
+        var task = _projectsIndexService.GetAccessibleProjects(persdonalCriteria.UserClaims.UserId, persdonalCriteria.UserClaims.IsRoot);
         task.Wait();
         var accessibleProjects = task.Result;
         
-        var donorsCriteria = criteria.SearchCriteria.Donor ?? (criteria.SearchCriteria.Donor = new DonorCriteria());
+        var donorsCriteria = persdonalCriteria.SearchCriteria.Donor ?? (persdonalCriteria.SearchCriteria.Donor = new DonorCriteria());
         var projects = donorsCriteria.Project ?? (donorsCriteria.Project = new ValuesCriteria<string>());
         var excludeProjects = projects.Not ?? false;
 
