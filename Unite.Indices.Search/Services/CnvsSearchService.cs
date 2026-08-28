@@ -1,7 +1,9 @@
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Variants;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -12,12 +14,26 @@ public class CnvsSearchService : SearchService<CnvIndex>
     {
     }
 
-    public override async Task<CnvIndex> Get(string key)
+    protected override GetQuery<CnvIndex> BuildGetQuery(string key)
     {
-        var query = new GetQuery<CnvIndex>(key)
-            .AddExclusion(variant => variant.Specimens);
+        return base.BuildGetQuery(key)
+            .AddExclusion(variant => variant.Specimens);;
+    }
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
+    {
+        return new SearchCriteria
+        {
+            Cnv = new CnvCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
+        };
+    }
 
-        return await _cnvsIndexService.Get(query);
+    protected override IIndexService<CnvIndex> GetIndexService()
+    {
+        return _cnvsIndexService;
     }
 
     public override async Task<SearchResult<CnvIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

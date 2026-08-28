@@ -1,7 +1,9 @@
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities.Variants;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters;
+using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -11,13 +13,27 @@ public class SvsSearchService : SearchService<SvIndex>
     public SvsSearchService(IElasticOptions options) : base(options)
     {
     }
-
-    public override async Task<SvIndex> Get(string key)
+    
+    protected override GetQuery<SvIndex> BuildGetQuery(string key)
     {
-        var query = new GetQuery<SvIndex>(key)
+        return base.BuildGetQuery(key)
             .AddExclusion(variant => variant.Specimens);
+    }
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
+    {
+        return new SearchCriteria
+        {
+            Sv = new SvCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
+        };
+    }
 
-        return await _svsIndexService.Get(query);
+    protected override IIndexService<SvIndex> GetIndexService()
+    {
+        return _svsIndexService;
     }
 
     public override async Task<SearchResult<SvIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

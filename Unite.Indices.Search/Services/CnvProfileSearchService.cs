@@ -1,8 +1,10 @@
 using Unite.Indices.Context.Configuration.Options;
 using Unite.Indices.Entities;
 using Unite.Indices.Entities.CnvProfiles;
+using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Services.Filters.Base.Variants;
+using Unite.Indices.Search.Services.Filters.Base.Variants.Criteria;
 using Unite.Indices.Search.Services.Filters.Criteria;
 
 namespace Unite.Indices.Search.Services;
@@ -12,10 +14,18 @@ public class CnvProfileSearchService: SearchService<CnvProfileIndex>
     public CnvProfileSearchService(IElasticOptions options) : base(options)
     {
     }
-
-    public override Task<CnvProfileIndex> Get(string key)
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        throw new NotImplementedException();
+        return new SearchCriteria
+        {
+            CnvProfile = new CnvProfileCriteria()
+        };
+    }
+
+    protected override IIndexService<CnvProfileIndex> GetIndexService()
+    {
+        return _cnvProfileIndexService;
     }
 
     public override async Task<SearchResult<CnvProfileIndex>> Search(PersonalSearchCriteria personalSearchCriteria)

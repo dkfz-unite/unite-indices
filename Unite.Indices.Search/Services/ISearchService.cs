@@ -6,7 +6,7 @@ namespace Unite.Indices.Search.Services;
 
 public interface ISearchService<T> where T : class
 {
-    Task<T> Get(string key);
+    Task<T> Get(PersonalGetCriteria personalCriteria);
     Task<SearchResult<T>> Search(PersonalSearchCriteria personalSearchCriteria);
     Task<IReadOnlyDictionary<object, DataIndex>> Stats(PersonalSearchCriteria searchCriteria);
 }

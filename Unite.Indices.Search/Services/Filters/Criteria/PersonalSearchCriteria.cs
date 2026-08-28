@@ -2,14 +2,12 @@ namespace Unite.Indices.Search.Services.Filters.Criteria;
 
 public class PersonalSearchCriteria
 {
-    public int? UserId { get; }
-    public bool? IsRoot { get; }
+    public UserClaims UserClaims { get; set; }
     public SearchCriteria SearchCriteria { get; set; }
 
     public PersonalSearchCriteria(int? userId, bool? isRoot, SearchCriteria searchCriteria)
     {
-        UserId = userId;
-        IsRoot = isRoot;
+        UserClaims = new UserClaims(userId, isRoot);
         SearchCriteria = searchCriteria;
     }
 }
