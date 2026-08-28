@@ -20,12 +20,15 @@ public class ProteinsSearchService : SearchService<ProteinIndex>
         return base.BuildGetQuery(key)
             .AddExclusion(protein => protein.Specimens);
     }
-
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Protein = new ProteinCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Protein = new ProteinCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 

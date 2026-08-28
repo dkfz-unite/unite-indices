@@ -19,12 +19,15 @@ public class SvsSearchService : SearchService<SvIndex>
         return base.BuildGetQuery(key)
             .AddExclusion(variant => variant.Specimens);
     }
-
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Sv = new SvCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Sv = new SvCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 

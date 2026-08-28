@@ -14,11 +14,14 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
     {
     }
     
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Project = new ProjectCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Project = new ProjectCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 

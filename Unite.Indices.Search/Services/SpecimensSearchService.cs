@@ -13,12 +13,15 @@ public class SpecimensSearchService : SearchService<SpecimenIndex>
     public SpecimensSearchService(IElasticOptions options) : base(options)
     {
     }
-
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Specimen = new SpecimensCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Specimen = new SpecimensCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 

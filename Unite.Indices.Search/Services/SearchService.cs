@@ -62,7 +62,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
     public abstract Task<SearchResult<T>> Search(PersonalSearchCriteria personalSearchCriteria);
     
-    protected abstract void BuildSearchCriteria(SearchCriteria searchCriteria, int id);
+    protected abstract SearchCriteria BuildSearchCriteria(int id);
     protected abstract IIndexService<T> GetIndexService();
     
     protected virtual GetQuery<T> BuildGetQuery(string key)
@@ -72,13 +72,13 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     
     public async Task<T> Get(PersonalGetCriteria personalCriteria)
     {
-        var personalSearchCriteria = new PersonalSearchCriteria(personalCriteria.UserClaims.UserId,
-            personalCriteria.UserClaims.IsRoot, new SearchCriteria());
-
         if(!int.TryParse(personalCriteria.Key,  out int id))
             return null;
         
-        BuildSearchCriteria(personalSearchCriteria.SearchCriteria, id);
+        var personalSearchCriteria = new PersonalSearchCriteria(
+            personalCriteria.UserClaims.UserId,
+            personalCriteria.UserClaims.IsRoot, 
+            BuildSearchCriteria(id));
         
         var result = await Search(personalSearchCriteria);
         if (result.Rows.ToList().Count == 0)

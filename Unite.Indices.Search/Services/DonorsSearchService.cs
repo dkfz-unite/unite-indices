@@ -15,11 +15,14 @@ public class DonorsSearchService : SearchService<DonorIndex>
     }
 
 
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Donor = new DonorCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Donor = new DonorCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 

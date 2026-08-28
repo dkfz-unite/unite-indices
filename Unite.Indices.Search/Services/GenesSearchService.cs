@@ -19,12 +19,15 @@ public class GenesSearchService : SearchService<GeneIndex>
         return base.BuildGetQuery(key)
             .AddExclusion(gene => gene.Specimens);
     }
-
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Gene = new GeneCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Gene = new GeneCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 

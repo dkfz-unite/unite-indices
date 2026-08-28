@@ -14,11 +14,14 @@ public class ImagesSearchService : SearchService<ImageIndex>
     {
     }
     
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Image = new ImageCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Image = new ImageCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 

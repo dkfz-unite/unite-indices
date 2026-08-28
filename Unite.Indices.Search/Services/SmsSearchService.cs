@@ -19,12 +19,15 @@ public class SmsSearchService : SearchService<SmIndex>
         return base.BuildGetQuery(key)
             .AddExclusion(variant => variant.Specimens);
     }
-
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Sm = new SmCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Sm = new SmCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 

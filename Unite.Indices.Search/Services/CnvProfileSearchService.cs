@@ -15,9 +15,12 @@ public class CnvProfileSearchService: SearchService<CnvProfileIndex>
     {
     }
     
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.CnvProfile = new CnvProfileCriteria();
+        return new SearchCriteria
+        {
+            CnvProfile = new CnvProfileCriteria()
+        };
     }
 
     protected override IIndexService<CnvProfileIndex> GetIndexService()

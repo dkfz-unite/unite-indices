@@ -19,12 +19,15 @@ public class CnvsSearchService : SearchService<CnvIndex>
         return base.BuildGetQuery(key)
             .AddExclusion(variant => variant.Specimens);;
     }
-
-    protected override void BuildSearchCriteria(SearchCriteria searchCriteria, int id)
+    
+    protected override SearchCriteria BuildSearchCriteria(int id)
     {
-        searchCriteria.Cnv = new CnvCriteria
+        return new SearchCriteria
         {
-            Id = new ValuesCriteria<int>([ id ])
+            Cnv = new CnvCriteria
+            {
+                Id = new ValuesCriteria<int>([ id ])
+            }
         };
     }
 
