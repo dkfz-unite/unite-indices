@@ -1,5 +1,5 @@
 # Donor Filters Criteria
-Donor filters criteria. Allows to filter the data by donor specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Donors/Criteria/DonorCriteria.cs).
+Donor filters criteria (`donor`). Allows to filter the data by donor specific criteria. Actual criteria can be found [here](../Unite.Indices.Search/Services/Filters/Base/Donors/Criteria/DonorCriteria.cs), filters [here](../Unite.Indices.Search/Services/Filters/Base/Donors/DonorFilters.cs) and [here](../Unite.Indices.Search/Services/Filters/Base/Donors/DonorsNavFilters.cs).
 
 ```jsonc
 {
@@ -7,7 +7,7 @@ Donor filters criteria. Allows to filter the data by donor specific criteria. Ac
     "id": { "value": [1, 2, 3] },
     "referenceId": { "value": ["D01", "D02", "D03"] },
 
-    // Specific filters
+    // Clinical data filters
     "sex": { "value": ["Male", "Female", "Other"] },
     "age": { "value": { "from": 50, "to": 60 } },
     "diagnosis": { "value": ["Glioblastoma"] },
@@ -17,116 +17,134 @@ Donor filters criteria. Allows to filter the data by donor specific criteria. Ac
     "vitalStatusChangeDay": { "value": { "from": 300, "to": null } },
     "progressionStatus": { "value": true },
     "progressionStatusChangeDay": { "value": { "from": 200, "to": null } },
+
+    // Treatment filters
     "therapy": { "value": ["Radiotherapy"] },
-    "mta": { "value": true },
+
+    // Other filters
+    "mtaProtected": { "value": true },
     "project": { "value": ["Project 1"] },
     "study": { "value": ["Study 1"] },
 
     // Data availability filters
+    "hasExp": { "value": true },
+    "hasExpSc": { "value": true },
     "hasSms": { "value": true },
     "hasCnvs": { "value": true },
+    "hasCnvps": { "value": true },
     "hasSvs": { "value": true },
-    "hasGeneExp": { "value": true }
+    "hasMeth": { "value": true },
+    "hasProt": { "value": true }
 }
 ```
 
 
 ## General Fields
-General donor filters applicable to any type of the index.
-
 **`id`** - Internal donor identifier.
-- Description: Allows to filter donors by internal identifiers.
-- Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": [1, 2, 3], "not": false }`.
+- Filter: [Values](./search-criteria.md#values-criteria), integers.
+- Matching: [Exact](./search-criteria.md#value-matching).
+- Example: `{ "value": [1, 2, 3] }`.
 
-**`referenceId`** - External donor identifier.
-- Description: Allows to filter donors by external identifiers (Which were provided during the data submission).
+**`referenceId`** - External donor identifier (provided during data submission).
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["D01", "D02", "D03"], "not": false }`.
+- Matching: [Text](./search-criteria.md#value-matching).
+- Example: `{ "value": ["D01", "D02", "D03"] }`.
 
+`id` and `referenceId` are also applied directly to the donor navigation fields
+of images, specimens and projects.
+
+
+## Clinical Data Fields
 **`sex`** - Biological sex of the donor.
 - Options: `Male`, `Female`, `Other`.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Male", "Female"], "not": false }`
+- Matching: [Exact](./search-criteria.md#value-matching).
+- Example: `{ "value": ["Female"] }`.
 
-**`age`** - Age of the donor at the time of the diagnosis.
-- Filter: [Range](./search-criteria.md#range-criteria).
-- Example: `{ "value": { "from": 50, "to": 60 }, "not": false }`.
+**`age`** - Age of the donor at enrollment.
+- Filter: [Range](./search-criteria.md#range-criteria), integers.
+- Example: `{ "value": { "from": 50, "to": 60 } }`.
 
 **`diagnosis`** - Diagnosis of the donor.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Glioblastoma"], "not": false }`.
+- Matching: [Text](./search-criteria.md#value-matching).
+- Example: `{ "value": ["Glioblastoma"] }`.
 
 **`primarySite`** - Primary site of the tumor.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Brain"], "not": false }`.
+- Matching: [Text](./search-criteria.md#value-matching).
+- Example: `{ "value": ["Brain"] }`.
 
-**`localization`** - Localization of the tumor considering it's primary site.
+**`localization`** - Localization of the tumor within its primary site.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Frontal Lobe"], "not": false }`.
+- Matching: [Text](./search-criteria.md#value-matching).
+- Example: `{ "value": ["Frontal Lobe"] }`.
 
 **`vitalStatus`** - Vital status of the donor.
 - Values: `true` - alive, `false` - deceased.
 - Filter: [Boolean](./search-criteria.md#boolean-criteria).
 - Example: `{ "value": true }`.
 
-**`vitalStatusChangeDay`** - Number of days since diagnosis statement when the vital status was last revised.
-- Filter: [Range](./search-criteria.md#range-criteria).
-- Example: `{ "value": { "from": 300, "to": null }, "not": false }`.
+**`vitalStatusChangeDay`** - Number of days since enrollment when the vital status was last revised.
+- Filter: [Range](./search-criteria.md#range-criteria), integers.
+- Example: `{ "value": { "from": 300 } }`.
 
-**`progressionStatus`** - Whether or not the disease is progressing after treatment.
+**`progressionStatus`** - Whether the disease is progressing after treatment.
 - Values: `true` - progressing, `false` - not progressing.
 - Filter: [Boolean](./search-criteria.md#boolean-criteria).
 - Example: `{ "value": true }`.
 
-**`progressionStatusChangeDay`** - Number of days since diagnosis statement when the progression status was last revised.
-- Filter: [Range](./search-criteria.md#range-criteria).
-- Example: `{ "value": { "from": 200, "to": null }, "not": false }`.
+**`progressionStatusChangeDay`** - Number of days since treatment start when the progression status was last revised.
+- Filter: [Range](./search-criteria.md#range-criteria), integers.
+- Example: `{ "value": { "from": 200 } }`.
 
-**`therapy`** - Therapy applied to the donor.
+
+## Treatment Fields
+**`therapy`** - Therapy name of any of the donor's treatments.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Radiotherapy"], "not": false }`.
+- Matching: [Text (keyword)](./search-criteria.md#value-matching) - whole value, case-sensitive.
+- Example: `{ "value": ["Radiotherapy"] }`.
 
-**`mta`** - Whether or not the donor data is protected by MTA.
+
+## Other Fields
+**`mtaProtected`** - Whether the donor data is protected by a material transfer agreement (MTA).
 - Values: `true` - protected, `false` - not protected.
 - Filter: [Boolean](./search-criteria.md#boolean-criteria).
 - Example: `{ "value": true }`.
 
-**`project`** - Project the donor data belongs to.
+**`project`** - Name of any of the projects the donor belongs to.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Project 1"], "not": false }`.
+- Matching: [Text (keyword)](./search-criteria.md#value-matching) - whole value, case-sensitive.
+- Note: combined with the user's project scope, see [Project Scope](#project-scope).
+- Example: `{ "value": ["Project 1"] }`.
 
-**`study`** - Study the donor data belongs to.
+**`study`** - Name of any of the studies the donor belongs to.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Study 1"], "not": false }`.
+- Matching: [Text (keyword)](./search-criteria.md#value-matching) - whole value, case-sensitive.
+- Example: `{ "value": ["Study 1"] }`.
+
+### Project Scope
+Searches are limited to the data of projects the user may access. The search
+service resolves these projects and replaces `project` with the resulting list
+before the search runs:
+- `project` not set - all accessible projects.
+- `project` set - the listed projects that are accessible (names compared exactly).
+- `project` set with `"not": true` - the accessible projects except the listed ones.
+
+If no project remains, the search returns no results. The projects search
+applies the scope to the projects themselves; there, `project` is an ordinary
+criterion.
 
 
-## Specific Fields
-Special filters applicable only to donors-centric index.
-
-**`hasSms`** - Whether or not the donor has simple mutations data available.
-- Values: `true` - has data, `false` - no data.
-- Filter: [Boolean](./search-criteria.md#boolean-criteria).
-- Example: `{ "value": true }`.
-
-**`hasCnvs`** - Whether or not the donor has copy number variations data available.
-- Values: `true` - has data, `false` - no data.
-- Filter: [Boolean](./search-criteria.md#boolean-criteria).
-- Example: `{ "value": true }`.
-
-**`hasSvs`** - Whether or not the donor has structural variants data available.
-- Values: `true` - has data, `false` - no data.
-- Filter: [Boolean](./search-criteria.md#boolean-criteria).
-- Example: `{ "value": true }`.
-
-**`hasGeneExp`** - Whether or not the donor has bulk gene expression data available.
-- Values: `true` - has data, `false` - no data.
-- Filter: [Boolean](./search-criteria.md#boolean-criteria).
-- Example: `{ "value": true }`.
+## Data Availability Fields
+`hasExp`, `hasExpSc`, `hasSms`, `hasCnvs`, `hasCnvps`, `hasSvs`, `hasMeth`,
+`hasProt` - whether the donor has the corresponding data. See
+[Data availability criteria](./search-criteria.md#data-availability-criteria).
+Applied where the donors collection is queried.
 
 
 ## Example 1
-Data, where donors have diagnosis `glioblastoma`, they are `alive` **and** their `age` is between `50` and `60` years.
+Donors with diagnosis `Glioblastoma` who are alive **and** aged between `50` and `60`.
 ```json
 {
     "diagnosis": { "value": ["Glioblastoma"] },
@@ -136,16 +154,26 @@ Data, where donors have diagnosis `glioblastoma`, they are `alive` **and** their
 ```
 
 ## Example 2
-Data, where donors have tumour located at `Frontal left` **or** `Frontal right` part of the `Brain` **and** their age is between `50` and `60` years.
+Donors with a tumor in the `Brain`, localized in `Frontal left` **or** `Frontal right`, who have simple mutations data.
 ```json
 {
     "primarySite": { "value": ["Brain"] },
     "localization": { "value": ["Frontal left", "Frontal right"] },
-    "age": { "value": { "from": 50, "to": 60 } }
+    "hasSms": { "value": true }
 }
 ```
 
+## Example 3
+Donors of all accessible projects except `Project 1`.
+```json
+{
+    "project": { "value": ["Project 1"], "not": true }
+}
+```
+
+
 ##
 - All filters are optional and empty by default.
-- Filters applied to the same field are combined with logical `OR` operator.
-- Filters applied to different fields are combined with logical `AND` operator.
+- Values of one filter are combined with logical `OR` operator.
+- Different filters are combined with logical `AND` operator.
+- Any filter can be negated with `"not": true`, see [Negative Filters](./search-criteria.md#negative-filters).

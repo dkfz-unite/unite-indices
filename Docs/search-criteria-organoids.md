@@ -1,35 +1,29 @@
 # Organoid Filters Criteria
-Organoid filters criteria. Allows to filter the data by organoid specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Specimens/Criteria/OrganoidCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-specimens-base.md) filters.
+Organoid filters criteria (`organoid`). Allows to filter the data by organoid specific criteria. Actual criteria can be found [here](../Unite.Indices.Search/Services/Filters/Base/Specimens/Criteria/OrganoidCriteria.cs), filters [here](../Unite.Indices.Search/Services/Filters/Base/Specimens/OrganoidFilters.cs). Criteria inherit and include all [base](./search-criteria-specimens-base.md) specimen filters (including `intervention`).
 
 ```jsonc
 {
     // Organoid specific filters
     "medium": { "value": ["StemCult"] },
-    "intervention": { "value": ["Metalisonib"] },
     "tumorigenicity": { "value": true }
 }
 ```
 
 
-## General Fields
-General organoid filters applicable to any type of the index.
-
-**`medium`** - Nutrient solution to support the growth and differentiation of organoid.
+## Organoid Specific Fields
+**`medium`** - Organoid medium.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["StemCult"] }`
+- Matching: [Text](./search-criteria.md#value-matching).
+- Example: `{ "value": ["StemCult"] }`.
 
-**`intervention`** - Intervention type.
-- Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Metalisonib"] }`
-
-**`tumorigenicity`** - Does tumour grow in organoid or not.
-- Values: `true` - tumour grows, `false` - no tumour growth.
+**`tumorigenicity`** - Whether the organoid gives rise to progressively growing tumors.
+- Values: `true` - yes, `false` - no.
 - Filter: [Boolean](./search-criteria.md#boolean-criteria).
-- Example: `{ "value": true }`
+- Example: `{ "value": true }`.
 
 
 ## Example 1
-Data, where organoid medium is `StemCult` **and** intervention type is `Metalisonib`.
+Organoids grown in `StemCult` medium **with** intervention type `Metalisonib`.
 ```json
 {
     "medium": { "value": ["StemCult"] },
@@ -38,17 +32,18 @@ Data, where organoid medium is `StemCult` **and** intervention type is `Metaliso
 ```
 
 ## Example 2
-Data, where organoid medium is `StemCult` **and** intervention type is `Metalisonib` **or** `Cloxinomab` **and** MGMT status is `Methylated`.
+Tumorigenic organoids with intervention type `Metalisonib` **or** `Cloxinomab` **and** a methylated MGMT promoter.
 ```json
 {
-    "medium": { "value": ["StemCult"] },
+    "tumorigenicity": { "value": true },
     "intervention": { "value": ["Metalisonib", "Cloxinomab"] },
-    "mgmtStatus": { "value": ["Methylated"] }
+    "mgmtStatus": { "value": true }
 }
 ```
 
 
 ##
 - All filters are optional and empty by default.
-- Filters applied to the same field are combined with logical `OR` operator.
-- Filters applied to different fields are combined with logical `AND` operator.
+- Values of one filter are combined with logical `OR` operator.
+- Different filters are combined with logical `AND` operator.
+- Any filter can be negated with `"not": true`, see [Negative Filters](./search-criteria.md#negative-filters).
