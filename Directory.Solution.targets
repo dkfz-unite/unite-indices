@@ -1,0 +1,13 @@
+<Project>
+  <!-- After a Debug pack of the whole solution, bump the dev build number for the next pack. -->
+  <Target Name="IncrementDevBuildNumber" AfterTargets="Pack" Condition="'$(Configuration)' == 'Debug'">
+    <PropertyGroup>
+      <_DevFile>$(MSBuildThisFileDirectory)dev-build-number.txt</_DevFile>
+      <_Current Condition="Exists('$(_DevFile)')">$([System.IO.File]::ReadAllText('$(_DevFile)').Trim())</_Current>
+      <_Current Condition="'$(_Current)' == ''">1</_Current>
+      <_Next>$([MSBuild]::Add($(_Current), 1))</_Next>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_DevFile)" Lines="$(_Next)" Overwrite="true" />
+    <Message Importance="high" Text="Dev build number: $(_Current) -> $(_Next)" />
+  </Target>
+</Project>

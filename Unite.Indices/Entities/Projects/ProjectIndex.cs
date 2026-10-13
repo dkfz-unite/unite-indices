@@ -9,6 +9,7 @@ public class ProjectIndex : Basic.Projects.ProjectIndex
     /// </summary>
     public StatsIndex Stats { get; set; }
 
+
     /// <summary>
     /// Available data.
     /// </summary>

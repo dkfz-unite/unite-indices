@@ -1,0 +1,9 @@
+<Project>
+  <!-- Debug packs get version suffix dev.N, where N is read from dev-build-number.txt (shared by all projects). -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DevBuildNumberFile>$(MSBuildThisFileDirectory)dev-build-number.txt</DevBuildNumberFile>
+    <DevBuildNumber Condition="Exists('$(DevBuildNumberFile)')">$([System.IO.File]::ReadAllText('$(DevBuildNumberFile)').Trim())</DevBuildNumber>
+    <DevBuildNumber Condition="'$(DevBuildNumber)' == ''">1</DevBuildNumber>
+    <VersionSuffix>dev.$(DevBuildNumber)</VersionSuffix>
+  </PropertyGroup>
+</Project>
