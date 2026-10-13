@@ -1,6 +1,5 @@
 # SM Filters Criteria
-Simple mutation (SM) filters criteria. Allows to filter the data by SM specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Variants/Criteria/SsmCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-variant-base.md) filters.
-
+Simple mutation (SM) filters criteria (`sm`). Allows to filter the data by SM specific criteria. Actual criteria can be found [here](../Unite.Indices.Search/Services/Filters/Base/Variants/Criteria/SmCriteria.cs), filters [here](../Unite.Indices.Search/Services/Filters/Base/Variants/SmFilters.cs). Criteria inherit and include all [base](./search-criteria-variant-base.md) variant filters.
 
 ```jsonc
 {
@@ -10,15 +9,14 @@ Simple mutation (SM) filters criteria. Allows to filter the data by SM specific 
 ```
 
 
-## General Fields
-General SM filters applicable to any type of the index.
-
+## SM Specific Fields
 **`type`** - Type of the SM.
 - Options: `SNV`, `INS`, `DEL`, `MNV`.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["SNV"] }`
+- Matching: [Exact](./search-criteria.md#value-matching).
+- Example: `{ "value": ["SNV"] }`.
 
-### Variant Types
+### SM Types
 - `SNV` - Single nucleotide variant.
 - `INS` - Insertion.
 - `DEL` - Deletion.
@@ -26,7 +24,7 @@ General SM filters applicable to any type of the index.
 
 
 ## Example 1
-Data, where SM type is `INS` **or** `DEL`.
+SMs of type `INS` **or** `DEL`.
 ```json
 {
     "type": { "value": ["INS", "DEL"] }
@@ -34,11 +32,11 @@ Data, where SM type is `INS` **or** `DEL`.
 ```
 
 ## Example 2
-Data, where SM is located beetween `1000` and `2000` of the chromosome `1` **and** it's type is `INS` **or** `DEL`.
+SMs of type `INS` **or** `DEL` on chromosome `1`, starting or ending between `1000` and `2000`.
 ```json
 {
-    "chromosome": { "value": "1" },
-    "position": { "from": 1000, "to": 2000 },
+    "chromosome": { "value": ["1"] },
+    "position": { "value": { "from": 1000, "to": 2000 } },
     "type": { "value": ["INS", "DEL"] }
 }
 ```
@@ -46,5 +44,6 @@ Data, where SM is located beetween `1000` and `2000` of the chromosome `1` **and
 
 ##
 - All filters are optional and empty by default.
-- Filters applied to the same field are combined with logical `OR` operator.
-- Filters applied to different fields are combined with logical `AND` operator.
+- Values of one filter are combined with logical `OR` operator.
+- Different filters are combined with logical `AND` operator.
+- Any filter can be negated with `"not": true`, see [Negative Filters](./search-criteria.md#negative-filters).

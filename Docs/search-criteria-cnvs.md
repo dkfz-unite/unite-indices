@@ -1,43 +1,46 @@
 # CNV Filters Criteria
-Copy number variant (CNV) filters criteria. Allows to filter the data by CNV specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Variants/Criteria/CnvCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-variant-base.md) filters.
+Copy number variant (CNV) filters criteria (`cnv`). Allows to filter the data by CNV specific criteria. Actual criteria can be found [here](../Unite.Indices.Search/Services/Filters/Base/Variants/Criteria/CnvCriteria.cs), filters [here](../Unite.Indices.Search/Services/Filters/Base/Variants/CnvFilters.cs). Criteria inherit and include all [base](./search-criteria-variant-base.md) variant filters.
+
+CNVs of type `Neutral` without loss of heterozygosity are not indexed
+(`Predicates.IsInfluentCnv` in `unite-data`), so they are not found by CNV
+criteria.
 
 ```jsonc
 {
     // CNV specific filters
-    "type": { "value": ["Gain", "Neutral", "Loss", "Undetermined"], "not": false },
+    "type": { "value": ["Gain", "Loss", "Neutral", "Undetermined"] },
     "loh": { "value": true },
-    "del": { "value": false },
+    "del": { "value": false }
 }
 ```
 
 
-## General Fields
-General CNV filters applicable to any type of the index.
-
+## CNV Specific Fields
 **`type`** - Type of the CNV.
-- Options: `Gain`, `Neutral`, `Loss`, `Undetermined`.
+- Options: `Gain`, `Loss`, `Neutral`, `Undetermined`.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Gain"], "not": false }`
+- Matching: [Exact](./search-criteria.md#value-matching).
+- Example: `{ "value": ["Gain"] }`.
 
 **`loh`** - Loss of heterozygosity (LOH) flag.
 - Values: `true` - LOH, `false` - no LOH.
 - Filter: [Boolean](./search-criteria.md#boolean-criteria).
-- Example: `{ "value": true }`
+- Example: `{ "value": true }`.
 
 **`del`** - Homozygous deletion flag.
 - Values: `true` - homozygous deletion, `false` - no homozygous deletion.
 - Filter: [Boolean](./search-criteria.md#boolean-criteria).
-- Example: `{ "value": false }`
+- Example: `{ "value": false }`.
 
 ### CNV Types
-- `Gain` - total copy number is certainly higher than sample ploidy.
-- `Neutral` - total copy number is very close or equal to sample ploidy.
-- `Loss` - total copy number is certainly lower than sample ploidy.
-- `Undetermined` - total copy number is too far from the nearest integer.
+- `Gain` - Total copy number gain.
+- `Loss` - Total copy number loss.
+- `Neutral` - Total copy number neutral.
+- `Undetermined` - Undetermined.
 
 
 ## Example 1
-Data, where CNV is of type `Gain` **or** `Loss` **and** located in gene `TP53`.
+CNVs of type `Gain` **or** `Loss` affecting gene `TP53`.
 ```json
 {
     "gene": { "value": ["TP53"] },
@@ -46,7 +49,7 @@ Data, where CNV is of type `Gain` **or** `Loss` **and** located in gene `TP53`.
 ```
 
 ## Example 2
-Data, where CNV is of type **not** `Neutral` **and** located in gene `TP53`.
+CNVs affecting gene `TP53` that are **not** of type `Neutral`.
 ```json
 {
     "gene": { "value": ["TP53"] },
@@ -55,15 +58,18 @@ Data, where CNV is of type **not** `Neutral` **and** located in gene `TP53`.
 ```
 
 ## Example 3
-Data, where CNV is **not** (of type `Gain` **and** located in gene `TP53`)
+In a cross-reference stage (for example a donor search), all `cnv` filters negated: exclude entries linked to specimens with a `Gain` CNV affecting gene `TP53`.
 ```json
 {
     "gene": { "value": ["TP53"], "not": true },
     "type": { "value": ["Gain"], "not": true }
 }
 ```
+In a CNV search the same criteria are applied directly: CNVs that do not affect `TP53` **and** are not of type `Gain`.
+
 
 ##
 - All filters are optional and empty by default.
-- Filters applied to the same field are combined with logical `OR` operator.
-- Filters applied to different fields are combined with logical `AND` operator.
+- Values of one filter are combined with logical `OR` operator.
+- Different filters are combined with logical `AND` operator.
+- Any filter can be negated with `"not": true`, see [Negative Filters](./search-criteria.md#negative-filters).

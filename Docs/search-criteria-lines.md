@@ -1,5 +1,5 @@
 # Cell Line Filters Criteria
-Cell line filters criteria. Allows to filter the data by cell line specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Specimens/Criteria/LineCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-specimens-base.md) filters.
+Cell line filters criteria (`line`). Allows to filter the data by cell line specific criteria. Actual criteria can be found [here](../Unite.Indices.Search/Services/Filters/Base/Specimens/Criteria/LineCriteria.cs), filters [here](../Unite.Indices.Search/Services/Filters/Base/Specimens/LineFilters.cs). Criteria inherit and include all [base](./search-criteria-specimens-base.md) specimen filters.
 
 ```jsonc
 {
@@ -12,31 +12,33 @@ Cell line filters criteria. Allows to filter the data by cell line specific crit
 ```
 
 
-## General Fields
-General cell line filters applicable to any type of the index.
-
-**`cellsSpecies`** - Whom the cell line was initially taken from.
+## Cell Line Specific Fields
+**`cellsSpecies`** - Species of the cells in the line.
 - Options: `Human`, `Mouse`.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Human"] }`
+- Matching: [Exact](./search-criteria.md#value-matching).
+- Example: `{ "value": ["Human"] }`.
 
-**`cellsType`** - Type of the cell line.
+**`cellsType`** - Type of the cells in the line.
 - Options: `Stem Cell`, `Differentiated`.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Stem Cell"] }`
+- Matching: [Exact](./search-criteria.md#value-matching).
+- Example: `{ "value": ["Stem Cell"] }`.
 
-**`cultureType`** - Cells harvesting type.
+**`cultureType`** - Way of cells harvesting (culture type).
 - Options: `Suspension`, `Adherent`, `Both`.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["Suspension"] }`
+- Matching: [Exact](./search-criteria.md#value-matching).
+- Example: `{ "value": ["Suspension"] }`.
 
-**`name`** - Name of the cell line if it's publicly known.
+**`name`** - Name of the cell line (given at publication).
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["A549"] }`
+- Matching: [Text](./search-criteria.md#value-matching).
+- Example: `{ "value": ["A549"] }`.
 
 
 ## Example 1
-Data, where cells species is `Human` **and** cells type is `Stem Cell`.
+Human stem cell lines.
 ```json
 {
     "cellsSpecies": { "value": ["Human"] },
@@ -45,16 +47,18 @@ Data, where cells species is `Human` **and** cells type is `Stem Cell`.
 ```
 
 ## Example 2
-Data, where cells species is `Mouse` **and** culture type is `Suspension` **or** `Both` **and** MGMT status is `Methylated`.
+Mouse cell lines with culture type `Suspension` **or** `Both` **and** a methylated MGMT promoter.
 ```json
 {
     "cellsSpecies": { "value": ["Mouse"] },
     "cultureType": { "value": ["Suspension", "Both"] },
-    "mgmtStatus": { "value": ["Methylated"] }
+    "mgmtStatus": { "value": true }
 }
 ```
 
+
 ##
 - All filters are optional and empty by default.
-- Filters applied to the same field are combined with logical `OR` operator.
-- Filters applied to different fields are combined with logical `AND` operator.
+- Values of one filter are combined with logical `OR` operator.
+- Different filters are combined with logical `AND` operator.
+- Any filter can be negated with `"not": true`, see [Negative Filters](./search-criteria.md#negative-filters).

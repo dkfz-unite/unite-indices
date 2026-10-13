@@ -1,5 +1,8 @@
 # MR Image Filters Criteria
-MR image filters criteria. Allows to filter the data by MR image specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Images/Criteria/MrImageCriteria.cs).
+MR image filters criteria (`mr`). Allows to filter the data by MR image specific criteria. Actual criteria can be found [here](../Unite.Indices.Search/Services/Filters/Base/Images/Criteria/MrImageCriteria.cs), filters [here](../Unite.Indices.Search/Services/Filters/Base/Images/MrImageFilters.cs) and [here](../Unite.Indices.Search/Services/Filters/Base/Images/ImageFilters.cs).
+
+The filters apply to the MR part of an image document, so any positive `mr`
+criterion selects MR images only.
 
 ```jsonc
 {
@@ -16,34 +19,40 @@ MR image filters criteria. Allows to filter the data by MR image specific criter
 
 
 ## General Fields
-General MR image filters applicable to any type of the index.
-
 **`id`** - Internal image identifier.
-- Description: Allows to filter images by internal identifiers.
-- Filter: [Values](./search-criteria.md#values-criteria).
+- Filter: [Values](./search-criteria.md#values-criteria), integers.
+- Matching: [Exact](./search-criteria.md#value-matching).
 - Example: `{ "value": [1, 2, 3] }`.
 
-**`referenceId`** - External image identifier.
-- Description: Allows to filter images by external identifiers (Which were provided during the data submission).
+**`referenceId`** - External image identifier (provided during data submission).
 - Filter: [Values](./search-criteria.md#values-criteria).
+- Matching: [Text](./search-criteria.md#value-matching).
 - Example: `{ "value": ["I01", "I02", "I03"] }`.
 
-**`wholeTumor`** - Whole tumor volume (cm3).
-- Filter: [Range](./search-criteria.md#range-criteria).
+
+## MR Specific Fields
+**`wholeTumor`** - Whole tumor volume.
+- Filter: [Range](./search-criteria.md#range-criteria), decimals.
 - Example: `{ "value": { "from": 40, "to": 50 } }`.
 
-**`contrastEnhancing`** - Contrast enhancing volume (cm3).
-- Type: Range\<Decimal\>.
-- Filter: [Range](./search-criteria.md#range-criteria).
+**`contrastEnhancing`** - Contrast enhancing tumor volume.
+- Filter: [Range](./search-criteria.md#range-criteria), decimals.
 - Example: `{ "value": { "from": 5, "to": 10 } }`.
 
-**`nonContrastEnhancing`** - Non-contrast enhancing volume (cm3).
-- Filter: [Range](./search-criteria.md#range-criteria).
+**`nonContrastEnhancing`** - Non-contrast enhancing tumor volume.
+- Filter: [Range](./search-criteria.md#range-criteria), decimals.
 - Example: `{ "value": { "from": 5, "to": 10 } }`.
+
+
+## Not Applied
+`MrImageCriteria` inherits `imageType` and the
+[data availability criteria](./search-criteria.md#data-availability-criteria)
+from the image criteria classes, but the search engine does not apply them in
+the `mr` group. Use the [`image`](search-criteria-images.md) group instead.
 
 
 ## Example 1
-Data, where images have voume between `40` and `50` cm3.
+MR images with whole tumor volume between `40` and `50`.
 ```json
 {
     "wholeTumor": { "value": { "from": 40, "to": 50 } }
@@ -51,15 +60,16 @@ Data, where images have voume between `40` and `50` cm3.
 ```
 
 ## Example 2
-Data, where image have ID `1` **or** `2`.
+MR images with ID `1` **or** `2`.
 ```json
 {
     "id": { "value": [1, 2] }
 }
-``` 
+```
 
 
 ##
 - All filters are optional and empty by default.
-- Filters applied to the same field are combined with logical `OR` operator.
-- Filters applied to different fields are combined with logical `AND` operator.
+- Values of one filter are combined with logical `OR` operator.
+- Different filters are combined with logical `AND` operator.
+- Any filter can be negated with `"not": true`. When all `mr` filters are negated, the image stage is an exclusion, see [Negative Filters](./search-criteria.md#negative-filters).

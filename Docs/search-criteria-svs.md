@@ -1,22 +1,32 @@
 # SV Filters Criteria
-Structural variant (SV) filters criteria. Allows to filter the data by SV specific criteria. Actual filters can be found [here](../Unite.Indices.Search/Services/Filters/Base/Variants/Criteria/SvCriteria.cs). Criteria inheirts and includes all filters from [base](./search-criteria-variant-base.md) filters.
+Structural variant (SV) filters criteria (`sv`). Allows to filter the data by SV specific criteria. Actual criteria can be found [here](../Unite.Indices.Search/Services/Filters/Base/Variants/Criteria/SvCriteria.cs), filters [here](../Unite.Indices.Search/Services/Filters/Base/Variants/SvFilters.cs). Criteria inherit and include all [base](./search-criteria-variant-base.md) variant filters; `position` behaves differently for SVs.
 
 ```jsonc
 {
     // SV specific filters
-    "type": { "value": ["DUP", "TDUP", "INS", "DEL", "INV", "ITX", "CTX"] },
+    "type": { "value": ["DUP", "TDUP", "INS", "DEL", "INV", "ITX", "CTX", "COM"] },
     "inverted": { "value": true }
 }
 ```
 
 
-## General Fields
-General SV filters applicable to any type of the index.
-
+## SV Specific Fields
 **`type`** - Type of the SV.
-- Options: `DUP`, `TDUP`, `INS`, `DEL`, `INV`, `ITX`, `CTX`.
+- Options: `DUP`, `TDUP`, `INS`, `DEL`, `INV`, `ITX`, `CTX`, `COM`.
 - Filter: [Values](./search-criteria.md#values-criteria).
-- Example: `{ "value": ["DUP"] }`
+- Matching: [Exact](./search-criteria.md#value-matching).
+- Example: `{ "value": ["DUP"] }`.
+
+**`inverted`** - Inverted flag.
+- Values: `true` - inverted, `false` - not inverted.
+- Filter: [Boolean](./search-criteria.md#boolean-criteria).
+- Example: `{ "value": true }`.
+
+### Position
+**`position`** - SV breakpoint position range.
+- Filter: [Range](./search-criteria.md#range-criteria), integers.
+- Behaviour: an SV matches when the end of its first breakpoint (`end`) or the start of its second breakpoint (`otherStart`) lies within the range. The base variant rule (`start` or `end`) is not used for SVs. The position is not tied to a chromosome; combine it with `chromosome`.
+- Example: `{ "value": { "from": 1000, "to": 2000 } }`.
 
 ### SV Types
 - `DUP` - Duplication.
@@ -26,15 +36,11 @@ General SV filters applicable to any type of the index.
 - `INV` - Inversion.
 - `ITX` - Intra-chromosomal translocation.
 - `CTX` - Inter-chromosomal translocation.
-
-**`inverted`** - Inverted flag.
-- Values: `true` - inverted, `false` - not inverted.
-- Filter: [Boolean](./search-criteria.md#boolean-criteria).
-- Example: `{ "value": true }`
+- `COM` - Complex rearrangement.
 
 
 ## Example 1
-Data, where SV type is `INS` **or** `DEL`.
+SVs of type `INS` **or** `DEL`.
 ```json
 {
     "type": { "value": ["INS", "DEL"] }
@@ -42,11 +48,11 @@ Data, where SV type is `INS` **or** `DEL`.
 ```
 
 ## Example 2
-Data, where SV is located beetween `1000` and `2000` of the chromosome `1` **and** it's type is `INS` **or** `DEL`.
+SVs of type `INS` **or** `DEL` on chromosome `1` with a breakpoint position between `1000` and `2000`.
 ```json
 {
-    "chromosome": { "value": "1" },
-    "position": { "from": 1000, "to": 2000 },
+    "chromosome": { "value": ["1"] },
+    "position": { "value": { "from": 1000, "to": 2000 } },
     "type": { "value": ["INS", "DEL"] }
 }
 ```
@@ -54,5 +60,6 @@ Data, where SV is located beetween `1000` and `2000` of the chromosome `1` **and
 
 ##
 - All filters are optional and empty by default.
-- Filters applied to the same field are combined with logical `OR` operator.
-- Filters applied to different fields are combined with logical `AND` operator.
+- Values of one filter are combined with logical `OR` operator.
+- Different filters are combined with logical `AND` operator.
+- Any filter can be negated with `"not": true`, see [Negative Filters](./search-criteria.md#negative-filters).
