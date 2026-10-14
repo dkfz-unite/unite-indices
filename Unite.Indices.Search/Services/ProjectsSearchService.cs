@@ -30,6 +30,11 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         return _projectsIndexService;
     }
 
+    public override Task<ProjectIndex> Get(PersonalGetCriteria personalCriteria)
+    {
+        return GetItem(personalCriteria.Key);
+    }
+
     public override async Task<SearchResult<ProjectIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
     {
         var criteria = personalSearchCriteria.SearchCriteria;
@@ -179,8 +184,6 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
             .AddOrdering(project => project.Stats.Donors.Number);
-
-        _projectsIndexService.PersonalizeQuery(query, personalSearchCriteria.UserClaims.UserId, personalSearchCriteria.UserClaims.IsRoot);
         
         return await _projectsIndexService.Search(query);
     }

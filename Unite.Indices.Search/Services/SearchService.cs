@@ -70,7 +70,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         return new GetQuery<T>(key);
     }
     
-    public async Task<T> Get(PersonalGetCriteria personalCriteria)
+    public virtual async Task<T> Get(PersonalGetCriteria personalCriteria)
     {
         if(!int.TryParse(personalCriteria.Key,  out int id))
             return null;
@@ -84,7 +84,12 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         if (result.Rows.ToList().Count == 0)
             return null;
         
-        var query = BuildGetQuery(personalCriteria.Key);
+        return await GetItem(personalCriteria.Key);
+    }
+
+    protected async Task<T> GetItem(string key)
+    {
+        var query = BuildGetQuery(key);
 
         return await GetIndexService().Get(query);
     }
