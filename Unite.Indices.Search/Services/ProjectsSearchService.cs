@@ -13,7 +13,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
     public ProjectsSearchService(IElasticOptions options) : base(options)
     {
     }
-    
+
     protected override SearchCriteria BuildSearchCriteria(int id)
     {
         return new SearchCriteria
@@ -113,7 +113,6 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
                 return new SearchResult<ProjectIndex>();
         }
 
-
         if (criteria.HasProteinFilters)
         {
             var exclusive = criteria.AreProteinFiltersNegative;
@@ -175,7 +174,7 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
 
         if (specimensToExclude.Count > 0)
             criteria.Specimen = Set(criteria.Specimen, [.. specimensToExclude.Select(int.Parse)], true);
-        
+
 
         var filters = new ProjectFiltersCollection(criteria).All();
 
@@ -184,8 +183,31 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
             .AddFullTextSearch(criteria.Term)
             .AddFilters(filters)
             .AddOrdering(project => project.Stats.Donors.Number);
-        
-        return await _projectsIndexService.Search(query);
+
+        var searchResult = await _projectsIndexService.Search(query);
+
+        AssignAccessibility(personalSearchCriteria, searchResult);
+
+        return searchResult;
+    }
+
+    private void AssignAccessibility(PersonalSearchCriteria personalSearchCriteria, SearchResult<ProjectIndex> searchResult)
+    {
+        if (searchResult != null && searchResult.Rows != null)
+        {
+            var userClaims = personalSearchCriteria.UserClaims;
+            var task = _projectsIndexService.GetAccessibleProjects(userClaims.UserId, userClaims.IsRoot);
+            task.Wait();
+            var accessibleProjects = task.Result;
+
+            if (accessibleProjects != null && accessibleProjects.Rows != null)
+            {
+                foreach (var project in searchResult.Rows)
+                {
+                    project.IsAccessible = accessibleProjects.Rows.Any(accessibleProject => accessibleProject.Id == project.Id);
+                }
+            }
+        }
     }
 
     protected override void AddToStats(ref Dictionary<object, Entities.DataIndex> stats, ProjectIndex index)
