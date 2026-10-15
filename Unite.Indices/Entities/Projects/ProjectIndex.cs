@@ -9,7 +9,6 @@ public class ProjectIndex : Basic.Projects.ProjectIndex
     /// </summary>
     public StatsIndex Stats { get; set; }
 
-
     /// <summary>
     /// Available data.
     /// </summary>
@@ -19,4 +18,5 @@ public class ProjectIndex : Basic.Projects.ProjectIndex
     public DonorIndex[] Donors { get; set; }
     public DataUserNavIndex[] Users { get; set; }
     public bool IsPublic { get; set; }
+    public bool IsAccessible { get; set; }
 }

@@ -58,32 +58,32 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
         _svsIndexService = new SvsIndexService(options);
         _cnvProfileIndexService = new CnvProfileIndexService(options);
     }
-    
+
 
     public abstract Task<SearchResult<T>> Search(PersonalSearchCriteria personalSearchCriteria);
-    
+
     protected abstract SearchCriteria BuildSearchCriteria(int id);
     protected abstract IIndexService<T> GetIndexService();
-    
+
     protected virtual GetQuery<T> BuildGetQuery(string key)
     {
         return new GetQuery<T>(key);
     }
-    
+
     public virtual async Task<T> Get(PersonalGetCriteria personalCriteria)
     {
         if(!int.TryParse(personalCriteria.Key,  out int id))
             return null;
-        
+
         var personalSearchCriteria = new PersonalSearchCriteria(
             personalCriteria.UserClaims.UserId,
-            personalCriteria.UserClaims.IsRoot, 
+            personalCriteria.UserClaims.IsRoot,
             BuildSearchCriteria(id));
-        
+
         var result = await Search(personalSearchCriteria);
         if (result.Rows.ToList().Count == 0)
             return null;
-        
+
         return await GetItem(personalCriteria.Key);
     }
 
@@ -97,7 +97,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     public virtual async Task<IReadOnlyDictionary<object, DataIndex>> Stats(PersonalSearchCriteria personalSearchCriteria)
     {
         var tempPersonalSearchCriteria = new PersonalSearchCriteria(personalSearchCriteria.UserClaims.UserId,
-            personalSearchCriteria.UserClaims.IsRoot, 
+            personalSearchCriteria.UserClaims.IsRoot,
             personalSearchCriteria.SearchCriteria with { From = 0, Size = 0 }
         );
 
@@ -242,7 +242,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
         return aggregation.Keys.ToArray();
     }
-    
+
     protected async Task<string[]> AggregateFromCnvProfiles<TProp>(Expression<Func<Entities.CnvProfiles.CnvProfileIndex, TProp>> property, SearchCriteria criteria, bool exclusive = false)
     {
         var filters = new CnvProfileFilters<Entities.CnvProfiles.CnvProfileIndex>(criteria.CnvProfile, cnvProfile => cnvProfile);
@@ -404,14 +404,14 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
             return a.Except(b).ToArray();
     }
 
-    protected void PersonalizeDonorsCriteria(PersonalSearchCriteria persdonalCriteria)
+    protected void PersonalizeDonorsCriteria(PersonalSearchCriteria personalCriteria)
     {
         var projectList = new List<string>();
-        var task = _projectsIndexService.GetAccessibleProjects(persdonalCriteria.UserClaims.UserId, persdonalCriteria.UserClaims.IsRoot);
+        var task = _projectsIndexService.GetAccessibleProjects(personalCriteria.UserClaims.UserId, personalCriteria.UserClaims.IsRoot);
         task.Wait();
         var accessibleProjects = task.Result;
-        
-        var donorsCriteria = persdonalCriteria.SearchCriteria.Donor ?? (persdonalCriteria.SearchCriteria.Donor = new DonorCriteria());
+
+        var donorsCriteria = personalCriteria.SearchCriteria.Donor ?? (personalCriteria.SearchCriteria.Donor = new DonorCriteria());
         var projects = donorsCriteria.Project ?? (donorsCriteria.Project = new ValuesCriteria<string>());
         var excludeProjects = projects.Not ?? false;
 
@@ -442,14 +442,14 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
 
         if (projectList.Count == 0)
             projectList.Add("-"); //force no matches
-        
+
         donorsCriteria.Project = new ValuesCriteria<string>(projectList.ToArray());
     }
-    
+
     private async Task<IDictionary<string, long>> AggregateFromDonors<TProp>(Expression<Func<DonorIndex, TProp>> property, SearchCriteria criteria, DonorFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<DonorIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
@@ -468,7 +468,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     private async Task<IDictionary<string, long>> AggregateFromImages<TProp>(Expression<Func<ImageIndex, TProp>> property, SearchCriteria criteria, ImageFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<ImageIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
@@ -487,7 +487,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     private async Task<IDictionary<string, long>> AggregateFromSpecimens<TProp>(Expression<Func<SpecimenIndex, TProp>> property, SearchCriteria criteria, SpecimenFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<SpecimenIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
@@ -507,7 +507,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     private async Task<IDictionary<string, long>> AggregateFromGenes<TProp>(Expression<Func<GeneIndex, TProp>> property, SearchCriteria criteria, GeneFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<GeneIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
@@ -525,7 +525,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     private async Task<IDictionary<string, long>> AggregateFromGeneExpressions<TProp>(Expression<Func<GeneExpressionIndex, TProp>> property, SearchCriteria criteria, GeneExpressionFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<GeneExpressionIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
@@ -560,7 +560,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     private async Task<IDictionary<string, long>> AggregateFromProteinExpressions<TProp>(Expression<Func<ProteinExpressionIndex, TProp>> property, SearchCriteria criteria, ProteinExpressionFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<ProteinExpressionIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
@@ -577,7 +577,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     private async Task<IDictionary<string, long>> AggregateFromSms<TProp>(Expression<Func<SmIndex, TProp>> property, SearchCriteria criteria, SmFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<SmIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
@@ -595,7 +595,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     private async Task<IDictionary<string, long>> AggregateFromCnvs<TProp>(Expression<Func<CnvIndex, TProp>> property, SearchCriteria criteria, CnvFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<CnvIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
@@ -613,7 +613,7 @@ public abstract class SearchService<T> : ISearchService<T> where T : class
     private async Task<IDictionary<string, long>> AggregateFromSvs<TProp>(Expression<Func<SvIndex, TProp>> property, SearchCriteria criteria, SvFiltersCollection filters)
     {
         var aggregationName = Guid.NewGuid().ToString();
-        
+
         var query = new SearchQuery<SvIndex>()
             .AddPagination(0, 0)
             .AddFullTextSearch(criteria.Term)
