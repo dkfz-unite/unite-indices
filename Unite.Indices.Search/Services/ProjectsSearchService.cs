@@ -30,9 +30,12 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         return _projectsIndexService;
     }
 
-    public override Task<ProjectIndex> Get(PersonalGetCriteria personalCriteria)
+    public override async Task<ProjectIndex> Get(PersonalGetCriteria personalCriteria)
     {
-        return GetItem(personalCriteria.Key);
+        var project = await GetItem(personalCriteria.Key);
+        AssignAccessibility(personalCriteria, project);
+
+        return project;
     }
 
     public override async Task<SearchResult<ProjectIndex>> Search(PersonalSearchCriteria personalSearchCriteria)
@@ -206,6 +209,22 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
                 {
                     project.IsAccessible = accessibleProjects.Rows.Any(accessibleProject => accessibleProject.Id == project.Id);
                 }
+            }
+        }
+    }
+
+    private void AssignAccessibility(PersonalGetCriteria personalSearchCriteria, ProjectIndex project)
+    {
+        if (project != null)
+        {
+            var userClaims = personalSearchCriteria.UserClaims;
+            var task = _projectsIndexService.GetAccessibleProjects(userClaims.UserId, userClaims.IsRoot);
+            task.Wait();
+            var accessibleProjects = task.Result;
+
+            if (accessibleProjects != null && accessibleProjects.Rows != null)
+            {
+                project.IsAccessible = accessibleProjects.Rows.Any(accessibleProject => accessibleProject.Id == project.Id);
             }
         }
     }
