@@ -213,11 +213,11 @@ public class ProjectsSearchService : SearchService<ProjectIndex>
         }
     }
 
-    private void AssignAccessibility(PersonalGetCriteria personalSearchCriteria, ProjectIndex project)
+    private void AssignAccessibility(PersonalGetCriteria personalCriteria, ProjectIndex project)
     {
         if (project != null)
         {
-            var userClaims = personalSearchCriteria.UserClaims;
+            var userClaims = personalCriteria.UserClaims;
             var task = _projectsIndexService.GetAccessibleProjects(userClaims.UserId, userClaims.IsRoot);
             task.Wait();
             var accessibleProjects = task.Result;
