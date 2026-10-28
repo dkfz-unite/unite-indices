@@ -120,8 +120,8 @@ public class CnvpStats
     public Stat<string, int>[] PerAnalysis { get; set; }
 
     /// <summary>
-    /// Breakdown per chromosome arm, wher ekey is the chromosome arm name and value is the array of stats per CNV type:
+    /// Breakdown per chromosome arm, where key is the chromosome arm name and value is the number of samples per dominant CNV state:
     /// [0] - Loss count, [1] - Neutral count, [2] - Gain count.
     /// </summary>
-    public Stat<string, int[]> PerChromosomeArm { get; set; }
+    public Stat<string, int[]>[] PerChromosomeArm { get; set; }
 }

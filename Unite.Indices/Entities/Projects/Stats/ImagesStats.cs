@@ -9,11 +9,6 @@ public class ImagesStats
     /// </summary>
     public MrStats Mr { get; set; } = new();
 
-    /// <summary>
-    /// CT images data.
-    /// </summary>
-    public CtStats Ct { get; set; } = new();
-
 
     /// <summary>
     /// Breakdown per image type.
@@ -33,12 +28,4 @@ public class MrStats
     /// Breakdown per size.
     /// </summary>
     public Stat<double?, int>[] PerSize { get; set; }
-}
-
-public class CtStats
-{
-    /// <summary>
-    /// Donors with the data / total.
-    /// </summary>
-    public int[] Number { get; set; }
 }
