@@ -147,24 +147,4 @@ public class SearchService<T> where T : class
 
         return targetCriteria;
     }
-
-    private static CriteriaNode FindCriteria(CriteriaNode documentCriteria, IBucketCrossReference crossReference)
-    {
-        var path = PropertyExpressionBuilder.GetPath(crossReference.ReferenceKey);
-
-        return FindCriteria(documentCriteria, path);
-    }
-
-    private static CriteriaNode FindCriteria(CriteriaNode node, string path)
-    {
-        if (node == null)
-            return null;
-
-        if (node is PropertyCriteria criteria && string.Equals(criteria.Property, path, StringComparison.OrdinalIgnoreCase))
-            return node;
-
-        return node.Nodes?
-            .Select(child => FindCriteria(child, path))
-            .FirstOrDefault(found => found != null);
-    }
 }
