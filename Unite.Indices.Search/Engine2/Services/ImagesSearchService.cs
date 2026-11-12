@@ -21,71 +21,71 @@ public class ImagesSearchService : SearchService<ImageIndex>
     public ImagesSearchService(IServiceProvider serviceProvider) : base(serviceProvider)
     {
         // Donor level.
-        CrossReferences.Add(new BucketCrossReference<ProjectIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<ProjectIndex, ImageIndex, int>
         {
             DocumentKey = project => project.Donors.First().Id,
             ReferenceKey = image => image.Donor.Id
         });
 
-        CrossReferences.Add(new BucketCrossReference<DonorIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<DonorIndex, ImageIndex, int>
         {
             DocumentKey = donor => donor.Id,
             ReferenceKey = image => image.Donor.Id
         });
 
         // Specimen level.
-        CrossReferences.Add(new BucketCrossReference<SpecimenIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<SpecimenIndex, ImageIndex, int>
         {
             DocumentKey = specimen => specimen.Id,
             ReferenceKey = image => image.Specimens.First().Id
         });
 
         // Transcriptomics.
-        CrossReferences.Add(new BucketCrossReference<GeneIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<GeneIndex, ImageIndex, int>
         {
             DocumentKey = gene => gene.Specimens.First().Id,
             ReferenceKey = image => image.Specimens.First().Id
         });
 
-        CrossReferences.Add(new BucketCrossReference<GeneExpressionIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<GeneExpressionIndex, ImageIndex, int>
         {
             DocumentKey = expression => expression.Specimen.Id,
             ReferenceKey = image => image.Specimens.First().Id
         });
 
         // Proteomics.
-        CrossReferences.Add(new BucketCrossReference<ProteinIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<ProteinIndex, ImageIndex, int>
         {
             DocumentKey = protein => protein.Specimens.First().Id,
             ReferenceKey = image => image.Specimens.First().Id
         });
 
-        CrossReferences.Add(new BucketCrossReference<ProteinExpressionIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<ProteinExpressionIndex, ImageIndex, int>
         {
             DocumentKey = expression => expression.Specimen.Id,
             ReferenceKey = image => image.Specimens.First().Id
         });
 
         // Genome variants.
-        CrossReferences.Add(new BucketCrossReference<SmIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<SmIndex, ImageIndex, int>
         {
             DocumentKey = sm => sm.Specimens.First().Id,
             ReferenceKey = image => image.Specimens.First().Id
         });
 
-        CrossReferences.Add(new BucketCrossReference<CnvIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<CnvIndex, ImageIndex, int>
         {
             DocumentKey = cnv => cnv.Specimens.First().Id,
             ReferenceKey = image => image.Specimens.First().Id
         });
 
-        CrossReferences.Add(new BucketCrossReference<SvIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<SvIndex, ImageIndex, int>
         {
             DocumentKey = sv => sv.Specimens.First().Id,
             ReferenceKey = image => image.Specimens.First().Id
         });
 
-        CrossReferences.Add(new BucketCrossReference<CnvProfileIndex, ImageIndex>
+        CrossReferences.Add(new BucketCrossReference<CnvProfileIndex, ImageIndex, int>
         {
             DocumentKey = profile => profile.Specimen.Id,
             ReferenceKey = image => image.Specimens.First().Id

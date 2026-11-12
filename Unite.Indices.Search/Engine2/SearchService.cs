@@ -1,10 +1,11 @@
+using System.ComponentModel;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Engine2.Converters;
-using Unite.Indices.Search.Engine2.InputFilters;
-using LogicalOperator = Unite.Indices.Search.Engine2.InputFilters.LogicalOperator;
+using Unite.Indices.Search.Engine2.Criteria;
+using Unite.Indices.Search.Engine2.Criteria.Properties;
 
 namespace Unite.Indices.Search.Engine2;
 
@@ -16,30 +17,37 @@ public interface IBucketCrossReference
     LambdaExpression ReferenceKey { get; }
 
     /// <summary>
-    /// Searches the referenced bucket with its query from the container and returns a filter
+    /// Searches the referenced bucket with its criteria from the container and returns criteria
     /// on the target's reference key with the found document keys.
-    /// Returns null if the container has no query for the referenced bucket (nothing to constrain).
+    /// Returns null if the container has no criteria for the referenced bucket (nothing to constrain).
     /// </summary>
-    Task<ValueFilter> FindReferences(QueryContainer query, IServiceProvider serviceProvider);
+    Task<CrossReferenceResult> FindReferences(CriteriaContainer criteria, IServiceProvider serviceProvider);
 }
 
-public class BucketCrossReference<TDocument, TTarget> : IBucketCrossReference
+/// <summary>
+/// Criteria on the target's reference key and the number of keys found in the referenced bucket.
+/// </summary>
+public record CrossReferenceResult(PropertyCriteria Criteria, int Count);
+
+public class BucketCrossReference<TDocument, TTarget, TKey> : IBucketCrossReference
     where TDocument : class
     where TTarget : class
 {
+    private static readonly TypeConverter _keyConverter = TypeDescriptor.GetConverter(typeof(TKey));
+
     public Type DocumentType => typeof(TDocument);
     public Type TargetType => typeof(TTarget);
 
-    public Expression<Func<TDocument, object>> DocumentKey { get; init; }
-    public Expression<Func<TTarget, object>> ReferenceKey { get; init; }
+    public Expression<Func<TDocument, TKey>> DocumentKey { get; init; }
+    public Expression<Func<TTarget, TKey>> ReferenceKey { get; init; }
 
     LambdaExpression IBucketCrossReference.DocumentKey => DocumentKey;
     LambdaExpression IBucketCrossReference.ReferenceKey => ReferenceKey;
 
 
-    public async Task<ValueFilter> FindReferences(QueryContainer query, IServiceProvider serviceProvider)
+    public async Task<CrossReferenceResult> FindReferences(CriteriaContainer criteria, IServiceProvider serviceProvider)
     {
-        var filter = DocumentQueryConverter.Convert(query.Get<TDocument>());
+        var filter = DocumentCriteriaConverter.Convert(criteria.Get<TDocument>());
 
         if (filter.IsEmpty)
             return null;
@@ -54,16 +62,18 @@ public class BucketCrossReference<TDocument, TTarget> : IBucketCrossReference
         var indexService = serviceProvider.GetRequiredService<IIndexService<TDocument>>();
         var result = await indexService.Search(searchQuery);
 
+        // Aggregation bucket keys are strings, parse them back to the key type.
         var keys = result.Aggregations.TryGetValue(aggregationName, out var buckets) && buckets != null
-            ? buckets.Keys.ToList()
+            ? buckets.Keys.Select(key => (TKey)_keyConverter.ConvertFromInvariantString(key)).ToList()
             : [];
 
-        return new ValueFilter
+        var referenceCriteria = new ValueCriteria<TKey>
         {
-            FilterType = DocumentQueryConverter.GetFilterType(PropertyExpressionBuilder.GetPropertyType(ReferenceKey)),
             Property = PropertyExpressionBuilder.GetPath(ReferenceKey),
             Values = keys
         };
+
+        return new CrossReferenceResult(referenceCriteria, keys.Count);
     }
 }
 
@@ -79,29 +89,29 @@ public class SearchService<T> where T : class
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<SearchResult<T>> Search(QueryContainer query, int from = 0, int size = 20)
+    public async Task<SearchResult<T>> Search(CriteriaContainer criteria, int from = 0, int size = 20)
     {
-        var referenceFilters = new List<FilterNode>();
+        var referenceCriteria = new List<CriteriaNode>();
 
         foreach (var crossReference in CrossReferences)
         {
             if (crossReference.TargetType != typeof(T))
                 throw new InvalidOperationException($"Cross reference to '{crossReference.TargetType.Name}' can't be used to search '{typeof(T).Name}'.");
 
-            var referenceFilter = await crossReference.FindReferences(query, _serviceProvider);
+            var reference = await crossReference.FindReferences(criteria, _serviceProvider);
 
-            if (referenceFilter == null)
+            if (reference == null)
                 continue;
 
             // Referenced bucket was filtered, but nothing was found: no target document can match.
-            if (referenceFilter.Values.Count == 0)
+            if (reference.Count == 0)
                 return new SearchResult<T>();
 
-            referenceFilters.Add(referenceFilter);
+            referenceCriteria.Add(reference.Criteria);
         }
 
-        var targetQuery = CreateTargetQuery(query, referenceFilters);
-        var filter = DocumentQueryConverter.Convert(targetQuery.Get<T>());
+        var targetCriteria = CreateTargetCriteria(criteria, referenceCriteria);
+        var filter = DocumentCriteriaConverter.Convert(targetCriteria.Get<T>());
 
         var searchQuery = new SearchQuery<T>()
             .AddPagination(from, size)
@@ -113,46 +123,48 @@ public class SearchService<T> where T : class
     }
 
     /// <summary>
-    /// Copies the input query and combines the target's own filters with the reference filters (AND).
-    /// The input query is not modified.
+    /// Copies the input criteria and combines the target's own criteria with the reference criteria (AND).
+    /// The input criteria are not modified.
     /// </summary>
-    private static QueryContainer CreateTargetQuery(QueryContainer query, List<FilterNode> referenceFilters)
+    private static CriteriaContainer CreateTargetCriteria(CriteriaContainer criteria, List<CriteriaNode> referenceCriteria)
     {
-        var filterNodes = new List<FilterNode>();
+        var nodes = new List<CriteriaNode>();
 
-        var ownFilterGroup = query.Get<T>()?.FilterGroup;
+        var ownCriteria = criteria.Get<T>();
 
-        if (ownFilterGroup != null)
-            filterNodes.Add(ownFilterGroup);
+        if (ownCriteria != null)
+            nodes.Add(ownCriteria);
 
-        filterNodes.AddRange(referenceFilters);
+        nodes.AddRange(referenceCriteria);
 
-        var targetQuery = query.Copy();
+        var targetCriteria = criteria.Copy();
 
-        targetQuery.Set(new DocumentQuery<T>
+        targetCriteria.Set(new DocumentCriteria<T>
         {
-            FilterGroup = new FilterGroup { Operator = LogicalOperator.And, FilterNodes = filterNodes }
+            Operator = LogicalOperator.And,
+            Nodes = nodes
         });
 
-        return targetQuery;
+        return targetCriteria;
     }
 
-    private static FilterNode FindFilter(IDocumentQuery documentQuery, IBucketCrossReference crossReference)
+    private static CriteriaNode FindCriteria(CriteriaNode documentCriteria, IBucketCrossReference crossReference)
     {
         var path = PropertyExpressionBuilder.GetPath(crossReference.ReferenceKey);
 
-        return FindFilter(documentQuery?.FilterGroup, path);
+        return FindCriteria(documentCriteria, path);
     }
 
-    private static FilterNode FindFilter(FilterNode node, string path)
+    private static CriteriaNode FindCriteria(CriteriaNode node, string path)
     {
-        return node switch
-        {
-            null => null,
-            FilterGroup group => group.FilterNodes?
-                .Select(child => FindFilter(child, path))
-                .FirstOrDefault(found => found != null),
-            _ => string.Equals(node.Property, path, StringComparison.OrdinalIgnoreCase) ? node : null
-        };
+        if (node == null)
+            return null;
+
+        if (node is PropertyCriteria criteria && string.Equals(criteria.Property, path, StringComparison.OrdinalIgnoreCase))
+            return node;
+
+        return node.Nodes?
+            .Select(child => FindCriteria(child, path))
+            .FirstOrDefault(found => found != null);
     }
 }

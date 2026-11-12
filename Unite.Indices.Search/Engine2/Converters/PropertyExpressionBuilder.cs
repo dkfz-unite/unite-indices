@@ -60,19 +60,6 @@ public static class PropertyExpressionBuilder
         return string.Join('.', names);
     }
 
-    /// <summary>
-    /// Returns the type of the property the expression points to, ignoring conversions (e.g. to object).
-    /// </summary>
-    public static Type GetPropertyType(LambdaExpression expression)
-    {
-        var body = expression.Body;
-
-        while (body is UnaryExpression { NodeType: ExpressionType.Convert or ExpressionType.ConvertChecked } unary)
-            body = unary.Operand;
-
-        return body.Type;
-    }
-
     private static Expression Push(Stack<string> names, string name, Expression next)
     {
         names.Push(name);
