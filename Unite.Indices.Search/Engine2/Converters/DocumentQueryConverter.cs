@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Engine2.InputFilters;
+using LogicalOperator = Unite.Indices.Search.Engine2.InputFilters.LogicalOperator;
 
 namespace Unite.Indices.Search.Engine2.Converters;
 
@@ -62,7 +63,17 @@ public static class DocumentQueryConverter
             .Select(ConvertNode<TDocument>)
             .ToList() ?? [];
 
-        return new CompoundFilter<TDocument>(typeof(TDocument).Name, group.Negate, filters, group.Operator);
+        return new CompoundFilter<TDocument>(typeof(TDocument).Name, group.Negate, filters, Convert(group.Operator));
+    }
+
+    private static Unite.Indices.Search.Engine.Filters.LogicalOperator Convert(LogicalOperator logicalOperator)
+    {
+        switch (logicalOperator)
+        {
+            case LogicalOperator.And: return  Unite.Indices.Search.Engine.Filters.LogicalOperator.And;
+            case LogicalOperator.Or: return Unite.Indices.Search.Engine.Filters.LogicalOperator.Or;
+            default: throw new NotSupportedException($"LogicalOperator '{logicalOperator}' is not supported.");
+        }
     }
 
     private static IFilter<TDocument> ConvertValueFilter<TDocument>(ValueFilter filter) where TDocument : class

@@ -1,10 +1,10 @@
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
 using Unite.Indices.Search.Engine;
-using Unite.Indices.Search.Engine.Filters;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Engine2.Converters;
 using Unite.Indices.Search.Engine2.InputFilters;
+using LogicalOperator = Unite.Indices.Search.Engine2.InputFilters.LogicalOperator;
 
 namespace Unite.Indices.Search.Engine2;
 

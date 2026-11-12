@@ -1,5 +1,4 @@
 using Nest;
-using Unite.Indices.Search.Engine.Extensions;
 
 namespace Unite.Indices.Search.Engine.Filters;
 

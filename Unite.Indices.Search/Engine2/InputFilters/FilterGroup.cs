@@ -1,5 +1,3 @@
-using Unite.Indices.Search.Engine.Filters;
-
 namespace Unite.Indices.Search.Engine2.InputFilters;
 
 public class FilterGroup : FilterNode
