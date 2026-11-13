@@ -1,5 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Genes;
 
+[SearchableDocument("genes")]
 public class GeneIndex : Basic.Omics.GeneIndex
 {
     /// <summary>

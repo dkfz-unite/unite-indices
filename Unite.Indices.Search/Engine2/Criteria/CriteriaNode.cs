@@ -4,16 +4,17 @@ using Unite.Indices.Search.Engine2.Criteria.Properties;
 namespace Unite.Indices.Search.Engine2.Criteria;
 
 /// <summary>
-/// Node of a criteria tree. A plain node combines its child nodes with <see cref="Operator"/>;
-/// a <see cref="PropertyCriteria"/> is a condition on its own and is combined with its child nodes, if any.
-/// <see cref="Negate"/> applies to the whole node including its children.
+/// Node of a criteria tree: either a <see cref="CriteriaGroup"/> combining child nodes,
+/// or a <see cref="PropertyCriteria"/> with a condition on a single property.
+/// <see cref="Negate"/> applies to the whole node.
 /// </summary>
 /// <remarks>
 /// In JSON the node type is given by the "kind" discriminator, which must be the first property of the object.
-/// A node without "kind" is a plain node.
+/// Nodes without "kind" are read as plain nodes and rejected on resolution.
 /// </remarks>
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "kind")]
 [JsonDerivedType(typeof(CriteriaNode))]
+[JsonDerivedType(typeof(CriteriaGroup), "group")]
 [JsonDerivedType(typeof(ValueCriteria<string>), "value-string")]
 [JsonDerivedType(typeof(ValueCriteria<int>), "value-int")]
 [JsonDerivedType(typeof(ValueCriteria<long>), "value-long")]
@@ -25,10 +26,16 @@ namespace Unite.Indices.Search.Engine2.Criteria;
 [JsonDerivedType(typeof(RangeCriteria<double>), "range-double")]
 [JsonDerivedType(typeof(ExistsCriteria), "exists")]
 [JsonDerivedType(typeof(SimilarityCriteria), "similarity")]
+[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
 public class CriteriaNode
 {
     public bool Negate { get; set; }
 
-    public LogicalOperator Operator { get; set; } = LogicalOperator.And;
-    public List<CriteriaNode> Nodes { get; set; }
+    /// <summary>
+    /// Only derived nodes can be created; the JSON serializer creates plain nodes for input without "kind".
+    /// </summary>
+    [JsonConstructor]
+    private protected CriteriaNode()
+    {
+    }
 }

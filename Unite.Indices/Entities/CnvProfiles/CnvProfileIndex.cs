@@ -1,5 +1,6 @@
 namespace Unite.Indices.Entities.CnvProfiles;
 
+[SearchableDocument("cnv-profiles")]
 public class CnvProfileIndex: CnvProfileNavIndex
 {
     public string Chromosome { get; set; }

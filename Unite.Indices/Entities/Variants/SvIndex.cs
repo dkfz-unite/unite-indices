@@ -1,5 +1,6 @@
 namespace Unite.Indices.Entities.Variants;
 
+[SearchableDocument("svs")]
 public class SvIndex : Basic.Omics.Variants.SvIndex
 {
     /// <summary>

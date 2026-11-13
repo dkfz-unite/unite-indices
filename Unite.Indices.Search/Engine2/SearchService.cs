@@ -6,6 +6,7 @@ using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Engine2.Converters;
 using Unite.Indices.Search.Engine2.Criteria;
 using Unite.Indices.Search.Engine2.Criteria.Properties;
+using Unite.Indices.Search.Engine2.Fields;
 
 namespace Unite.Indices.Search.Engine2;
 
@@ -52,7 +53,7 @@ public class BucketCrossReference<TDocument, TTarget, TKey> : IBucketCrossRefere
         if (filter.IsEmpty)
             return null;
 
-        var aggregationName = $"{typeof(TDocument).Name}.{PropertyExpressionBuilder.GetPath(DocumentKey)}";
+        var aggregationName = $"{typeof(TDocument).Name}.references";
 
         var searchQuery = new SearchQuery<TDocument>()
             .AddPagination(0, 0)
@@ -67,9 +68,10 @@ public class BucketCrossReference<TDocument, TTarget, TKey> : IBucketCrossRefere
             ? buckets.Keys.Select(key => (TKey)_keyConverter.ConvertFromInvariantString(key)).ToList()
             : [];
 
+        // Reference keys are internal: the field is created from the key directly, not taken from the searchable fields.
         var referenceCriteria = new ValueCriteria<TKey>
         {
-            Property = PropertyExpressionBuilder.GetPath(ReferenceKey),
+            Property = new SearchField<TTarget, TKey>(ReferenceKey.Body.ToString(), ReferenceKey),
             Values = keys
         };
 

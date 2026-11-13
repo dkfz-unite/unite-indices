@@ -3,6 +3,7 @@ using Unite.Indices.Entities.Basic.Specimens;
 
 namespace Unite.Indices.Entities.Proteins;
 
+[SearchableDocument("protein_expressions")]
 public class ProteinExpressionIndex
 {
     public string Id { get; set; }

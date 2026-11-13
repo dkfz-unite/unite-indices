@@ -1,5 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Donors;
 
+[SearchableDocument("donors")]
 public class DonorIndex : Basic.Donors.DonorIndex
 {
     /// <summary>

@@ -3,6 +3,7 @@ using Unite.Indices.Entities.Basic.Specimens;
 
 namespace Unite.Indices.Entities.Genes;
 
+[SearchableDocument("gene_expressions")]
 public class GeneExpressionIndex
 {
     public string Id { get; set; }

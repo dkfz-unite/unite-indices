@@ -1,5 +1,6 @@
 namespace Unite.Indices.Entities.Variants;
 
+[SearchableDocument("cnvs")]
 public class CnvIndex : Basic.Omics.Variants.CnvIndex
 {
     /// <summary>

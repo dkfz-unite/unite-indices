@@ -1,5 +1,6 @@
 namespace Unite.Indices.Entities.Variants;
 
+[SearchableDocument("sms")]
 public class SmIndex : Basic.Omics.Variants.SmIndex
 {
     /// <summary>

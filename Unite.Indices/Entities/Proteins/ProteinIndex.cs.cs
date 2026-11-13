@@ -1,5 +1,6 @@
 namespace Unite.Indices.Entities.Proteins;
 
+[SearchableDocument("proteins")]
 public class ProteinIndex : Basic.Omics.ProteinIndex
 {
     /// <summary>

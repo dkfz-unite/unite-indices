@@ -2,6 +2,7 @@ using Unite.Indices.Entities.Basic;
 
 namespace Unite.Indices.Entities.Projects;
 
+[SearchableDocument("projects")]
 public class ProjectIndex : Basic.Projects.ProjectIndex
 {
     /// <summary>
