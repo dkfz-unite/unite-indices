@@ -9,5 +9,6 @@ public class CnvProfileIndex: CnvProfileNavIndex
     public float Loss { get; set; }
     public float Neutral { get; set; }
 
+    [References(typeof(Specimens.SpecimenIndex))]
     public Basic.Specimens.SpecimenNavIndex Specimen { get; set; }
 }

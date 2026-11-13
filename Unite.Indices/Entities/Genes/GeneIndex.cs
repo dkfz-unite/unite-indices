@@ -14,5 +14,6 @@ public class GeneIndex : Basic.Omics.GeneIndex
     public DataIndex Data { get; set; }
 
 
+    [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenIndex[] Specimens { get; set; }
 }

@@ -16,5 +16,6 @@ public class SvIndex : Basic.Omics.Variants.SvIndex
 
     public Basic.Omics.Variants.VariantNavIndex[] Similars { get; set; }
     
+    [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenIndex[] Specimens { get; set; }
 }

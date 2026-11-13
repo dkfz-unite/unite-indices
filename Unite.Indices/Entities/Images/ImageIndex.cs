@@ -15,7 +15,9 @@ public class ImageIndex : Basic.Images.ImageIndex
 
 
     [Searchable]
+    [References(typeof(Donors.DonorIndex))]
     public DonorIndex Donor { get; set; }
     [Searchable]
+    [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenIndex[] Specimens { get; set; }
 }

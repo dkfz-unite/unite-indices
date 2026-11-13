@@ -8,6 +8,7 @@ public class GeneExpressionIndex
 {
     public string Id { get; set; }
     public GeneNavIndex Gene { get; set; }
+    [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenNavIndex Specimen { get; set; }
     
     public double Expression { get; set; }

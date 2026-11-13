@@ -13,10 +13,6 @@ namespace Unite.Indices.Search.Engine2.Fields;
 /// </summary>
 public static class SearchFields<TDocument> where TDocument : class
 {
-    private static readonly MethodInfo _firstMethod = typeof(Enumerable)
-        .GetMethods(BindingFlags.Public | BindingFlags.Static)
-        .Single(method => method.Name == nameof(Enumerable.First) && method.GetParameters().Length == 1);
-
     private static readonly Lazy<IReadOnlyDictionary<string, SearchField<TDocument>>> _fields = new(Build);
 
     public static IReadOnlyDictionary<string, SearchField<TDocument>> All => _fields.Value;
@@ -104,16 +100,8 @@ public static class SearchFields<TDocument> where TDocument : class
             var segment = attribute.Name ?? JsonNamingPolicy.CamelCase.ConvertName(property.Name);
             var name = prefix == null ? segment : $"{prefix}.{segment}";
 
-            Expression expression = Expression.Property(access, property);
-            var valueType = property.PropertyType;
-            var elementType = GetElementType(valueType);
-
-            // Collections are searched by their elements: NEST resolves First() to the field path of the element.
-            if (elementType != null)
-            {
-                expression = Expression.Call(_firstMethod.MakeGenericMethod(elementType), expression);
-                valueType = elementType;
-            }
+            var expression = Navigation.Access(access, property);
+            var valueType = expression.Type;
 
             if (IsValue(valueType))
             {
@@ -160,20 +148,6 @@ public static class SearchFields<TDocument> where TDocument : class
             depth++;
 
         return depth;
-    }
-
-    private static Type GetElementType(Type type)
-    {
-        if (type == typeof(string))
-            return null;
-
-        if (type.IsArray)
-            return type.GetElementType();
-
-        return type.GetInterfaces()
-            .Append(type)
-            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))?
-            .GetGenericArguments()[0];
     }
 
     private static bool IsValue(Type type)

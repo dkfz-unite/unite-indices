@@ -14,5 +14,6 @@ public class SmIndex : Basic.Omics.Variants.SmIndex
     public DataIndex Data { get; set; }
 
 
+    [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenIndex[] Specimens { get; set; }
 }

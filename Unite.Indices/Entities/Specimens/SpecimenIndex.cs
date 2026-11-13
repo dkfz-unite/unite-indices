@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Specimens;
 
-[SearchableDocument("specimens")]
+[SearchableDocument("specimens", Key = nameof(SpecimenIndex.Id), Level = 2)]
 public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
     /// <summary>
@@ -15,6 +15,7 @@ public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 
 
     public ParentIndex Parent { get; set; }
+    [References(typeof(Donors.DonorIndex))]
     public DonorIndex Donor { get; set; }
     public ImageIndex[] Images { get; set; }
     public SampleIndex[] Samples { get; set; }

@@ -8,6 +8,7 @@ public class ProteinExpressionIndex
 {
     public string Id { get; set; }
     public ProteinNavIndex Protein { get; set; }
+    [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenNavIndex Specimen { get; set; }
 
     public double Expression { get; set; }

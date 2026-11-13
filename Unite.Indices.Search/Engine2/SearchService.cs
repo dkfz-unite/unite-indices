@@ -1,89 +1,20 @@
-using System.ComponentModel;
-using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Search.Engine2.Converters;
 using Unite.Indices.Search.Engine2.Criteria;
-using Unite.Indices.Search.Engine2.Criteria.Properties;
-using Unite.Indices.Search.Engine2.Fields;
+using Unite.Indices.Search.Engine2.References;
 
 namespace Unite.Indices.Search.Engine2;
 
-public interface IBucketCrossReference
-{
-    Type DocumentType { get; }
-    Type TargetType { get; }
-    LambdaExpression DocumentKey { get; }
-    LambdaExpression ReferenceKey { get; }
-
-    /// <summary>
-    /// Searches the referenced bucket with its criteria from the container and returns criteria
-    /// on the target's reference key with the found document keys.
-    /// Returns null if the container has no criteria for the referenced bucket (nothing to constrain).
-    /// </summary>
-    Task<CrossReferenceResult> FindReferences(CriteriaContainer criteria, IServiceProvider serviceProvider);
-}
-
 /// <summary>
-/// Criteria on the target's reference key and the number of keys found in the referenced bucket.
+/// Searches documents of type <typeparamref name="T"/> with criteria on any searchable documents.
+/// Criteria of other documents are applied through the entities (donors, specimens) they share with the target,
+/// derived from <see cref="Unite.Indices.Entities.SearchableDocumentAttribute"/> and <see cref="Unite.Indices.Entities.ReferencesAttribute"/>.
 /// </summary>
-public record CrossReferenceResult(PropertyCriteria Criteria, int Count);
-
-public class BucketCrossReference<TDocument, TTarget, TKey> : IBucketCrossReference
-    where TDocument : class
-    where TTarget : class
-{
-    private static readonly TypeConverter _keyConverter = TypeDescriptor.GetConverter(typeof(TKey));
-
-    public Type DocumentType => typeof(TDocument);
-    public Type TargetType => typeof(TTarget);
-
-    public Expression<Func<TDocument, TKey>> DocumentKey { get; init; }
-    public Expression<Func<TTarget, TKey>> ReferenceKey { get; init; }
-
-    LambdaExpression IBucketCrossReference.DocumentKey => DocumentKey;
-    LambdaExpression IBucketCrossReference.ReferenceKey => ReferenceKey;
-
-
-    public async Task<CrossReferenceResult> FindReferences(CriteriaContainer criteria, IServiceProvider serviceProvider)
-    {
-        var filter = DocumentCriteriaConverter.Convert(criteria.Get<TDocument>());
-
-        if (filter.IsEmpty)
-            return null;
-
-        var aggregationName = $"{typeof(TDocument).Name}.references";
-
-        var searchQuery = new SearchQuery<TDocument>()
-            .AddPagination(0, 0)
-            .AddFilter(filter)
-            .AddAggregation(aggregationName, DocumentKey);
-
-        var indexService = serviceProvider.GetRequiredService<IIndexService<TDocument>>();
-        var result = await indexService.Search(searchQuery);
-
-        // Aggregation bucket keys are strings, parse them back to the key type.
-        var keys = result.Aggregations.TryGetValue(aggregationName, out var buckets) && buckets != null
-            ? buckets.Keys.Select(key => (TKey)_keyConverter.ConvertFromInvariantString(key)).ToList()
-            : [];
-
-        // Reference keys are internal: the field is created from the key directly, not taken from the searchable fields.
-        var referenceCriteria = new ValueCriteria<TKey>
-        {
-            Property = new SearchField<TTarget, TKey>(ReferenceKey.Body.ToString(), ReferenceKey),
-            Values = keys
-        };
-
-        return new CrossReferenceResult(referenceCriteria, keys.Count);
-    }
-}
-
 public class SearchService<T> where T : class
 {
     private readonly IServiceProvider _serviceProvider;
-
-    public List<IBucketCrossReference> CrossReferences { get; } = new();
 
 
     public SearchService(IServiceProvider serviceProvider)
@@ -91,62 +22,90 @@ public class SearchService<T> where T : class
         _serviceProvider = serviceProvider;
     }
 
+
+    /// <exception cref="ArgumentException">Criteria of a document can't be applied to the target or are invalid.</exception>
     public async Task<SearchResult<T>> Search(CriteriaContainer criteria, int from = 0, int size = 20)
     {
-        var referenceCriteria = new List<CriteriaNode>();
+        var targetKeys = DocumentKeys<T>.All;
+        var found = new Dictionary<Type, HashSet<string>>();
 
-        foreach (var crossReference in CrossReferences)
+        // Stages run from coarse to fine entities and narrow each other through the keys found so far.
+        foreach (var (stage, join) in GetStages(criteria, targetKeys.Keys))
         {
-            if (crossReference.TargetType != typeof(T))
-                throw new InvalidOperationException($"Cross reference to '{crossReference.TargetType.Name}' can't be used to search '{typeof(T).Name}'.");
+            var keys = await stage.FindKeys(criteria, join, found, _serviceProvider);
 
-            var reference = await crossReference.FindReferences(criteria, _serviceProvider);
-
-            if (reference == null)
+            if (keys == null)
                 continue;
 
-            // Referenced bucket was filtered, but nothing was found: no target document can match.
-            if (reference.Count == 0)
+            if (found.TryGetValue(join.Entity.Document.Type, out var previous))
+                keys.IntersectWith(previous);
+
+            // Referenced documents were filtered, but nothing was found: no target document can match.
+            if (keys.Count == 0)
                 return new SearchResult<T>();
 
-            referenceCriteria.Add(reference.Criteria);
+            found[join.Entity.Document.Type] = keys;
         }
 
-        var targetCriteria = CreateTargetCriteria(criteria, referenceCriteria);
-        var filter = DocumentCriteriaConverter.Convert(targetCriteria.Get<T>());
+        var targetCriteria = CreateTargetCriteria(criteria.Get<T>(), found);
 
         var searchQuery = new SearchQuery<T>()
             .AddPagination(from, size)
-            .AddFilter(filter);
+            .AddFilter(DocumentCriteriaConverter.Convert(targetCriteria));
 
         var indexService = _serviceProvider.GetRequiredService<IIndexService<T>>();
 
         return await indexService.Search(searchQuery);
     }
 
+
     /// <summary>
-    /// Copies the input criteria and combines the target's own criteria with the reference criteria (AND).
-    /// The input criteria are not modified.
+    /// Stages of all documents with criteria except the target, with the entity joining each with the target, in execution order.
     /// </summary>
-    private static CriteriaContainer CreateTargetCriteria(CriteriaContainer criteria, List<CriteriaNode> referenceCriteria)
+    private static List<(IDocumentStage Stage, DocumentKey Join)> GetStages(CriteriaContainer criteria, IEnumerable<Type> targetEntities)
+    {
+        var entities = targetEntities.ToHashSet();
+
+        return criteria.DocumentTypes
+            .Where(documentType => documentType != typeof(T))
+            .Select(DocumentStages.Get)
+            .Select(stage => (Stage: stage, Join: GetJoin(stage, entities)))
+            .OrderBy(entry => entry.Join.Entity.Level)
+            .ThenBy(entry => entry.Join.IsIdentity ? 0 : 1)
+            .ThenBy(entry => entry.Stage.Document.Name, StringComparer.Ordinal)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Entity joining the document with the target: the document itself if the target refers to it,
+    /// otherwise the finest entity both refer to.
+    /// </summary>
+    private static DocumentKey GetJoin(IDocumentStage stage, HashSet<Type> targetEntities)
+    {
+        var candidates = stage.Keys
+            .Where(key => targetEntities.Contains(key.Entity.Document.Type))
+            .ToList();
+
+        return candidates.FirstOrDefault(key => key.IsIdentity)
+            ?? candidates.OrderByDescending(key => key.Entity.Level).FirstOrDefault()
+            ?? throw new ArgumentException($"Criteria of '{stage.Document.Name}' can't be applied to '{SearchDocumentName}': they share no searchable entity.");
+    }
+
+    /// <summary>
+    /// Combines the target's own criteria with the keys found in other documents (AND). The input criteria are not modified.
+    /// </summary>
+    private static DocumentCriteria<T> CreateTargetCriteria(DocumentCriteria<T> ownCriteria, Dictionary<Type, HashSet<string>> found)
     {
         var nodes = new List<CriteriaNode>();
-
-        var ownCriteria = criteria.Get<T>();
 
         if (ownCriteria != null)
             nodes.Add(ownCriteria);
 
-        nodes.AddRange(referenceCriteria);
+        foreach (var entry in found)
+            nodes.Add(DocumentKeys<T>.All[entry.Key].CreateCriteria(entry.Value));
 
-        var targetCriteria = criteria.Copy();
-
-        targetCriteria.Set(new DocumentCriteria<T>
-        {
-            Operator = LogicalOperator.And,
-            Nodes = nodes
-        });
-
-        return targetCriteria;
+        return new DocumentCriteria<T> { Operator = LogicalOperator.And, Nodes = nodes };
     }
+
+    private static string SearchDocumentName => Fields.SearchDocuments.Get(typeof(T)).Name;
 }

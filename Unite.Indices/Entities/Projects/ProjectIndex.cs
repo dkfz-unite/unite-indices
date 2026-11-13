@@ -16,6 +16,7 @@ public class ProjectIndex : Basic.Projects.ProjectIndex
     public DataIndex Data { get; set; }
 
 
+    [References(typeof(Donors.DonorIndex))]
     public DonorIndex[] Donors { get; set; }
     public DataUserNavIndex[] Users { get; set; }
     public bool IsPublic { get; set; }
