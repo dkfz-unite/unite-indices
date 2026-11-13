@@ -87,7 +87,7 @@ public sealed class DocumentKey<TDocument, TKey>(SearchEntity entity, bool isIde
 
 /// <summary>
 /// Entity keys of documents of type <typeparamref name="TDocument"/>, by entity type.
-/// Built from <see cref="SearchableDocumentAttribute.Key"/> (identity) and <see cref="ReferencesAttribute"/> (references).
+/// Built from <see cref="EntityKeyAttribute"/> (identity) and <see cref="ReferencesAttribute"/> (references).
 /// </summary>
 public static class DocumentKeys<TDocument> where TDocument : class
 {
@@ -122,10 +122,10 @@ public static class DocumentKeys<TDocument> where TDocument : class
 
             var navigation = Navigation.Access(parameter, property);
 
-            var key = navigation.Type.GetProperty(entity.Key.Name, BindingFlags.Public | BindingFlags.Instance);
+            var key = SearchEntities.FindKey(navigation.Type);
 
             if (key == null || key.PropertyType != entity.Key.PropertyType)
-                throw new InvalidOperationException($"{name} refers to {entity.Document.Type.Name}, but {navigation.Type.Name} has no key property '{entity.Key.Name}' of type {entity.Key.PropertyType.Name}.");
+                throw new InvalidOperationException($"{name} refers to {entity.Document.Type.Name}, but {navigation.Type.Name} has no entity key property of type {entity.Key.PropertyType.Name}.");
 
             if (!keys.TryAdd(entity.Document.Type, CreateKey(entity, false, $"{GetName(property)}.{GetName(key)}", Expression.Property(navigation, key), parameter)))
                 throw new InvalidOperationException($"{typeof(TDocument).Name} refers to {entity.Document.Type.Name} more than once.");

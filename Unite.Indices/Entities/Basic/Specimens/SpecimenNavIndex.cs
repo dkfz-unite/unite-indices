@@ -5,6 +5,7 @@ public class SpecimenNavIndex
     /// <summary>
     /// Specimen id.
     /// </summary>
+    [EntityKey]
     [Searchable]
     public int Id { get; set; }
 

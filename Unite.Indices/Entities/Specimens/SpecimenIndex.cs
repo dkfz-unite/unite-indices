@@ -1,6 +1,6 @@
 ﻿namespace Unite.Indices.Entities.Specimens;
 
-[SearchableDocument("specimens", Key = nameof(SpecimenIndex.Id), Level = 2)]
+[SearchableDocument("specimens")]
 public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
     /// <summary>
