@@ -29,7 +29,7 @@ public class CriteriaContainerJsonConverter : JsonConverter<CriteriaContainer>
             reader.Read();
 
             // DocumentCriteria<T> of the document resolves and validates its fields on deserialization.
-            var criteria = (CriteriaGroup)JsonSerializer.Deserialize(ref reader, document.CriteriaType, options);
+            var criteria = (DocumentCriteria)JsonSerializer.Deserialize(ref reader, document.CriteriaType, options);
 
             container.Set(document.Type, criteria);
         }

@@ -103,7 +103,7 @@ public static class SearchFields<TDocument> where TDocument : class
             var expression = Navigation.Access(access, property);
             var valueType = expression.Type;
 
-            if (IsValue(valueType))
+            if (Navigation.IsValue(valueType))
             {
                 var field = CreateField(name, Expression.Lambda(expression, parameter));
 
@@ -148,18 +148,5 @@ public static class SearchFields<TDocument> where TDocument : class
             depth++;
 
         return depth;
-    }
-
-    private static bool IsValue(Type type)
-    {
-        var valueType = Nullable.GetUnderlyingType(type) ?? type;
-
-        return valueType.IsPrimitive
-            || valueType.IsEnum
-            || valueType == typeof(string)
-            || valueType == typeof(decimal)
-            || valueType == typeof(DateTime)
-            || valueType == typeof(DateTimeOffset)
-            || valueType == typeof(Guid);
     }
 }

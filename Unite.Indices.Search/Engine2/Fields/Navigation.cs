@@ -43,4 +43,20 @@ internal static class Navigation
             .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))?
             .GetGenericArguments()[0];
     }
+
+    /// <summary>
+    /// Simple value (number, text, date, ...), not a navigation object.
+    /// </summary>
+    public static bool IsValue(Type type)
+    {
+        var valueType = Nullable.GetUnderlyingType(type) ?? type;
+
+        return valueType.IsPrimitive
+            || valueType.IsEnum
+            || valueType == typeof(string)
+            || valueType == typeof(decimal)
+            || valueType == typeof(DateTime)
+            || valueType == typeof(DateTimeOffset)
+            || valueType == typeof(Guid);
+    }
 }

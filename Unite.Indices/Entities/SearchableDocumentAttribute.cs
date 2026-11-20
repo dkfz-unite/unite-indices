@@ -8,7 +8,7 @@ namespace Unite.Indices.Entities;
 /// <remarks>
 /// Entities form a hierarchy derived from their references: an entity referring to another entity
 /// with a single object (not a collection) is its child, e.g. specimens are children of donors (SpecimenIndex.Donor).
-/// The entity without a parent is the root. Search stages run from the root to finer entities,
+/// Entities without a parent are roots of separate hierarchies (e.g. donors and genes). Search stages run from the root to finer entities,
 /// documents referring to several entities are joined by the finest one.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]

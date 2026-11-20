@@ -2,12 +2,8 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection;
 using Unite.Indices.Entities;
-using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
-using Unite.Indices.Search.Engine2.Converters;
-using Unite.Indices.Search.Engine2.Criteria;
 using Unite.Indices.Search.Engine2.Criteria.Properties;
 using Unite.Indices.Search.Engine2.Fields;
 
@@ -16,7 +12,7 @@ namespace Unite.Indices.Search.Engine2.References;
 /// <summary>
 /// Key of an entity in a document: the document is the entity (identity) or refers to it.
 /// </summary>
-public abstract class DocumentKey(SearchEntity entity, bool isIdentity, string name)
+public abstract class DocumentKey(SearchEntity entity, bool isIdentity, bool isCollection, string name)
 {
     public SearchEntity Entity { get; } = entity;
 
@@ -24,6 +20,11 @@ public abstract class DocumentKey(SearchEntity entity, bool isIdentity, string n
     /// The document is the entity itself, otherwise it refers to it.
     /// </summary>
     public bool IsIdentity { get; } = isIdentity;
+
+    /// <summary>
+    /// The document refers to the entity through a collection (many entities), otherwise through a single object.
+    /// </summary>
+    public bool IsCollection { get; } = isCollection;
 
     /// <summary>
     /// Path of the key in the document (e.g. "specimens.id").
@@ -34,8 +35,8 @@ public abstract class DocumentKey(SearchEntity entity, bool isIdentity, string n
 /// <summary>
 /// Key of an entity in documents of type <typeparamref name="TDocument"/>.
 /// </summary>
-public abstract class DocumentKey<TDocument>(SearchEntity entity, bool isIdentity, string name) : DocumentKey(entity, isIdentity, name)
-    where TDocument : class
+public abstract class DocumentKey<TDocument>(SearchEntity entity, bool isIdentity, bool isCollection, string name)
+    : DocumentKey(entity, isIdentity, isCollection, name) where TDocument : class
 {
     /// <summary>
     /// Criteria: the key is one of the given keys.
@@ -43,16 +44,14 @@ public abstract class DocumentKey<TDocument>(SearchEntity entity, bool isIdentit
     public abstract PropertyCriteria CreateCriteria(IEnumerable<string> keys);
 
     /// <summary>
-    /// Keys of all documents matching the criteria.
+    /// Adds an aggregation of the keys of all documents matching the query.
     /// </summary>
-    public abstract Task<HashSet<string>> FindKeys(DocumentCriteria<TDocument> criteria, IServiceProvider serviceProvider);
+    public abstract void AddAggregation(SearchQuery<TDocument> query, string name);
 }
 
-public sealed class DocumentKey<TDocument, TKey>(SearchEntity entity, bool isIdentity, string name, Expression<Func<TDocument, TKey>> key)
-    : DocumentKey<TDocument>(entity, isIdentity, name) where TDocument : class
+public sealed class DocumentKey<TDocument, TKey>(SearchEntity entity, bool isIdentity, bool isCollection, string name, Expression<Func<TDocument, TKey>> key)
+    : DocumentKey<TDocument>(entity, isIdentity, isCollection, name) where TDocument : class
 {
-    // Not "keys": NEST reserves it for parsing aggregation responses.
-    private const string AggregationName = "entity_keys";
     private static readonly TypeConverter _keyConverter = TypeDescriptor.GetConverter(typeof(TKey));
 
     private readonly SearchField<TDocument, TKey> _field = new(name, key);
@@ -69,25 +68,17 @@ public sealed class DocumentKey<TDocument, TKey>(SearchEntity entity, bool isIde
         };
     }
 
-    public override async Task<HashSet<string>> FindKeys(DocumentCriteria<TDocument> criteria, IServiceProvider serviceProvider)
+    public override void AddAggregation(SearchQuery<TDocument> query, string name)
     {
         // WARN: the terms aggregation returns at most 1000 keys (see SearchQuery.AddAggregation).
-        var query = new SearchQuery<TDocument>()
-            .AddPagination(0, 0)
-            .AddFilter(DocumentCriteriaConverter.Convert(criteria))
-            .AddAggregation(AggregationName, Key);
-
-        var result = await serviceProvider.GetRequiredService<IIndexService<TDocument>>().Search(query);
-
-        return result.Aggregations.TryGetValue(AggregationName, out var buckets) && buckets != null
-            ? buckets.Keys.ToHashSet()
-            : [];
+        query.AddAggregation(name, Key);
     }
 }
 
 /// <summary>
 /// Entity keys of documents of type <typeparamref name="TDocument"/>, by entity type.
-/// Built from <see cref="EntityKeyAttribute"/> (identity) and <see cref="ReferencesAttribute"/> (references).
+/// Built from <see cref="EntityKeyAttribute"/> (identity) and <see cref="ReferencesAttribute"/> (references, also nested below
+/// navigation properties marked with <see cref="SearchableAttribute"/>).
 /// </summary>
 public static class DocumentKeys<TDocument> where TDocument : class
 {
@@ -105,41 +96,57 @@ public static class DocumentKeys<TDocument> where TDocument : class
         {
             var access = Expression.Property(parameter, identity.Key);
 
-            keys.Add(identity.Document.Type, CreateKey(identity, true, GetName(identity.Key), access, parameter));
+            keys.Add(identity.Document.Type, CreateKey(identity, true, false, GetName(identity.Key), access, parameter));
         }
 
-        foreach (var property in typeof(TDocument).GetProperties(BindingFlags.Public | BindingFlags.Instance))
-        {
-            var attribute = property.GetCustomAttribute<ReferencesAttribute>(true);
-
-            if (attribute == null)
-                continue;
-
-            var name = $"{typeof(TDocument).Name}.{property.Name}";
-
-            if (!SearchEntities.All.TryGetValue(attribute.Entity, out var entity))
-                throw new InvalidOperationException($"{name} refers to {attribute.Entity.FullName}, which is not a searchable entity.");
-
-            var navigation = Navigation.Access(parameter, property);
-
-            var key = SearchEntities.FindKey(navigation.Type);
-
-            if (key == null || key.PropertyType != entity.Key.PropertyType)
-                throw new InvalidOperationException($"{name} refers to {entity.Document.Type.Name}, but {navigation.Type.Name} has no entity key property of type {entity.Key.PropertyType.Name}.");
-
-            if (!keys.TryAdd(entity.Document.Type, CreateKey(entity, false, $"{GetName(property)}.{GetName(key)}", Expression.Property(navigation, key), parameter)))
-                throw new InvalidOperationException($"{typeof(TDocument).Name} refers to {entity.Document.Type.Name} more than once.");
-        }
+        Collect(keys, parameter, parameter, typeof(TDocument), null, false, [typeof(TDocument)]);
 
         return keys;
     }
 
-    private static DocumentKey<TDocument> CreateKey(SearchEntity entity, bool isIdentity, string name, Expression access, ParameterExpression parameter)
+    /// <summary>
+    /// Collects references of the type: [References] properties, also below navigation properties marked with [Searchable]
+    /// (e.g. "affectedFeatures[ ].gene.id" of variants). Referenced entities are not descended into.
+    /// </summary>
+    private static void Collect(Dictionary<Type, DocumentKey<TDocument>> keys, ParameterExpression parameter, Expression access,
+        Type type, string prefix, bool inCollection, HashSet<Type> path)
+    {
+        foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(property => property.GetIndexParameters().Length == 0))
+        {
+            var navigation = Navigation.Access(access, property);
+            var name = prefix == null ? GetName(property) : $"{prefix}.{GetName(property)}";
+            var isCollection = inCollection || Navigation.GetElementType(property.PropertyType) != null;
+            var attribute = property.GetCustomAttribute<ReferencesAttribute>(true);
+
+            if (attribute != null)
+            {
+                var location = $"{typeof(TDocument).Name}.{name}";
+
+                if (!SearchEntities.All.TryGetValue(attribute.Entity, out var entity))
+                    throw new InvalidOperationException($"{location} refers to {attribute.Entity.FullName}, which is not a searchable entity.");
+
+                var key = SearchEntities.FindKey(navigation.Type);
+
+                if (key == null || key.PropertyType != entity.Key.PropertyType)
+                    throw new InvalidOperationException($"{location} refers to {entity.Document.Type.Name}, but {navigation.Type.Name} has no entity key property of type {entity.Key.PropertyType.Name}.");
+
+                if (!keys.TryAdd(entity.Document.Type, CreateKey(entity, false, isCollection, $"{name}.{GetName(key)}", Expression.Property(navigation, key), parameter)))
+                    throw new InvalidOperationException($"{typeof(TDocument).Name} refers to {entity.Document.Type.Name} more than once ({name}).");
+            }
+            else if (property.IsDefined(typeof(SearchableAttribute), true) && !Navigation.IsValue(navigation.Type) && path.Add(navigation.Type))
+            {
+                Collect(keys, parameter, navigation, navigation.Type, name, isCollection, path);
+                path.Remove(navigation.Type);
+            }
+        }
+    }
+
+    private static DocumentKey<TDocument> CreateKey(SearchEntity entity, bool isIdentity, bool isCollection, string name, Expression access, ParameterExpression parameter)
     {
         var key = Expression.Lambda(access, parameter);
         var keyType = typeof(DocumentKey<,>).MakeGenericType(typeof(TDocument), access.Type);
 
-        return (DocumentKey<TDocument>)Activator.CreateInstance(keyType, entity, isIdentity, name, key);
+        return (DocumentKey<TDocument>)Activator.CreateInstance(keyType, entity, isIdentity, isCollection, name, key);
     }
 
     private static string GetName(PropertyInfo property)

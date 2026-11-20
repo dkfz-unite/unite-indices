@@ -11,6 +11,7 @@ public class GeneIndex : Basic.Omics.GeneIndex
     /// <summary>
     /// Available data.
     /// </summary>
+    [Searchable]
     public DataIndex Data { get; set; }
 
 

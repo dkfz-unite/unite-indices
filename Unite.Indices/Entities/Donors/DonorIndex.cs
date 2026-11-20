@@ -11,6 +11,7 @@ public class DonorIndex : Basic.Donors.DonorIndex
     /// <summary>
     /// Available data.
     /// </summary>
+    [Searchable]
     public DataIndex Data { get; set; }
 
 

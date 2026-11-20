@@ -2,6 +2,7 @@
 
 public class AffectedTranscriptIndex
 {
+    [Searchable]
     public TranscriptIndex Feature { get; set; }
 
     public string ProteinChange { get; set; }

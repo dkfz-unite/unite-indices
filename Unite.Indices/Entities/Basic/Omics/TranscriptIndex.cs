@@ -16,5 +16,6 @@ public class TranscriptIndex
     public int? ExonicLength { get; set; }
 
 
+    [References(typeof(Proteins.ProteinIndex))]
     public ProteinIndex Protein { get; set; }
 }

@@ -11,6 +11,7 @@ public class SpecimenIndex : Basic.Specimens.SpecimenIndex
     /// <summary>
     /// Available data.
     /// </summary>
+    [Searchable]
     public DataIndex Data { get; set; }
 
 

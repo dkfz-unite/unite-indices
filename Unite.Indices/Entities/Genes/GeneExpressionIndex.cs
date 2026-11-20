@@ -7,9 +7,11 @@ namespace Unite.Indices.Entities.Genes;
 public class GeneExpressionIndex
 {
     public string Id { get; set; }
+    [References(typeof(Genes.GeneIndex))]
     public GeneNavIndex Gene { get; set; }
     [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenNavIndex Specimen { get; set; }
     
+    [Searchable]
     public double Expression { get; set; }
 }

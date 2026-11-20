@@ -11,6 +11,7 @@ public class ImageIndex : Basic.Images.ImageIndex
     /// <summary>
     /// Available data.
     /// </summary>
+    [Searchable]
     public DataIndex Data { get; set; }
 
 

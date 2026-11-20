@@ -10,7 +10,7 @@ namespace Unite.Indices.Search.Engine2.Criteria;
 [JsonConverter(typeof(CriteriaContainerJsonConverter))]
 public class CriteriaContainer
 {
-    private readonly Dictionary<Type, CriteriaGroup> _criteria = [];
+    private readonly Dictionary<Type, DocumentCriteria> _criteria = [];
 
     /// <summary>
     /// Document types with criteria.
@@ -23,7 +23,7 @@ public class CriteriaContainer
         return (DocumentCriteria<TDocument>)Get(typeof(TDocument));
     }
 
-    public CriteriaGroup Get(Type documentType)
+    public DocumentCriteria Get(Type documentType)
     {
         return _criteria.TryGetValue(documentType, out var criteria) ? criteria : null;
     }
@@ -37,7 +37,7 @@ public class CriteriaContainer
         Set(typeof(TDocument), criteria);
     }
 
-    internal void Set(Type documentType, CriteriaGroup criteria)
+    internal void Set(Type documentType, DocumentCriteria criteria)
     {
         SearchDocuments.Get(documentType);
 

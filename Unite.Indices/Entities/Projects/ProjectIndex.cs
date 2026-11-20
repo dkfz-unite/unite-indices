@@ -13,6 +13,7 @@ public class ProjectIndex : Basic.Projects.ProjectIndex
     /// <summary>
     /// Available data.
     /// </summary>
+    [Searchable]
     public DataIndex Data { get; set; }
 
 

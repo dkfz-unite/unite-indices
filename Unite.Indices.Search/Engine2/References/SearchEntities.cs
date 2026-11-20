@@ -6,7 +6,8 @@ namespace Unite.Indices.Search.Engine2.References;
 
 /// <summary>
 /// Searchable entities: searchable documents with a key property (<see cref="EntityKeyAttribute"/>).
-/// Their hierarchy is derived from references: a single-object reference to another entity points to the parent.
+/// Their hierarchies are derived from references: a single-object reference to another entity points to the parent,
+/// entities without a parent are roots (e.g. donors -> specimens, genes -> proteins).
 /// </summary>
 public static class SearchEntities
 {
@@ -29,18 +30,14 @@ public static class SearchEntities
 
         var parents = keys.Keys.ToDictionary(type => type, type => GetParent(type, keys.Keys));
 
-        var roots = parents.Where(entry => entry.Value == null).Select(entry => entry.Key).ToList();
-
-        if (keys.Count > 0 && roots.Count != 1)
-            throw new InvalidOperationException(roots.Count == 0
-                ? "Searchable entities have no root: their parent references form a cycle."
-                : $"Searchable entities have several roots ({string.Join(", ", roots.Select(root => root.FullName))}): " +
-                  "all but one must refer to their parent entity with a single-object property marked with [References].");
-
         var entities = new Dictionary<Type, SearchEntity>();
 
         foreach (var type in keys.Keys)
-            entities.Add(type, new SearchEntity(keys[type].Document, keys[type].Key, GetLevel(type, parents)));
+        {
+            var path = GetPath(type, parents);
+
+            entities.Add(type, new SearchEntity(keys[type].Document, keys[type].Key, path.Count, keys[path[^1]].Document, parents[type]));
+        }
 
         return entities;
     }
@@ -80,28 +77,36 @@ public static class SearchEntities
     }
 
     /// <summary>
-    /// Depth of the entity in the hierarchy: 1 for the root, then 2, 3, ...
+    /// Path from the entity up to the root of its hierarchy (entity first, root last).
     /// </summary>
-    private static int GetLevel(Type type, IReadOnlyDictionary<Type, Type> parents)
+    private static List<Type> GetPath(Type type, IReadOnlyDictionary<Type, Type> parents)
     {
-        var path = new HashSet<Type>();
+        var path = new List<Type>();
 
         for (var current = type; current != null; current = parents[current])
         {
-            if (!path.Add(current))
+            if (path.Contains(current))
                 throw new InvalidOperationException($"Parent references of entity {type.FullName} form a cycle.");
+
+            path.Add(current);
         }
 
-        return path.Count;
+        return path;
     }
 }
 
 /// <summary>
-/// Searchable entity with its key property and level in the entity hierarchy (1 for the root, higher is finer).
+/// Searchable entity with its key property, level in its hierarchy (1 for the root, higher is finer) and the root of the hierarchy.
 /// </summary>
-public sealed class SearchEntity(SearchDocument document, PropertyInfo key, int level)
+public sealed class SearchEntity(SearchDocument document, PropertyInfo key, int level, SearchDocument root, Type parent)
 {
     public SearchDocument Document { get; } = document;
     public PropertyInfo Key { get; } = key;
     public int Level { get; } = level;
+    public SearchDocument Root { get; } = root;
+
+    /// <summary>
+    /// Document type of the parent entity, null for a root.
+    /// </summary>
+    public Type Parent { get; } = parent;
 }
