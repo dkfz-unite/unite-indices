@@ -4,6 +4,7 @@ public class SmIndex : VariantBaseIndex
 {
     private string _change;
 
+    [Searchable]
     public string Type { get; set; }
     public string Ref { get; set; }
     public string Alt { get; set; }

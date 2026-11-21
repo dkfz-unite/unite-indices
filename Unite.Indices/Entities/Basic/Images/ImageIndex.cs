@@ -2,6 +2,7 @@
 
 public class ImageIndex : ImageNavIndex
 {   
+    [Searchable]
     public MrImageIndex Mr { get; set; }
 
 

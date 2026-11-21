@@ -2,6 +2,7 @@
 
 public class TreatmentIndex
 {
+    [Searchable]
     public string Therapy { get; set; }
     public string Details { get; set; }
     public int? StartDay { get; set; }

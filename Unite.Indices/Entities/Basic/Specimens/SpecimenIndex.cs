@@ -2,9 +2,13 @@
 
 public class SpecimenIndex : SpecimenNavIndex
 {
+    [Searchable]
     public MaterialIndex Material { get; set; }
+    [Searchable]
     public LineIndex Line { get; set; }
+    [Searchable]
     public OrganoidIndex Organoid { get; set; }
+    [Searchable]
     public XenograftIndex Xenograft { get; set; }
 
 

@@ -1,5 +1,4 @@
 using Nest;
-using Unite.Indices.Search.Engine.Extensions;
 
 namespace Unite.Indices.Search.Engine.Filters;
 
@@ -13,26 +12,11 @@ public class CompoundFilter<T> : IFilter<T> where T : class
 {
     public string Name { get; }
     public bool Not { get; set; }
-    public bool IsEmpty
-    {
-        get
-        {
-            if (Filters == null)
-                return true;
-            
-            foreach (var filter in Filters)
-            {
-                if(filter.IsEmpty)
-                    return true;
-            }
-            
-            return false;
-        }
-    }
+    public bool IsEmpty => Filters == null || Filters.All(filter => filter.IsEmpty);
 
     private IList<IFilter<T>> Filters { get; set; }
     private LogicalOperator LogicalOperator { get; set; }
-    
+
     public CompoundFilter(string name, bool? not, IList<IFilter<T>> filters, LogicalOperator logicalOperator)
     {
         Name = name;
@@ -40,11 +24,18 @@ public class CompoundFilter<T> : IFilter<T> where T : class
         Filters = filters;
         LogicalOperator = logicalOperator;
     }
-    
+
     public QueryContainer CreateQuery()
     {
-        var logicalOperator = LogicalOperator == LogicalOperator.And ? Operator.And : Operator.Or;
-        
-        return !IsEmpty ? QueryExtensions.CreateCompoundQuery(Filters.Select(x => x.CreateQuery()), logicalOperator) : null;
+        if (IsEmpty)
+            return null;
+
+        var queries = Filters
+            .Where(filter => !filter.IsEmpty)
+            .Select(filter => filter.Not ? !filter.CreateQuery() : filter.CreateQuery()); // !q → bool.must_not [q]
+
+        return LogicalOperator == LogicalOperator.And
+            ? queries.Aggregate((left, right) => left && right)
+            : queries.Aggregate((left, right) => left || right);
     }
 }

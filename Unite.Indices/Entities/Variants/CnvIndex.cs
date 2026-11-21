@@ -1,5 +1,6 @@
 namespace Unite.Indices.Entities.Variants;
 
+[SearchableDocument("cnvs")]
 public class CnvIndex : Basic.Omics.Variants.CnvIndex
 {
     /// <summary>
@@ -15,5 +16,6 @@ public class CnvIndex : Basic.Omics.Variants.CnvIndex
 
     public Basic.Omics.Variants.VariantNavIndex[] Similars { get; set; }
 
+    [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenIndex[] Specimens { get; set; }
 }

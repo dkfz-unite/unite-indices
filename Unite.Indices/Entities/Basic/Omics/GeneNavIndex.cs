@@ -5,5 +5,7 @@ public class GeneNavIndex
     /// <summary>
     /// Gene id.
     /// </summary>
+    [EntityKey]
+    [Searchable]
     public int Id { get; set; }
 }

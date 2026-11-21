@@ -1,5 +1,6 @@
 namespace Unite.Indices.Entities.Proteins;
 
+[SearchableDocument("proteins")]
 public class ProteinIndex : Basic.Omics.ProteinIndex
 {
     /// <summary>
@@ -10,10 +11,13 @@ public class ProteinIndex : Basic.Omics.ProteinIndex
     /// <summary>
     /// Available data.
     /// </summary>
+    [Searchable]
     public DataIndex Data { get; set; }
 
 
+    [References(typeof(Genes.GeneIndex))]
     public GeneIndex Gene { get; set; }
     public TranscriptIndex Transcript { get; set; }
+    [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenIndex[] Specimens { get; set; }
 }

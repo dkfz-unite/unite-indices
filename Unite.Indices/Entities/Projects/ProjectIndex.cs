@@ -2,6 +2,7 @@ using Unite.Indices.Entities.Basic;
 
 namespace Unite.Indices.Entities.Projects;
 
+[SearchableDocument("projects")]
 public class ProjectIndex : Basic.Projects.ProjectIndex
 {
     /// <summary>
@@ -12,9 +13,11 @@ public class ProjectIndex : Basic.Projects.ProjectIndex
     /// <summary>
     /// Available data.
     /// </summary>
+    [Searchable]
     public DataIndex Data { get; set; }
 
 
+    [References(typeof(Donors.DonorIndex))]
     public DonorIndex[] Donors { get; set; }
     public DataUserNavIndex[] Users { get; set; }
     public bool IsPublic { get; set; }

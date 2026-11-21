@@ -2,6 +2,7 @@
 
 public class InterventionIndex
 {
+    [Searchable]
     public string Type { get; set; }
     public string Details { get; set; }
     public int? StartDay { get; set; }

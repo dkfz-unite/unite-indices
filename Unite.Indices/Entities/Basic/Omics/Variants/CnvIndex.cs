@@ -2,8 +2,11 @@
 
 public class CnvIndex : VariantBaseIndex
 {
+    [Searchable]
     public string Type { get; set; }
+    [Searchable]
     public bool? Loh { get; set; }
+    [Searchable]
     public bool? Del { get; set; }
     public double? C1Mean { get; set; }
     public double? C2Mean { get; set; }
