@@ -1,8 +1,14 @@
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Unite.Indices.Entities;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine.Queries;
+using Unite.Indices.Search.Engine2.Access;
 using Unite.Indices.Search.Engine2.Converters;
 using Unite.Indices.Search.Engine2.Criteria;
+using Unite.Indices.Search.Engine2.Criteria.Properties;
 using Unite.Indices.Search.Engine2.Fields;
 using Unite.Indices.Search.Engine2.References;
 
@@ -29,9 +35,20 @@ public record SearchStage(IDocumentStage Stage, bool IsExclusion, DocumentKey Jo
 /// Each document has include and exclude criteria (<see cref="DocumentCriteria{TDocument}"/>): entity keys of documents matching the
 /// include criteria are required, those of documents matching the exclude criteria are excluded from the target
 /// (e.g. images with SMs in TP53, but without SMs in IDH1).
+/// Searches of users are restricted to the data they have access to (<see cref="IAccessService"/>): the restriction runs as the
+/// first stage, or directly in the target query if it is on the target itself.
 /// </remarks>
 public class SearchService<T> where T : class
 {
+    /// <summary>
+    /// Page size of <see cref="Stats"/>.
+    /// </summary>
+    public const int StatsPageSize = 499;
+
+    private static readonly MethodInfo _createValueCriteria = typeof(SearchService<T>).GetMethod(nameof(CreateValueCriteria), BindingFlags.NonPublic | BindingFlags.Static);
+    private static readonly Func<T, object> _id = CreateGetter<object>("Id");
+    private static readonly Func<T, DataIndex> _data = CreateGetter<DataIndex>("Data");
+
     private readonly IServiceProvider _serviceProvider;
 
 
@@ -41,54 +58,82 @@ public class SearchService<T> where T : class
     }
 
 
+    /// <summary>
+    /// Searches documents matching the criteria in the scope, sorted by the document's sort orders (<see cref="SearchResults{TDocument}.Orders"/>).
+    /// </summary>
+    /// <param name="term">Free text searched in the target's searchable text fields, optional.</param>
     /// <exception cref="ArgumentException">Criteria of a document can't be applied to the target or are invalid.</exception>
-    public async Task<SearchResult<T>> Search(CriteriaContainer criteria, int from = 0, int size = 20)
+    public async Task<SearchResult<T>> Search(CriteriaContainer criteria, SearchScope scope, int from = 0, int size = 20, string term = null)
     {
-        var found = new Dictionary<Type, HashSet<string>>();
-        var excluded = new Dictionary<Type, HashSet<string>>();
+        var targetCriteria = await CreateTargetCriteria(criteria, scope);
 
-        // Stages narrow each other through the keys found and excluded so far; found keys of the same entity are intersected.
-        foreach (var stage in Plan(criteria))
+        if (targetCriteria == null)
+            return new SearchResult<T>();
+
+        var result = await Query(targetCriteria, from, size, term);
+
+        await Annotate(result.Rows, scope);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Document with the given id, null if it does not exist or is not in the scope.
+    /// </summary>
+    /// <exception cref="NotSupportedException">The document has no searchable "id".</exception>
+    public async Task<T> Get(string id, SearchScope scope)
+    {
+        var field = SearchFields<T>.Find("id") as SearchField<T>
+            ?? throw new NotSupportedException($"{typeof(T).Name} has no searchable id.");
+
+        var valueType = Nullable.GetUnderlyingType(field.ValueType) ?? field.ValueType;
+        var idCriteria = (PropertyCriteria)_createValueCriteria.MakeGenericMethod(valueType).Invoke(null, [field, id]);
+
+        if (idCriteria == null)
+            return null;
+
+        var criteria = new CriteriaContainer();
+        criteria.Set(new DocumentCriteria<T> { Include = new CriteriaGroup { Nodes = [idCriteria] } });
+
+        var targetCriteria = await CreateTargetCriteria(criteria, scope);
+
+        if (targetCriteria == null)
+            return null;
+
+        // Large properties (e.g. the specimens of a gene) are left out of single documents.
+        var result = await Query(targetCriteria, 0, 1, null, SearchResults<T>.GetExclusions);
+
+        await Annotate(result.Rows, scope);
+
+        return result.Rows.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Availability data of all documents matching the criteria in the scope, by document id.
+    /// The stages run once, the target is read in pages of <see cref="StatsPageSize"/>.
+    /// </summary>
+    /// <exception cref="NotSupportedException">The document has no "Id" and "Data" properties.</exception>
+    public async Task<IReadOnlyDictionary<object, DataIndex>> Stats(CriteriaContainer criteria, SearchScope scope, string term = null)
+    {
+        if (_id == null || _data == null)
+            throw new NotSupportedException($"{typeof(T).Name} has no Id and Data properties.");
+
+        var stats = new Dictionary<object, DataIndex>();
+        var targetCriteria = await CreateTargetCriteria(criteria, scope);
+
+        if (targetCriteria == null)
+            return stats;
+
+        for (var from = 0; ; from += StatsPageSize)
         {
-            var keys = await stage.Stage.FindKeys(criteria, stage.IsExclusion, stage.Collects, found, excluded, _serviceProvider);
+            var page = (await Query(targetCriteria, from, StatsPageSize, term)).Rows.ToList();
 
-            if (keys == null)
-                continue;
+            foreach (var document in page)
+                stats[_id(document)] = _data(document);
 
-            foreach (var entry in keys)
-            {
-                if (stage.IsExclusion ? !Exclude(excluded, entry.Key, entry.Value) : !Include(found, entry.Key, entry.Value))
-                    return new SearchResult<T>();
-            }
+            if (page.Count < StatsPageSize)
+                return stats;
         }
-
-        // Keys of main-tree entities the target does not refer to are mapped to the nearest one it refers to.
-        var targetEntities = DocumentKeys<T>.All.Keys.ToHashSet();
-
-        foreach (var entry in found.Where(entry => IsBridged(entry.Key, targetEntities)).ToList())
-        {
-            var bridge = GetBridge(SearchEntities.All[entry.Key], targetEntities);
-
-            if (!Include(found, bridge.Document.Type, await MapKeys(entry.Key, entry.Value, bridge.Document.Type)))
-                return new SearchResult<T>();
-        }
-
-        foreach (var entry in excluded.Where(entry => IsBridged(entry.Key, targetEntities)).ToList())
-        {
-            var bridge = GetBridge(SearchEntities.All[entry.Key], targetEntities);
-
-            Exclude(excluded, bridge.Document.Type, await MapKeys(entry.Key, entry.Value, bridge.Document.Type));
-        }
-
-        var targetCriteria = CreateTargetCriteria(criteria.Get<T>(), found, excluded);
-
-        var searchQuery = new SearchQuery<T>()
-            .AddPagination(from, size)
-            .AddFilter(DocumentCriteriaConverter.Convert<T>(targetCriteria));
-
-        var indexService = _serviceProvider.GetRequiredService<IIndexService<T>>();
-
-        return await indexService.Search(searchQuery);
     }
 
     /// <summary>
@@ -101,28 +146,18 @@ public class SearchService<T> where T : class
     /// <exception cref="ArgumentException">Criteria of a document can't be applied to the target.</exception>
     public IReadOnlyList<SearchStage> Plan(CriteriaContainer criteria)
     {
-        var targetEntities = DocumentKeys<T>.All.Keys.ToHashSet();
-        var targetRoot = SearchEntities.All.TryGetValue(typeof(T), out var targetEntity) ? targetEntity.Root : null;
-
         return criteria.DocumentTypes
             .Where(documentType => documentType != typeof(T))
             .SelectMany(documentType =>
             {
                 var documentCriteria = criteria.Get(documentType);
-                var stage = DocumentStages.Get(documentType);
-                var join = GetJoin(stage, targetEntities, targetRoot);
-                var identity = stage.Keys.FirstOrDefault(key => key.IsIdentity);
-                var collects = identity == null || identity == join ? new[] { join } : new[] { join, identity };
-                var bridge = targetEntities.Contains(join.Entity.Document.Type) ? null : GetBridge(join.Entity, targetEntities);
-                var rank = SearchTrees.GetRank(stage);
-
                 var stages = new List<SearchStage>();
 
                 if (documentCriteria.Include != null)
-                    stages.Add(new SearchStage(stage, false, join, collects, bridge, rank));
+                    stages.Add(CreateStage(documentType, false));
 
                 if (documentCriteria.Exclude != null)
-                    stages.Add(new SearchStage(stage, true, join, collects, bridge, rank));
+                    stages.Add(CreateStage(documentType, true));
 
                 return stages;
             })
@@ -132,6 +167,173 @@ public class SearchService<T> where T : class
             .ToList();
     }
 
+
+    /// <summary>
+    /// Search stage of the document: its join with the target, the keys it collects and its rank.
+    /// </summary>
+    private static SearchStage CreateStage(Type documentType, bool exclusion)
+    {
+        var targetEntities = TargetEntities;
+        var stage = DocumentStages.Get(documentType);
+        var join = GetJoin(stage, targetEntities, TargetRoot);
+        var identity = stage.Keys.FirstOrDefault(key => key.IsIdentity);
+        var collects = identity == null || identity == join ? new[] { join } : new[] { join, identity };
+        var bridge = targetEntities.Contains(join.Entity.Document.Type) ? null : GetBridge(join.Entity, targetEntities);
+
+        return new SearchStage(stage, exclusion, join, collects, bridge, SearchTrees.GetRank(stage));
+    }
+
+    /// <summary>
+    /// Criteria of the target combining its own criteria, the access restriction and the keys found and excluded by the stages;
+    /// null if no target document can match.
+    /// </summary>
+    private async Task<CriteriaGroup> CreateTargetCriteria(CriteriaContainer criteria, SearchScope scope)
+    {
+        var plan = Plan(criteria);
+        var restriction = await GetRestriction(scope, plan.Count > 0);
+
+        if (restriction?.IsNothing == true)
+            return null;
+
+        var found = new Dictionary<Type, HashSet<string>>();
+        var excluded = new Dictionary<Type, HashSet<string>>();
+        var bridged = new HashSet<Type>();
+        CriteriaGroup targetRestriction = null;
+
+        // The access restriction runs first and narrows all stages; a restriction on the target itself goes into its query.
+        if (restriction != null && restriction.DocumentType == typeof(T))
+        {
+            targetRestriction = restriction.Criteria;
+        }
+        else if (restriction != null)
+        {
+            var stage = CreateStage(restriction.DocumentType, false);
+            var keys = await stage.Stage.FindKeys(restriction.Criteria, stage.Collects, found, excluded, _serviceProvider);
+
+            if (stage.Bridge != null)
+                bridged.Add(stage.Join.Entity.Document.Type);
+
+            foreach (var entry in keys)
+            {
+                if (!Include(found, entry.Key, entry.Value))
+                    return null;
+            }
+        }
+
+        // Stages narrow each other through the keys found and excluded so far; found keys of the same entity are intersected.
+        foreach (var stage in plan)
+        {
+            var keys = await stage.Stage.FindKeys(criteria, stage.IsExclusion, stage.Collects, found, excluded, _serviceProvider);
+
+            if (keys == null)
+                continue;
+
+            if (stage.Bridge != null)
+                bridged.Add(stage.Join.Entity.Document.Type);
+
+            foreach (var entry in keys)
+            {
+                if (stage.IsExclusion ? !Exclude(excluded, entry.Key, entry.Value) : !Include(found, entry.Key, entry.Value))
+                    return null;
+            }
+        }
+
+        // Join keys of stages sharing no entity with the target are mapped to the nearest main-tree entity it refers to.
+        // Identity keys collected besides a join key only narrow later stages and are not mapped.
+        var targetEntities = TargetEntities;
+
+        foreach (var entry in found.Where(entry => bridged.Contains(entry.Key)).ToList())
+        {
+            var bridge = GetBridge(SearchEntities.All[entry.Key], targetEntities);
+
+            if (!Include(found, bridge.Document.Type, await MapKeys(entry.Key, entry.Value, bridge.Document.Type)))
+                return null;
+        }
+
+        foreach (var entry in excluded.Where(entry => bridged.Contains(entry.Key)).ToList())
+        {
+            var bridge = GetBridge(SearchEntities.All[entry.Key], targetEntities);
+
+            Exclude(excluded, bridge.Document.Type, await MapKeys(entry.Key, entry.Value, bridge.Document.Type));
+        }
+
+        return CreateTargetCriteria(criteria.Get<T>(), targetRestriction, found, excluded);
+    }
+
+    /// <exception cref="ArgumentException">A free text is given, but the target has no searchable text fields.</exception>
+    private async Task<SearchResult<T>> Query(CriteriaGroup targetCriteria, int from, int size, string term,
+        IEnumerable<Expression<Func<T, object>>> exclusions = null)
+    {
+        var searchQuery = new SearchQuery<T>()
+            .AddPagination(from, size)
+            .AddFilter(DocumentCriteriaConverter.Convert<T>(targetCriteria));
+
+        if (!string.IsNullOrWhiteSpace(term))
+        {
+            if (!SearchResults<T>.TextFields.Any())
+                throw new ArgumentException($"'{SearchDocuments.Get(typeof(T)).Name}' has no searchable text fields for a free-text search.");
+
+            searchQuery.AddFilter(new FreeTextFilter<T>(term));
+        }
+
+        foreach (var (property, descending) in SearchResults<T>.Orders)
+            searchQuery.AddOrdering(property, !descending);
+
+        foreach (var exclusion in exclusions ?? [])
+            searchQuery.AddExclusion(exclusion);
+
+        return await _serviceProvider.GetRequiredService<IIndexService<T>>().Search(searchQuery);
+    }
+
+    /// <summary>
+    /// Access restriction of the search, null if not restricted.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The scope is restricted, but no access service is registered.</exception>
+    private async Task<AccessRestriction> GetRestriction(SearchScope scope, bool hasDocumentCriteria)
+    {
+        ArgumentNullException.ThrowIfNull(scope);
+
+        if (scope.IsAll)
+            return null;
+
+        return await GetAccessService().GetRestriction(scope, typeof(T), hasDocumentCriteria);
+    }
+
+    private async Task Annotate(IEnumerable<T> documents, SearchScope scope)
+    {
+        var accessService = _serviceProvider.GetService<IAccessService>();
+
+        if (accessService != null)
+            await accessService.Annotate(documents, scope);
+    }
+
+    private IAccessService GetAccessService()
+    {
+        // Searches of users must never run unrestricted because the access service is missing.
+        return _serviceProvider.GetService<IAccessService>()
+            ?? throw new InvalidOperationException($"No {nameof(IAccessService)} is registered: searches of users can't be restricted.");
+    }
+
+    private static HashSet<Type> TargetEntities => DocumentKeys<T>.All.Keys.ToHashSet();
+
+    private static SearchDocument TargetRoot => SearchEntities.All.TryGetValue(typeof(T), out var entity) ? entity.Root : null;
+
+    /// <summary>
+    /// Criteria: the field has the value, null if the value can't be read as the field type (e.g. "abc" for an int id).
+    /// </summary>
+    private static PropertyCriteria CreateValueCriteria<TValue>(SearchField field, string value)
+    {
+        try
+        {
+            var typed = (TValue)TypeDescriptor.GetConverter(typeof(TValue)).ConvertFromInvariantString(value);
+
+            return new ValueCriteria<TValue> { Property = field, Values = [typed] };
+        }
+        catch (Exception exception) when (exception is FormatException or NotSupportedException or ArgumentException || exception.InnerException is FormatException or OverflowException)
+        {
+            return null;
+        }
+    }
 
     /// <summary>
     /// Entity joining the document with the target: the document itself if the target refers to it,
@@ -158,11 +360,6 @@ public class SearchService<T> where T : class
                 .OrderByDescending(key => key.Entity.Level)
                 .FirstOrDefault()
             ?? throw new ArgumentException($"Criteria of '{stage.Document.Name}' can't be applied to '{SearchDocuments.Get(typeof(T)).Name}': they share no searchable entity.");
-    }
-
-    private static bool IsBridged(Type entityType, HashSet<Type> targetEntities)
-    {
-        return !targetEntities.Contains(entityType) && SearchEntities.All[entityType].Root == SearchTrees.Main;
     }
 
     /// <summary>
@@ -251,9 +448,27 @@ public class SearchService<T> where T : class
     /// <summary>
     /// Combines the target's own criteria with the keys found and excluded for its entities (AND). The input criteria are not modified.
     /// </summary>
-    private static CriteriaGroup CreateTargetCriteria(DocumentCriteria<T> ownCriteria, Dictionary<Type, HashSet<string>> found, Dictionary<Type, HashSet<string>> excluded)
+    /// <summary>
+    /// Getter of a property of the document, null if the document has no such property.
+    /// </summary>
+    private static Func<T, TValue> CreateGetter<TValue>(string name)
+    {
+        var property = typeof(T).GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
+
+        if (property == null || !typeof(TValue).IsAssignableFrom(property.PropertyType) && typeof(TValue) != typeof(object))
+            return null;
+
+        var document = Expression.Parameter(typeof(T), "document");
+
+        return Expression.Lambda<Func<T, TValue>>(Expression.Convert(Expression.Property(document, property), typeof(TValue)), document).Compile();
+    }
+
+    private static CriteriaGroup CreateTargetCriteria(DocumentCriteria<T> ownCriteria, CriteriaGroup restriction, Dictionary<Type, HashSet<string>> found, Dictionary<Type, HashSet<string>> excluded)
     {
         var nodes = new List<CriteriaNode>();
+
+        if (restriction != null)
+            nodes.Add(restriction);
 
         if (ownCriteria?.Include != null)
             nodes.Add(ownCriteria.Include);

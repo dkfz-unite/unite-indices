@@ -3,6 +3,7 @@ using Unite.Indices.Entities.Basic;
 namespace Unite.Indices.Entities.Projects;
 
 [SearchableDocument("projects")]
+[SearchOrder("stats.donors.number", Descending = true)]
 public class ProjectIndex : Basic.Projects.ProjectIndex
 {
     /// <summary>

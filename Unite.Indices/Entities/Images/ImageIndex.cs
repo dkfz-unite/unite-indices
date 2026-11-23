@@ -1,6 +1,7 @@
 ﻿namespace Unite.Indices.Entities.Images;
 
 [SearchableDocument("images")]
+[SearchOrder("stats.genes", Descending = true)]
 public class ImageIndex : Basic.Images.ImageIndex
 {
     /// <summary>

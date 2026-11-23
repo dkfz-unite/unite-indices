@@ -29,6 +29,12 @@ public interface IDocumentStage
         IReadOnlyDictionary<Type, HashSet<string>> found, IReadOnlyDictionary<Type, HashSet<string>> excluded, IServiceProvider serviceProvider);
 
     /// <summary>
+    /// Finds the given entity keys in documents matching the criteria tree and the keys found so far, with one request per page.
+    /// </summary>
+    Task<IReadOnlyDictionary<Type, HashSet<string>>> FindKeys(CriteriaGroup criteria, IEnumerable<DocumentKey> keys,
+        IReadOnlyDictionary<Type, HashSet<string>> found, IReadOnlyDictionary<Type, HashSet<string>> excluded, IServiceProvider serviceProvider);
+
+    /// <summary>
     /// Maps keys of one entity to keys of another entity through documents of this type (e.g. specimen keys to their donor keys).
     /// </summary>
     Task<HashSet<string>> MapKeys(DocumentKey from, IEnumerable<string> keys, DocumentKey to, IServiceProvider serviceProvider);
@@ -60,6 +66,12 @@ internal sealed class DocumentStage<TDocument> : IDocumentStage where TDocument 
         if (ownCriteria == null || DocumentCriteriaConverter.Convert<TDocument>(ownCriteria).IsEmpty)
             return null;
 
+        return await FindKeys(ownCriteria, keys, found, excluded, serviceProvider);
+    }
+
+    public async Task<IReadOnlyDictionary<Type, HashSet<string>>> FindKeys(CriteriaGroup ownCriteria, IEnumerable<DocumentKey> keys,
+        IReadOnlyDictionary<Type, HashSet<string>> found, IReadOnlyDictionary<Type, HashSet<string>> excluded, IServiceProvider serviceProvider)
+    {
         var nodes = new List<CriteriaNode> { ownCriteria };
 
         // Keys found and excluded in earlier stages narrow this stage (e.g. gene expressions only of the genes and specimens found so far).
@@ -92,7 +104,7 @@ internal sealed class DocumentStage<TDocument> : IDocumentStage where TDocument 
 
 
     /// <summary>
-    /// Aggregates the keys of all documents matching all nodes, with one request.
+    /// Collects the keys of all documents matching all nodes: one request per page, all keys at once.
     /// </summary>
     private static async Task<IReadOnlyDictionary<Type, HashSet<string>>> Aggregate(List<CriteriaNode> nodes, IEnumerable<DocumentKey<TDocument>> keys,
         IServiceProvider serviceProvider)
@@ -100,19 +112,14 @@ internal sealed class DocumentStage<TDocument> : IDocumentStage where TDocument 
         var criteria = new CriteriaGroup { Operator = LogicalOperator.And, Nodes = nodes };
 
         var query = new SearchQuery<TDocument>()
-            .AddPagination(0, 0)
             .AddFilter(DocumentCriteriaConverter.Convert<TDocument>(criteria));
 
-        // Aggregations are named after the entity ("donors_keys"); "keys" alone is reserved by NEST.
-        var aggregations = keys.ToDictionary(key => key.Entity.Document.Type, key => (Key: key, Name: $"{key.Entity.Document.Name}_keys"));
+        // Named after the entity ("donors_keys").
+        var properties = keys.ToDictionary(key => key.Entity.Document.Type, key => (Name: $"{key.Entity.Document.Name}_keys", key.KeyProperty));
 
-        foreach (var aggregation in aggregations.Values)
-            aggregation.Key.AddAggregation(query, aggregation.Name);
+        var result = await serviceProvider.GetRequiredService<IIndexService<TDocument>>()
+            .CollectKeys(query, properties.Values.ToDictionary(entry => entry.Name, entry => entry.KeyProperty));
 
-        var result = await serviceProvider.GetRequiredService<IIndexService<TDocument>>().Search(query);
-
-        return aggregations.ToDictionary(
-            entry => entry.Key,
-            entry => result.Aggregations.TryGetValue(entry.Value.Name, out var buckets) && buckets != null ? buckets.Keys.ToHashSet() : []);
+        return properties.ToDictionary(entry => entry.Key, entry => result[entry.Value.Name]);
     }
 }

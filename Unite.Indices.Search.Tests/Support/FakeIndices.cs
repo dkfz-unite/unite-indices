@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Unite.Indices.Search.Engine;
 using Unite.Indices.Search.Engine2;
+using Unite.Indices.Search.Engine2.Access;
 using Unite.Indices.Search.Engine2.Criteria;
 using CnvIndex = Unite.Indices.Entities.Variants.CnvIndex;
 using CnvProfileIndex = Unite.Indices.Entities.CnvProfiles.CnvProfileIndex;
@@ -41,9 +42,14 @@ public class FakeIndices
     public IServiceProvider Services { get; }
 
 
-    public FakeIndices()
+    public FakeIndices(bool withAccessService = true)
     {
-        Services = new ServiceCollection()
+        var services = new ServiceCollection();
+
+        if (withAccessService)
+            services.AddSingleton<IAccessService, ProjectsAccessService>();
+
+        Services = services
             .AddSingleton<IIndexService<ProjectIndex>>(Projects)
             .AddSingleton<IIndexService<DonorIndex>>(Donors)
             .AddSingleton<IIndexService<ImageIndex>>(Images)
@@ -61,6 +67,18 @@ public class FakeIndices
 
 
     public SearchService<T> SearchService<T>() where T : class => new(Services);
+
+    /// <summary>
+    /// Requests sent to the fake index of the document type.
+    /// </summary>
+    public List<string> RequestsOf(Type documentType)
+    {
+        var fake = GetType().GetProperties()
+            .Select(property => property.GetValue(this))
+            .Single(value => value?.GetType().IsGenericType == true && value.GetType().GetGenericArguments()[0] == documentType);
+
+        return (List<string>)fake.GetType().GetProperty("Requests").GetValue(fake);
+    }
 
     public static CriteriaContainer Criteria(string json) => JsonSerializer.Deserialize<CriteriaContainer>(json, JsonOptions);
 }

@@ -1,6 +1,9 @@
 namespace Unite.Indices.Entities.Variants;
 
 [SearchableDocument("cnvs")]
+[SearchOrder("stats.donors", Descending = true, Priority = 1)]
+[SearchOrder("chromosomeI", Priority = 2)]
+[SearchOrder("start", Priority = 3)]
 public class CnvIndex : Basic.Omics.Variants.CnvIndex
 {
     /// <summary>
@@ -16,6 +19,7 @@ public class CnvIndex : Basic.Omics.Variants.CnvIndex
 
     public Basic.Omics.Variants.VariantNavIndex[] Similars { get; set; }
 
+    [ExcludedFromGet]
     [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenIndex[] Specimens { get; set; }
 }

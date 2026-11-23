@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.Json;
 using Unite.Indices.Entities;
 using Unite.Indices.Search.Engine.Queries;
+using Unite.Indices.Search.Engine2.Criteria;
 using Unite.Indices.Search.Engine2.Criteria.Properties;
 using Unite.Indices.Search.Engine2.Fields;
 
@@ -39,14 +40,15 @@ public abstract class DocumentKey<TDocument>(SearchEntity entity, bool isIdentit
     : DocumentKey(entity, isIdentity, isCollection, name) where TDocument : class
 {
     /// <summary>
-    /// Criteria: the key is one of the given keys.
+    /// Criteria: the key is one of the given keys. More keys than <see cref="SearchLimits.MaxTermsPerQuery"/> are split into
+    /// several criteria combined with OR, each within the limit of Elasticsearch terms queries.
     /// </summary>
-    public abstract PropertyCriteria CreateCriteria(IEnumerable<string> keys);
+    public abstract CriteriaNode CreateCriteria(IEnumerable<string> keys);
 
     /// <summary>
-    /// Adds an aggregation of the keys of all documents matching the query.
+    /// The key property, e.g. "document => document.Specimens.First().Id".
     /// </summary>
-    public abstract void AddAggregation(SearchQuery<TDocument> query, string name);
+    public abstract LambdaExpression KeyProperty { get; }
 }
 
 public sealed class DocumentKey<TDocument, TKey>(SearchEntity entity, bool isIdentity, bool isCollection, string name, Expression<Func<TDocument, TKey>> key)
@@ -59,20 +61,12 @@ public sealed class DocumentKey<TDocument, TKey>(SearchEntity entity, bool isIde
     public Expression<Func<TDocument, TKey>> Key { get; } = key;
 
 
-    public override PropertyCriteria CreateCriteria(IEnumerable<string> keys)
+    public override CriteriaNode CreateCriteria(IEnumerable<string> keys)
     {
-        return new ValueCriteria<TKey>
-        {
-            Property = _field,
-            Values = keys.Select(value => (TKey)_keyConverter.ConvertFromInvariantString(value)).ToList()
-        };
+        return SearchLimits.CreateValueCriteria(_field, keys.Select(value => (TKey)_keyConverter.ConvertFromInvariantString(value)));
     }
 
-    public override void AddAggregation(SearchQuery<TDocument> query, string name)
-    {
-        // WARN: the terms aggregation returns at most 1000 keys (see SearchQuery.AddAggregation).
-        query.AddAggregation(name, Key);
-    }
+    public override LambdaExpression KeyProperty => Key;
 }
 
 /// <summary>
@@ -152,5 +146,36 @@ public static class DocumentKeys<TDocument> where TDocument : class
     private static string GetName(PropertyInfo property)
     {
         return JsonNamingPolicy.CamelCase.ConvertName(property.Name);
+    }
+}
+
+/// <summary>
+/// Limits of Elasticsearch queries built by the search.
+/// </summary>
+public static class SearchLimits
+{
+    /// <summary>
+    /// Maximum number of values of one terms query (Elasticsearch index setting "index.max_terms_count", default 65,536).
+    /// </summary>
+    public static int MaxTermsPerQuery { get; set; } = 65_536;
+
+    /// <summary>
+    /// Criteria: the field has one of the values. More values than <see cref="MaxTermsPerQuery"/> are split into
+    /// several criteria combined with OR; negating the result still negates all values.
+    /// </summary>
+    public static CriteriaNode CreateValueCriteria<TValue>(SearchField field, IEnumerable<TValue> values)
+    {
+        var list = values.ToList();
+
+        if (list.Count <= MaxTermsPerQuery)
+            return new ValueCriteria<TValue> { Property = field, Values = list };
+
+        return new CriteriaGroup
+        {
+            Operator = LogicalOperator.Or,
+            Nodes = list.Chunk(MaxTermsPerQuery)
+                .Select(chunk => (CriteriaNode)new ValueCriteria<TValue> { Property = field, Values = [.. chunk] })
+                .ToList()
+        };
     }
 }

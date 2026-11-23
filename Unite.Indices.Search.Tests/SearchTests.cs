@@ -1,3 +1,4 @@
+using Unite.Indices.Search.Engine2.Access;
 using Unite.Indices.Search.Tests.Support;
 using GeneIndex = Unite.Indices.Entities.Genes.GeneIndex;
 using ImageIndex = Unite.Indices.Entities.Images.ImageIndex;
@@ -22,7 +23,7 @@ public class SearchTests
     {
         var indices = new FakeIndices();
 
-        await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria("{}"));
+        await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria("{}"), SearchScope.All);
 
         Assert.Single(indices.Images.Requests);
         Assert.Empty(indices.Specimens.Requests);
@@ -33,7 +34,7 @@ public class SearchTests
     {
         var indices = new FakeIndices();
 
-        await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""{ "images": { "include": {{Text("type", "MR")}} } }"""));
+        await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""{ "images": { "include": {{Text("type", "MR")}} } }"""), SearchScope.All);
 
         Query.Requires(indices.Images.Requests.Single(), "type.keyword", "MR");
     }
@@ -48,7 +49,7 @@ public class SearchTests
         await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""
             { "specimens": { "include": {{Text("type", "Material")}} },
               "sms": { "include": {{Text("type", "SNV")}} } }
-            """));
+            """), SearchScope.All);
 
         // The SM stage is narrowed by the specimens found before, the target requires the intersection.
         Query.Requires(indices.Sms.Requests.Single(), "specimens.id", "1", "2", "3");
@@ -61,7 +62,7 @@ public class SearchTests
         var indices = new FakeIndices();
         indices.Sms.Returns("specimens_keys");
 
-        var result = await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "include": {{Text("type", "SNV")}} } }"""));
+        var result = await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "include": {{Text("type", "SNV")}} } }"""), SearchScope.All);
 
         Assert.Equal(0, result.Total);
         Assert.Empty(indices.Images.Requests);
@@ -77,7 +78,7 @@ public class SearchTests
         var result = await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""
             { "specimens": { "include": {{Text("type", "Material")}} },
               "sms": { "include": {{Text("type", "SNV")}} } }
-            """));
+            """), SearchScope.All);
 
         Assert.Equal(0, result.Total);
         Assert.Empty(indices.Images.Requests);
@@ -93,7 +94,7 @@ public class SearchTests
         await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""
             { "sms": { "exclude": {{Text("type", "SNV")}} },
               "cnvs": { "exclude": {{Text("type", "Loss")}} } }
-            """));
+            """), SearchScope.All);
 
         // CNVs run before SMs (same rank, by name): the SM stage skips the specimens the CNVs excluded.
         Query.Excludes(indices.Sms.Requests.Single(), "specimens.id", "3", "5");
@@ -109,7 +110,7 @@ public class SearchTests
         var indices = new FakeIndices();
         indices.Sms.Returns("specimens_keys");
 
-        await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "exclude": {{Text("type", "SNV")}} } }"""));
+        await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "exclude": {{Text("type", "SNV")}} } }"""), SearchScope.All);
 
         Query.HasNoTerms(indices.Images.Requests.Single(), "specimens.id");
     }
@@ -123,7 +124,7 @@ public class SearchTests
         await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""
             { "sms": { "include": {{Text("affectedFeatures.gene.symbol", "TP53")}},
                        "exclude": {{Text("affectedFeatures.gene.symbol", "IDH1")}} } }
-            """));
+            """), SearchScope.All);
 
         Query.Requires(indices.Sms.Requests[0], "affectedFeatures.gene.symbol.keyword", "TP53");
         Query.Requires(indices.Sms.Requests[1], "affectedFeatures.gene.symbol.keyword", "IDH1");
@@ -142,7 +143,7 @@ public class SearchTests
 
         await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria("""
             { "sms": { "include": { "negate": true, "nodes": [ { "kind": "value-string", "property": "type", "values": ["SNV"] } ] } } }
-            """));
+            """), SearchScope.All);
 
         Query.Excludes(indices.Sms.Requests.Single(), "type.keyword", "SNV");
         Query.Requires(indices.Images.Requests.Single(), "specimens.id", "2");
@@ -155,7 +156,7 @@ public class SearchTests
 
         await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""
             { "images": { "include": {{Text("type", "MR")}}, "exclude": {{Text("referenceId", "IMG-1")}} } }
-            """));
+            """), SearchScope.All);
 
         var images = indices.Images.Requests.Single();
         Query.Requires(images, "type.keyword", "MR");
@@ -173,7 +174,7 @@ public class SearchTests
         await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""
             { "gene_expressions": { "include": { "nodes": [ { "kind": "range-double", "property": "expression", "from": 10 } ] } },
               "genes": { "include": {{Text("symbol", "EGFR")}} } }
-            """));
+            """), SearchScope.All);
 
         var expressions = indices.GeneExpressions.Requests.Single();
         Query.Requires(expressions, "gene.id", "100");
@@ -192,7 +193,7 @@ public class SearchTests
         await indices.SearchService<ImageIndex>().Search(FakeIndices.Criteria($$"""
             { "genes": { "include": {{Text("symbol", "EGFR")}} },
               "sms": { "include": {{Text("type", "SNV")}} } }
-            """));
+            """), SearchScope.All);
 
         Query.Requires(indices.Sms.Requests.Single(), "affectedFeatures.gene.id", "100");
     }
@@ -204,7 +205,7 @@ public class SearchTests
         var indices = new FakeIndices();
         indices.Genes.Returns("genes_keys", "100", "101");
 
-        await indices.SearchService<SmIndex>().Search(FakeIndices.Criteria($$"""{ "genes": { "include": {{Text("symbol", "EGFR")}} } }"""));
+        await indices.SearchService<SmIndex>().Search(FakeIndices.Criteria($$"""{ "genes": { "include": {{Text("symbol", "EGFR")}} } }"""), SearchScope.All);
 
         Query.Requires(indices.Sms.Requests.Single(), "affectedFeatures.gene.id", "100", "101");
     }
@@ -216,9 +217,9 @@ public class SearchTests
         var indices = new FakeIndices();
         indices.Sms.Returns("genes_keys", "100");
 
-        await indices.SearchService<GeneIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "include": {{Text("type", "SNV")}} } }"""));
+        await indices.SearchService<GeneIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "include": {{Text("type", "SNV")}} } }"""), SearchScope.All);
 
-        Assert.Contains("affectedFeatures.gene.id", indices.Sms.Requests.Single());
+        Assert.EndsWith("AffectedFeatures.First().Gene.Id", indices.Sms.Collected.Single()["genes_keys"]);
         Query.Requires(indices.Genes.Requests.Single(), "id", "100");
     }
 
@@ -230,7 +231,7 @@ public class SearchTests
         indices.Sms.Returns("specimens_keys", "2", "3");
         indices.Specimens.Returns("donors_keys", "10");
 
-        await indices.SearchService<ProjectIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "include": {{Text("type", "SNV")}} } }"""));
+        await indices.SearchService<ProjectIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "include": {{Text("type", "SNV")}} } }"""), SearchScope.All);
 
         Query.Requires(indices.Specimens.Requests.Single(), "id", "2", "3");
         Query.Requires(indices.Projects.Requests.Single(), "donors.id", "10");
@@ -243,7 +244,7 @@ public class SearchTests
         indices.Projects.Returns("donors_keys", "10", "11");
         indices.Specimens.Returns("specimens_keys", "1", "2", "5");
 
-        await indices.SearchService<GeneIndex>().Search(FakeIndices.Criteria($$"""{ "projects": { "include": {{Text("name", "GBM")}} } }"""));
+        await indices.SearchService<GeneIndex>().Search(FakeIndices.Criteria($$"""{ "projects": { "include": {{Text("name", "GBM")}} } }"""), SearchScope.All);
 
         Query.Requires(indices.Specimens.Requests.Single(), "donor.id", "10", "11");
         Query.Requires(indices.Genes.Requests.Single(), "specimens.id", "1", "2", "5");
@@ -256,7 +257,7 @@ public class SearchTests
         indices.Sms.Returns("specimens_keys", "2");
         indices.Specimens.Returns("donors_keys", "10");
 
-        await indices.SearchService<ProjectIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "exclude": {{Text("type", "SNV")}} } }"""));
+        await indices.SearchService<ProjectIndex>().Search(FakeIndices.Criteria($$"""{ "sms": { "exclude": {{Text("type", "SNV")}} } }"""), SearchScope.All);
 
         Query.Excludes(indices.Projects.Requests.Single(), "donors.id", "10");
     }

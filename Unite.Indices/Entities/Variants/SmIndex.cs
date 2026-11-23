@@ -1,6 +1,9 @@
 namespace Unite.Indices.Entities.Variants;
 
 [SearchableDocument("sms")]
+[SearchOrder("stats.donors", Descending = true, Priority = 1)]
+[SearchOrder("chromosomeI", Priority = 2)]
+[SearchOrder("start", Priority = 3)]
 public class SmIndex : Basic.Omics.Variants.SmIndex
 {
     /// <summary>
@@ -14,6 +17,7 @@ public class SmIndex : Basic.Omics.Variants.SmIndex
     public DataIndex Data { get; set; }
 
 
+    [ExcludedFromGet]
     [References(typeof(Specimens.SpecimenIndex))]
     public SpecimenIndex[] Specimens { get; set; }
 }

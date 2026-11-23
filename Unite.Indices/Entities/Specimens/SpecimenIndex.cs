@@ -1,6 +1,7 @@
 ﻿namespace Unite.Indices.Entities.Specimens;
 
 [SearchableDocument("specimens")]
+[SearchOrder("stats.genes", Descending = true)]
 public class SpecimenIndex : Basic.Specimens.SpecimenIndex
 {
     /// <summary>

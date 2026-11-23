@@ -127,6 +127,9 @@ public class SearchQuery<T> where T : class
             ));
         }
 
+        if (_exclusions.Count > 0)
+            _request.Exclude([.. _exclusions]);
+
         return _request;
     }
 }

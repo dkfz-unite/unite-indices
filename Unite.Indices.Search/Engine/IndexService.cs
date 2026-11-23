@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Linq.Expressions;
+using System.Text;
 using Nest;
 using Unite.Indices.Search.Engine.Queries;
 using Unite.Indices.Context.Configuration.Options;
@@ -13,6 +15,19 @@ public abstract class IndexService<T> : IIndexService<T>
 
     protected abstract string Collection { get; }
 
+    /// <summary>
+    /// Buckets per composite aggregation page.
+    /// </summary>
+    protected virtual int KeysPageSize => 1000;
+
+
+    /// <summary>
+    /// Uses the given client (e.g. with an in-memory connection in tests).
+    /// </summary>
+    protected IndexService(IElasticClient client)
+    {
+        _client = client;
+    }
 
     public IndexService(IElasticOptions options)
     {
@@ -88,6 +103,54 @@ public abstract class IndexService<T> : IIndexService<T>
         {
             return new SearchResult<T>();
         }
+    }
+
+    public virtual async Task<IReadOnlyDictionary<string, HashSet<string>>> CollectKeys(SearchQuery<T> query, IReadOnlyDictionary<string, LambdaExpression> properties)
+    {
+        var request = query.GetRequest();
+        request.From = 0;
+        request.Size = 0;
+
+        var keys = properties.Keys.ToDictionary(name => name, _ => new HashSet<string>());
+        var pending = properties.Keys.ToDictionary(name => name, _ => (CompositeKey)null);
+
+        while (pending.Count > 0)
+        {
+            var aggregations = new AggregationDictionary();
+
+            foreach (var (name, after) in pending)
+            {
+                aggregations.Add(name, new CompositeAggregation(name)
+                {
+                    Sources = [new TermsCompositeAggregationSource("key") { Field = new Field(properties[name]) }],
+                    Size = KeysPageSize,
+                    After = after
+                });
+            }
+
+            request.Aggregations = aggregations;
+
+            var response = await _client.SearchAsync<T>(request);
+
+            // A failed request must not look like "no keys": that would drop required keys silently or skip exclusions.
+            if (!response.IsValid)
+                throw new InvalidOperationException($"Collecting keys from '{Collection}' failed: {response.DebugInformation}");
+
+            foreach (var name in pending.Keys.ToList())
+            {
+                var aggregate = response.Aggregations.Composite(name);
+
+                foreach (var bucket in aggregate.Buckets)
+                    keys[name].Add(Convert.ToString(bucket.Key["key"], CultureInfo.InvariantCulture));
+
+                if (aggregate.Buckets.Count < KeysPageSize || aggregate.AfterKey == null)
+                    pending.Remove(name);
+                else
+                    pending[name] = aggregate.AfterKey;
+            }
+        }
+
+        return keys;
     }
 
     public virtual async Task<IEnumerable<IHit<T>>> Search(string term)
