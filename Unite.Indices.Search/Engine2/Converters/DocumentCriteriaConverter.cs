@@ -12,12 +12,17 @@ namespace Unite.Indices.Search.Engine2.Converters;
 public static class DocumentCriteriaConverter
 {
     /// <exception cref="ArgumentException">A node has no kind, a criteria has no field, an unknown field or values not matching the field type.</exception>
-    public static IFilter<TDocument> Convert<TDocument>(DocumentCriteria<TDocument> criteria) where TDocument : class
+    /// <summary>
+    /// Converts a criteria tree of documents of type <typeparamref name="TDocument"/> (e.g. the include tree of their criteria).
+    /// </summary>
+    public static IFilter<TDocument> Convert<TDocument>(CriteriaGroup criteria) where TDocument : class
     {
-        // Criteria read from JSON are resolved already, criteria built in code are resolved here.
-        criteria?.Resolve();
+        criteria ??= new CriteriaGroup();
 
-        return ConvertGroup<TDocument>(criteria ?? new DocumentCriteria<TDocument>());
+        // Trees read from JSON are resolved already, trees built in code are resolved here.
+        SearchFields<TDocument>.Resolve(criteria);
+
+        return ConvertGroup<TDocument>(criteria);
     }
 
     private static IFilter<TDocument> ConvertNode<TDocument>(CriteriaNode node) where TDocument : class

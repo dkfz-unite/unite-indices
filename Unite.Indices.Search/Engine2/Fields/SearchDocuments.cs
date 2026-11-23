@@ -51,7 +51,7 @@ public static class SearchDocuments
 }
 
 /// <summary>
-/// Searchable document type with its name in criteria and the type of its criteria.
+/// Searchable document type with its name in criteria and the type of its criteria (<see cref="DocumentCriteria{TDocument}"/>).
 /// </summary>
 public sealed class SearchDocument(string name, Type type)
 {

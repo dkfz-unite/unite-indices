@@ -12,12 +12,13 @@ namespace Unite.Indices.Search.Engine2;
 /// Stage of a search: a document with criteria, the entity joining it with the target and the entity keys it collects.
 /// </summary>
 /// <param name="Stage">Document stage.</param>
+/// <param name="IsExclusion">The stage searches the document's exclude criteria: its keys are excluded from the target.</param>
 /// <param name="Join">Key of the entity joining the document with the target.</param>
 /// <param name="Collects">Keys collected by the stage with one request: the join key and the document's own identity key, if it is an entity.</param>
 /// <param name="Bridge">Target entity the join keys are mapped to along the main tree, if the target does not refer to the join entity
 /// (e.g. specimen keys of SMs mapped to donor keys for a project search); null otherwise.</param>
 /// <param name="Rank">Execution rank derived from the entity trees (see <see cref="SearchTrees.GetRank"/>).</param>
-public record SearchStage(IDocumentStage Stage, DocumentKey Join, IReadOnlyList<DocumentKey> Collects, SearchEntity Bridge, (int Level, int Group, int Depth) Rank);
+public record SearchStage(IDocumentStage Stage, bool IsExclusion, DocumentKey Join, IReadOnlyList<DocumentKey> Collects, SearchEntity Bridge, (int Level, int Group, int Depth) Rank);
 
 /// <summary>
 /// Searches documents of type <typeparamref name="T"/> with criteria on any searchable documents.
@@ -25,8 +26,9 @@ public record SearchStage(IDocumentStage Stage, DocumentKey Join, IReadOnlyList<
 /// derived from <see cref="Unite.Indices.Entities.EntityKeyAttribute"/> and <see cref="Unite.Indices.Entities.ReferencesAttribute"/>.
 /// </summary>
 /// <remarks>
-/// Criteria of a document marked as exclusion (<see cref="DocumentCriteria.IsExclusion"/>) exclude: the documents matching the
-/// criteria are searched and their entity keys are excluded from the target (e.g. images without SMs of type SNV).
+/// Each document has include and exclude criteria (<see cref="DocumentCriteria{TDocument}"/>): entity keys of documents matching the
+/// include criteria are required, those of documents matching the exclude criteria are excluded from the target
+/// (e.g. images with SMs in TP53, but without SMs in IDH1).
 /// </remarks>
 public class SearchService<T> where T : class
 {
@@ -48,16 +50,14 @@ public class SearchService<T> where T : class
         // Stages narrow each other through the keys found and excluded so far; found keys of the same entity are intersected.
         foreach (var stage in Plan(criteria))
         {
-            var keys = await stage.Stage.FindKeys(criteria, stage.Collects, found, excluded, _serviceProvider);
+            var keys = await stage.Stage.FindKeys(criteria, stage.IsExclusion, stage.Collects, found, excluded, _serviceProvider);
 
             if (keys == null)
                 continue;
 
-            var exclusive = criteria.Get(stage.Stage.Document.Type).IsExclusion;
-
             foreach (var entry in keys)
             {
-                if (exclusive ? !Exclude(excluded, entry.Key, entry.Value) : !Include(found, entry.Key, entry.Value))
+                if (stage.IsExclusion ? !Exclude(excluded, entry.Key, entry.Value) : !Include(found, entry.Key, entry.Value))
                     return new SearchResult<T>();
             }
         }
@@ -84,7 +84,7 @@ public class SearchService<T> where T : class
 
         var searchQuery = new SearchQuery<T>()
             .AddPagination(from, size)
-            .AddFilter(DocumentCriteriaConverter.Convert(targetCriteria));
+            .AddFilter(DocumentCriteriaConverter.Convert<T>(targetCriteria));
 
         var indexService = _serviceProvider.GetRequiredService<IIndexService<T>>();
 
@@ -95,32 +95,40 @@ public class SearchService<T> where T : class
     /// Stages of all documents with criteria except the target, in execution order (see <see cref="SearchTrees.GetRank"/>):
     /// the main tree from its root to the finest entity; at the main-tree entity a secondary tree is attached to, the entities
     /// of that tree from its root; then the other documents of the level (e.g. donors, projects, specimens, genes, proteins,
-    /// gene expressions, ...). Ties are ordered by document name.
+    /// gene expressions, ...). Ties are ordered by document name; a document's include stage runs before its exclude stage,
+    /// which is then narrowed by the keys just found.
     /// </summary>
-    /// <exception cref="ArgumentException">Criteria of a document can't be applied to the target, or the target's own criteria are an exclusion.</exception>
+    /// <exception cref="ArgumentException">Criteria of a document can't be applied to the target.</exception>
     public IReadOnlyList<SearchStage> Plan(CriteriaContainer criteria)
     {
-        // Target documents not matching their own criteria are selected with a negated root, not with an exclusion.
-        if (criteria.Get<T>()?.IsExclusion == true)
-            throw new ArgumentException($"Criteria of '{SearchDocuments.Get(typeof(T)).Name}' can't be an exclusion in a search of '{SearchDocuments.Get(typeof(T)).Name}': negate them instead.");
-
         var targetEntities = DocumentKeys<T>.All.Keys.ToHashSet();
         var targetRoot = SearchEntities.All.TryGetValue(typeof(T), out var targetEntity) ? targetEntity.Root : null;
 
         return criteria.DocumentTypes
             .Where(documentType => documentType != typeof(T))
-            .Select(DocumentStages.Get)
-            .Select(stage =>
+            .SelectMany(documentType =>
             {
+                var documentCriteria = criteria.Get(documentType);
+                var stage = DocumentStages.Get(documentType);
                 var join = GetJoin(stage, targetEntities, targetRoot);
                 var identity = stage.Keys.FirstOrDefault(key => key.IsIdentity);
                 var collects = identity == null || identity == join ? new[] { join } : new[] { join, identity };
                 var bridge = targetEntities.Contains(join.Entity.Document.Type) ? null : GetBridge(join.Entity, targetEntities);
+                var rank = SearchTrees.GetRank(stage);
 
-                return new SearchStage(stage, join, collects, bridge, SearchTrees.GetRank(stage));
+                var stages = new List<SearchStage>();
+
+                if (documentCriteria.Include != null)
+                    stages.Add(new SearchStage(stage, false, join, collects, bridge, rank));
+
+                if (documentCriteria.Exclude != null)
+                    stages.Add(new SearchStage(stage, true, join, collects, bridge, rank));
+
+                return stages;
             })
             .OrderBy(stage => stage.Rank)
             .ThenBy(stage => stage.Stage.Document.Name, StringComparer.Ordinal)
+            .ThenBy(stage => stage.IsExclusion)
             .ToList();
     }
 
@@ -217,12 +225,16 @@ public class SearchService<T> where T : class
 
     private static bool Include(Dictionary<Type, HashSet<string>> found, Type entity, HashSet<string> keys)
     {
+        // Documents were filtered, but nothing was found: no target document can match.
+        if (keys.Count == 0)
+            return false;
+
         if (found.TryGetValue(entity, out var previous))
             keys.IntersectWith(previous);
 
         found[entity] = keys;
 
-        // Documents were filtered, but nothing was found: no target document can match.
+        // Keys found before and now have nothing in common: no target document can match.
         return keys.Count > 0;
     }
 
@@ -239,12 +251,16 @@ public class SearchService<T> where T : class
     /// <summary>
     /// Combines the target's own criteria with the keys found and excluded for its entities (AND). The input criteria are not modified.
     /// </summary>
-    private static DocumentCriteria<T> CreateTargetCriteria(DocumentCriteria<T> ownCriteria, Dictionary<Type, HashSet<string>> found, Dictionary<Type, HashSet<string>> excluded)
+    private static CriteriaGroup CreateTargetCriteria(DocumentCriteria<T> ownCriteria, Dictionary<Type, HashSet<string>> found, Dictionary<Type, HashSet<string>> excluded)
     {
         var nodes = new List<CriteriaNode>();
 
-        if (ownCriteria != null)
-            nodes.Add(ownCriteria);
+        if (ownCriteria?.Include != null)
+            nodes.Add(ownCriteria.Include);
+
+        // Target documents matching their own exclude criteria are excluded.
+        if (ownCriteria?.Exclude != null)
+            nodes.Add(new CriteriaGroup { Negate = true, Nodes = [ownCriteria.Exclude] });
 
         // Keys of entities the target does not refer to (e.g. genes in an image search) only narrowed other stages.
         foreach (var entry in found)
@@ -263,6 +279,6 @@ public class SearchService<T> where T : class
             }
         }
 
-        return new DocumentCriteria<T> { Operator = LogicalOperator.And, Nodes = nodes };
+        return new CriteriaGroup { Operator = LogicalOperator.And, Nodes = nodes };
     }
 }

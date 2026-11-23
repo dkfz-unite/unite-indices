@@ -21,11 +21,11 @@ public interface IDocumentStage
     IEnumerable<DocumentKey> Keys { get; }
 
     /// <summary>
-    /// Finds the given entity keys in documents matching the document criteria and the keys found so far, with one request.
-    /// Criteria are searched as written; for exclusion criteria (<see cref="DocumentCriteria.IsExclusion"/>) the caller excludes the found keys.
-    /// Returns null if the document has no criteria (nothing to constrain).
+    /// Finds the given entity keys in documents matching the document's include or exclude criteria and the keys found so far,
+    /// with one request. For exclude criteria the caller excludes the found keys.
+    /// Returns null if the document has no such criteria (nothing to constrain).
     /// </summary>
-    Task<IReadOnlyDictionary<Type, HashSet<string>>> FindKeys(CriteriaContainer criteria, IEnumerable<DocumentKey> keys,
+    Task<IReadOnlyDictionary<Type, HashSet<string>>> FindKeys(CriteriaContainer criteria, bool exclusion, IEnumerable<DocumentKey> keys,
         IReadOnlyDictionary<Type, HashSet<string>> found, IReadOnlyDictionary<Type, HashSet<string>> excluded, IServiceProvider serviceProvider);
 
     /// <summary>
@@ -51,12 +51,13 @@ internal sealed class DocumentStage<TDocument> : IDocumentStage where TDocument 
     public IEnumerable<DocumentKey> Keys => DocumentKeys<TDocument>.All.Values;
 
 
-    public async Task<IReadOnlyDictionary<Type, HashSet<string>>> FindKeys(CriteriaContainer criteria, IEnumerable<DocumentKey> keys,
+    public async Task<IReadOnlyDictionary<Type, HashSet<string>>> FindKeys(CriteriaContainer criteria, bool exclusion, IEnumerable<DocumentKey> keys,
         IReadOnlyDictionary<Type, HashSet<string>> found, IReadOnlyDictionary<Type, HashSet<string>> excluded, IServiceProvider serviceProvider)
     {
-        var ownCriteria = criteria.Get<TDocument>();
+        var documentCriteria = criteria.Get<TDocument>();
+        var ownCriteria = exclusion ? documentCriteria?.Exclude : documentCriteria?.Include;
 
-        if (ownCriteria == null || DocumentCriteriaConverter.Convert(ownCriteria).IsEmpty)
+        if (ownCriteria == null || DocumentCriteriaConverter.Convert<TDocument>(ownCriteria).IsEmpty)
             return null;
 
         var nodes = new List<CriteriaNode> { ownCriteria };
@@ -72,9 +73,9 @@ internal sealed class DocumentStage<TDocument> : IDocumentStage where TDocument 
         {
             if (DocumentKeys<TDocument>.All.TryGetValue(entry.Key, out var key))
             {
-                var exclusion = key.CreateCriteria(entry.Value);
-                exclusion.Negate = true;
-                nodes.Add(exclusion);
+                var excludedKeys = key.CreateCriteria(entry.Value);
+                excludedKeys.Negate = true;
+                nodes.Add(excludedKeys);
             }
         }
 
@@ -96,11 +97,11 @@ internal sealed class DocumentStage<TDocument> : IDocumentStage where TDocument 
     private static async Task<IReadOnlyDictionary<Type, HashSet<string>>> Aggregate(List<CriteriaNode> nodes, IEnumerable<DocumentKey<TDocument>> keys,
         IServiceProvider serviceProvider)
     {
-        var criteria = new DocumentCriteria<TDocument> { Operator = LogicalOperator.And, Nodes = nodes };
+        var criteria = new CriteriaGroup { Operator = LogicalOperator.And, Nodes = nodes };
 
         var query = new SearchQuery<TDocument>()
             .AddPagination(0, 0)
-            .AddFilter(DocumentCriteriaConverter.Convert(criteria));
+            .AddFilter(DocumentCriteriaConverter.Convert<TDocument>(criteria));
 
         // Aggregations are named after the entity ("donors_keys"); "keys" alone is reserved by NEST.
         var aggregations = keys.ToDictionary(key => key.Entity.Document.Type, key => (Key: key, Name: $"{key.Entity.Document.Name}_keys"));

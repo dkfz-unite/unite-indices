@@ -4,8 +4,8 @@ using Unite.Indices.Search.Engine2.Fields;
 namespace Unite.Indices.Search.Engine2.Criteria;
 
 /// <summary>
-/// Criteria per searchable document type.
-/// In JSON an object with one property per document, named as the document (e.g. "images", "specimens").
+/// Criteria per searchable document type: documents to include and to exclude (<see cref="DocumentCriteria{TDocument}"/>).
+/// In JSON an object with one property per document, named as the document, e.g. { "sms": { "include": { ... }, "exclude": { ... } } }.
 /// </summary>
 [JsonConverter(typeof(CriteriaContainerJsonConverter))]
 public class CriteriaContainer
