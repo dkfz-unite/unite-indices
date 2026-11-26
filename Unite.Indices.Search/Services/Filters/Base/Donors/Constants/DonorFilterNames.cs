@@ -3,7 +3,8 @@
 public class DonorFilterNames
 {
     protected string Prefix => "Donor";
-    
+
+    public string Id => $"{Prefix}.Id"; 
     public string ReferenceId => $"{Prefix}.ReferenceId";
     public string Diagnosis => $"{Prefix}.Diagnosis";
     public string PrimarySite => $"{Prefix}.PrimarySite";

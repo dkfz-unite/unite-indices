@@ -11,7 +11,7 @@ public class ProteinsDataFilters<T> : FiltersCollection<T> where T : class
 {
     protected ProteinsFilterNames FilterNames = new();
 
-    public ProteinsDataFilters(ProteinsCriteria criteria, Expression<Func<T, DataIndex>> path)
+    public ProteinsDataFilters(ProteinsDataCriteria criteria, Expression<Func<T, DataIndex>> path)
     {
         if (criteria == null)
         {

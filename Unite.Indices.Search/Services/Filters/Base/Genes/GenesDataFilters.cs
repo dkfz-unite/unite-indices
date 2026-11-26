@@ -11,7 +11,7 @@ public class GenesDataFilters<T> : FiltersCollection<T> where T : class
 {
     protected GenesFilterNames FilterNames = new();
 
-    public GenesDataFilters(GenesCriteria criteria, Expression<Func<T, DataIndex>> path)
+    public GenesDataFilters(GenesDataCriteria criteria, Expression<Func<T, DataIndex>> path)
     {
         if (criteria == null)
         {

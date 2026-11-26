@@ -19,6 +19,16 @@ public class DonorFilters<T> : FiltersCollection<T> where T : class
             return;
         }
 
+        if (IsNotEmpty(criteria.Id))
+        {
+            Add(new EqualityFilter<T, int>(
+                FilterNames.Id,
+                criteria.Id.Not,
+                path.Join(donor => donor.Id),
+                criteria.Id.Value
+            ));
+        }
+
         if (IsNotEmpty(criteria.ReferenceId))
         {
             Add(new SimilarityFilter<T, string>(
